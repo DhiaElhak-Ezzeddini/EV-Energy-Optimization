@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "EV-Energy-Optimization"
+version = "0.1.0"
+description = ""
+authors = ["iusztinpaul <p.b.iusztin@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+
+# Core
+zenml = { version = "^0.74.0", extras = ["server"] }
+pymongo = "^4.10.1"
+click = "^8.1.7"
+loguru = "^0.7.2"
+rich = "^13.9.2"
+numpy = "^2.1.2"
+poethepoet = "^0.32.0"
+datasets = "^3.0.2"
+torch = "^2.5.1"
+pytorch-lightning = "^2.4.0"
+
+# Geospatial / Graphs
+osmnx = "^1.9.3"
+networkx = "^3.4.2"
