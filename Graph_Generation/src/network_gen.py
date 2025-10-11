@@ -39,7 +39,7 @@ NYC_LOCATIONS = {
 class NetworkDatabase:
     """Manages persistent storage and loading of road networks"""
     
-    def __init__(self, db_path: str = "New_York_network_ny.pkl.gz"):
+    def __init__(self, db_path: str):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.network = None
@@ -276,6 +276,7 @@ class NetworkDatabase:
             
             # Add attributes and enhance
             merged_network = self._add_network_attributes(merged_network)
+            merged_network = self._augment_edges_with_energy_attributes(merged_network, seed=12345)  # Add energy attributes
             return self._enhance_network_connectivity(merged_network)
         
         return None
@@ -325,6 +326,7 @@ class NetworkDatabase:
             if merged_network and len(merged_network.nodes) > 5000:
                 info(f"✅ Merged network successful: {len(merged_network.nodes)} nodes", 'road_network_db')
                 merged_network = self._add_network_attributes(merged_network)
+                merged_network = self._augment_edges_with_energy_attributes(merged_network, seed=12345)  # Add energy attributes
                 return merged_network
             else:
                 warning("⚠️ Merged network insufficient", 'road_network_db')
@@ -352,6 +354,7 @@ class NetworkDatabase:
             if network and len(network.nodes) > 3000:
                 info(f"✅ State network successful: {len(network.nodes)} nodes", 'road_network_db')
                 network = self._add_network_attributes(network)
+                network = self._augment_edges_with_energy_attributes(network, seed=12345)  # Add energy attributes
                 return network
             else:
                 warning("⚠️ State network insufficient", 'road_network_db')
@@ -645,6 +648,83 @@ class NetworkDatabase:
             warning(f"Failed to add network attributes: {e}", 'road_network_db')
             # Add basic attributes manually
             return self._add_basic_network_attributes(network)  # Pass network parameter
+        
+    #############################################################
+    #### Additional function for more attributes integration ####
+    #############################################################
+
+
+    def _augment_edges_with_energy_attributes(self, network, seed: int = 0):
+        """
+        Add/overwrite edges with:
+        - slope (degrees)
+        - congestion_factor (multiplier on travel_time / energy)
+        - status (open/closed)
+        - incident_delay (seconds)
+        - road_quality (0..1)
+        - stop_prob (probability of stop/slowdown on edge)
+        """
+        random.seed(seed)
+        np.random.seed(seed)
+
+        # Option A: If elevation available per node, compute slope using node elevations.
+        # If not present, we synthesize gentle slopes with local random noise.
+        # Look for node attribute 'elevation' (meters). If present compute slope per edge.
+        has_elev = any('elevation' in d for _, d in network.nodes(data=True))
+
+        for u, v, key, data in network.edges(keys=True, data=True):
+            # length in meters
+            length = data.get('length', 100.0)
+
+            # slope (rise/run) -> degrees
+            if has_elev:
+                try:
+                    z_u = network.nodes[u].get('elevation', 0.0)
+                    z_v = network.nodes[v].get('elevation', 0.0)
+                    rise = z_v - z_u
+                    slope = (rise / max(length, 1.0))  # unitless
+                    slope_deg = np.degrees(np.arctan(slope))
+                except Exception:
+                    slope_deg = float(np.random.normal(0, 1.0))
+            else:
+                # Synthetic small slopes: mean 0 deg, sigma 1.5 deg
+                slope_deg = float(np.random.normal(0.0, 1.5))
+
+            # congestion_factor (1.0 = free flow; >1 slows energy and time)
+            # we will sample baseline and keep it time-varying elsewhere
+            base_congestion = float(np.clip(np.random.beta(2, 8) * 1.5, 0.9, 3.0))
+
+            # road status (open/closed)
+            # keep most edges open, close a small fraction
+            closed = random.random() < 0.01  # 1% initially closed
+            status = 'closed' if closed else 'open'
+
+            # incident_delay (seconds): additional delay if closed or congested
+            incident_delay = 0.0
+            if status == 'closed':
+                # large delay to force reroute (or treat as impassable later)
+                incident_delay = float(np.random.uniform(600, 7200))  # 10min -> 2h
+            else:
+                # small stochastic delay (stoplights, double-parked cars)
+                incident_delay = float(np.random.exponential(scale=5.0))  # seconds
+
+            # road_quality (0..1) affects rolling resistance and stop_prob
+            road_quality = float(np.clip(np.random.beta(5,2), 0.3, 1.0))
+
+            # stop probability (per traversal)
+            stop_prob = float(np.clip(np.random.beta(1.5, 6.0) * (1.2 - road_quality), 0.0, 0.6))
+
+            # attach attributes
+            network.edges[u, v, key].update({
+                'slope_deg': slope_deg,
+                'base_congestion': base_congestion,
+                'congestion_factor': base_congestion,  # dynamic will be updated in sim
+                'status': status,
+                'incident_delay': incident_delay,
+                'road_quality': road_quality,
+                'stop_prob': stop_prob
+            })
+        return network
 
 
     def _add_basic_network_attributes(self, network):  # Add network parameter
@@ -673,7 +753,7 @@ class NetworkDatabase:
                 'synthetic_bridge': 80,
                 'synthetic_regional': 65,
                 'synthetic_local': 50,
-                'strategic_connection': 70,
+                'strategic_connection': 70, 
                 'secondary': 55,
                 'secondary_link': 50,
                 'primary': 70,
