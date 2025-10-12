@@ -2,3 +2,11 @@
 cache/
 _pycache_/
 __pycache__/
+logs_ev/
+*.ipynb_checkpoints
+*.pyc
+.env
+.vscode/
+.venv/
+env/
+venv/
