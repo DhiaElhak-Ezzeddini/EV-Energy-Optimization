@@ -499,20 +499,20 @@ class EVPathFindingEnv(gym.Env):
     def _calculate_reward(self, edge_energy: float) -> float:
         """Calculate reward with balanced weighting, prioritizing progress and energy efficiency."""
         
-        # --- Weights (Tune these) ---
-        SUCCESS_REWARD = 10.0
-        ENERGY_FAILURE_PENALTY = -5.0
+        # --- Weights (Tuned for Exploration) ---
+        SUCCESS_REWARD = 50.0 # 🟢 SIGNIFICANT INCREASE to dominate penalties
+        ENERGY_FAILURE_PENALTY = -10.0 # 🟢 INCREASE FAILURE PENALTY (Clear signal)
         
         # Weights for the combined step reward
-        W_PROGRESS = 5.0  # Emphasize distance reduction
-        W_ENERGY = -2.0  # Explicit penalty for energy consumption
-        W_TIME = -0.05 # Smaller penalty for taking a step
-        W_REVISIT = -0.5
+        W_PROGRESS = 15.0  # 🟢 HIGH PROGRESS EMPHASIS (Increased from 5.0)
+        W_ENERGY = -0.1   # 🟢 DRASTICALLY REDUCED (from -2.0)
+        W_TIME = -0.001  # 🟢 NEAR-ZERO STEP PENALTY (from -0.05)
+        W_REVISIT = -0.05 # 🟢 Reduced Revisit Penalty (from -0.5)
         
         # Check if reached target
         if self.current_node == self.target_node:
-            # Add a final bonus for energy efficiency proportional to remaining energy
-            energy_bonus = (self.battery_capacity - self.energy_used) / self.battery_capacity * 5.0
+            # Final bonus: remaining battery (normalized)
+            energy_bonus = (self.battery_capacity - self.energy_used) / self.battery_capacity * 10.0
             return SUCCESS_REWARD + energy_bonus
         
         # Check energy constraint violation (Failure state)
@@ -522,18 +522,18 @@ class EVPathFindingEnv(gym.Env):
         # --- Calculate Step Reward Components ---
         
         # 1. Distance Improvement (Progress)
+        # ... (distance calculation logic remains the same) ...
         if len(self.episode_history) > 1:
             old_node = self.episode_history[-2][0]
         else:
-            old_node = self.current_node # Should not happen after first step
+            old_node = self.current_node
             
         old_distance = self._get_distance(old_node, self.target_node)
         new_distance = self._get_distance(self.current_node, self.target_node)
         distance_improvement = old_distance - new_distance
         
-        # Normalize distance improvement by max possible distance to the target
-        # This makes the reward more comparable across different graph sizes/paths
-        max_possible_distance = self._get_distance(self.reset_start_node, self.target_node) # Needs change in reset
+        # Normalize distance improvement (must ensure max_possible_distance is available from reset_start_node)
+        max_possible_distance = self._get_distance(self.reset_start_node, self.target_node)
         if max_possible_distance > 0:
             normalized_progress = distance_improvement / max_possible_distance
         else:
@@ -542,19 +542,18 @@ class EVPathFindingEnv(gym.Env):
         # 2. Revisit Penalty
         revisit_penalty = 0.0
         if len(self.episode_history) > 4:
-            # Check if the current node was visited in the last 4 steps (excluding the immediate previous one)
             recent_nodes = [hist[0] for hist in self.episode_history[-5:-1]]
             if self.current_node in recent_nodes and self.current_node != old_node:
                 revisit_penalty = W_REVISIT
 
         # 3. Energy Penalty/Cost
-        energy_cost_penalty = edge_energy 
+        energy_cost_penalty = edge_energy # Raw energy cost in kWh
 
         # Combined reward
         reward = (
-            W_PROGRESS * normalized_progress +
-            W_ENERGY * energy_cost_penalty * 10.0 + # Scale up the energy penalty 
-            W_TIME + # Step penalty
+            W_PROGRESS * normalized_progress + # Prioritize movement toward goal
+            W_ENERGY * energy_cost_penalty +   # Energy penalty is now much smaller (W_ENERGY is -0.1)
+            W_TIME +                           # Base time penalty is almost zero
             revisit_penalty
         )
         
@@ -586,11 +585,11 @@ class CustomFeatureExtractor(BaseFeaturesExtractor):
         n_input_features = observation_space.shape[0]
         
         self.network = nn.Sequential(
-            nn.Linear(n_input_features, 256),
+            nn.Linear(n_input_features, 128),
             nn.ReLU(),
-            nn.Linear(256, 256),
+            nn.Linear(128, 128),
             nn.ReLU(),
-            nn.Linear(256, 128),
+            nn.Linear(128, 128),
             nn.ReLU(),
             nn.Linear(128, features_dim)
         )
@@ -640,7 +639,7 @@ def create_ev_environment(graph: nx.Graph, vehicle_params: Dict[str, Any]) -> gy
     return EVPathFindingEnv(
         graph=graph,
         vehicle_params=vehicle_params,
-        max_episode_steps=min(200, max(len(graph.nodes()) * 2, 50)),  # Ensure at least 50 steps
+        max_episode_steps=400,#min(200, max(len(graph.nodes()) * 4, 50)),  # Ensure at least 50 steps
         debug=False
     )
 
@@ -649,7 +648,7 @@ def train_ev_pathfinder(graph: nx.Graph,
                        vehicle_params: Dict[str, Any],
                        total_timesteps: int = 50000) -> PPO:
     """Train an EV pathfinding agent"""
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cpu"
     print(f"Using device: {device}")
     # Create environments
     train_env = DummyVecEnv([lambda: Monitor(create_ev_environment(graph, vehicle_params))])
@@ -661,16 +660,16 @@ def train_ev_pathfinder(graph: nx.Graph,
     # Correct policy configuration
     policy_kwargs = dict(
         features_extractor_class=CustomFeatureExtractor,
-        features_extractor_kwargs=dict(features_dim=256),
-        net_arch=[128, 128]  # Additional layers after feature extractor
+        features_extractor_kwargs=dict(features_dim=128),
+        net_arch=[64,64]  # Additional layers after feature extractor
     )
     
     # Initialize agent
     model = PPO(
         "MlpPolicy",
         train_env,
-        learning_rate=3e-4,
-        n_steps=2048,
+        learning_rate=1e-4,
+        n_steps=1024, # smaller n_steps ==> more frequent updates
         batch_size=64,
         n_epochs=10,
         gamma=0.99,
@@ -683,8 +682,8 @@ def train_ev_pathfinder(graph: nx.Graph,
     
     # Train
     print("Starting training...")
-    
-    model.learn(total_timesteps=total_timesteps,progress_bar=True)    
+
+    model.learn(total_timesteps=total_timesteps,callback=callback,progress_bar=True)    
     train_env.close()
     return model
 
@@ -746,7 +745,7 @@ if __name__ == "__main__":
     try:
         # Create sample graph
         print("Creating sample graph...")
-        G = nx.erdos_renyi_graph(30, 0.3, seed=42)  # Smaller graph for faster testing
+        G = nx.grid_2d_graph(10,10)  # Smaller graph for faster testing
         
         # Add edge attributes
         for u, v in G.edges():
