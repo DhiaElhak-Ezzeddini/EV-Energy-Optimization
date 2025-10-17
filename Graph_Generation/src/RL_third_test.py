@@ -5,6 +5,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.monitor import Monitor
 from typing import Dict, Any, List, Optional, Tuple
 from stable_baselines3 import PPO
+import matplotlib.pyplot as plt
 from gymnasium import spaces
 from scipy import sparse
 import gymnasium as gym
@@ -230,8 +231,7 @@ class EVPathFindingEnv(gym.Env):
                 except:
                     self.shortest_path_lengths[node] = {node: 0}
     
-    def _get_node_neighbors(self, node) -> List[int]:
-        """Get valid neighbor indices for a node"""
+    """def _get_node_neighbors(self, node) -> List[int]:
         try:
             neighbors = list(self.graph.neighbors(node))
             neighbor_indices = [self.node_to_idx[n] for n in neighbors]
@@ -243,7 +243,20 @@ class EVPathFindingEnv(gym.Env):
         if len(neighbor_indices) < max_neighbors:
             neighbor_indices += [self.node_to_idx[node]] * (max_neighbors - len(neighbor_indices))
         
-        return neighbor_indices[:max_neighbors]
+        return neighbor_indices[:max_neighbors]"""
+    
+    def _get_node_neighbors(self, node) -> List[int]:
+        """Get neighbor indices for the current node. Returns raw indices (no padding)."""
+        try:
+            neighbors = list(self.graph.neighbors(node))
+            neighbor_indices = [self.node_to_idx[n] for n in neighbors]
+        except:
+            neighbor_indices = []
+        
+        # Keep the stay action represented by its index being available.
+        # Action space size is max_degree + 1, so the indices will be 0 to max_degree.
+        # The agent learns to choose only valid indices.
+        return neighbor_indices
     
     def _get_observation(self) -> np.ndarray:
         """Construct efficient observation vector"""
@@ -297,10 +310,12 @@ class EVPathFindingEnv(gym.Env):
         
         # Select valid start and target nodes
         if options and 'start_node' in options and 'target_node' in options:
+            self.reset_start_node = options['start_node']  # Store for reward calculation
             self.current_node = options['start_node']
             self.target_node = options['target_node']
         else:
             self.current_node, self.target_node = self._select_valid_start_target()
+            self.reset_start_node = self.current_node  # Store for reward calculation
         
         self.visited_nodes.add(self.current_node)
         self.episode_history.append((self.current_node, self.energy_used))
@@ -366,35 +381,43 @@ class EVPathFindingEnv(gym.Env):
         self.step_count += 1
         
         # Initialize edge_energy to 0 (FIX for UnboundLocalError)
+        next_node = self.current_node
         edge_energy = 0.0
-        
+        invalid_action_penalty = 0.0 # New penalty signal
+
         # Get valid neighbors
-        neighbors = self._get_node_neighbors(self.current_node)
+        neighbors_indices = [self.node_to_idx[n] for n in self.graph.neighbors(self.current_node)]
         
-        # Handle stay action (last action)
-        if action == len(neighbors):
-            next_node = self.current_node
-            # edge_energy remains 0.0
-        else:
-            # Map action to actual neighbor
-            if action < len(neighbors):
-                next_node_idx = neighbors[action]
-                next_node = self.idx_to_node[next_node_idx]
+        # Check if the action is the 'stay' action (last index)
+        is_stay_action = action == self.action_space.n - 1
+        
+        if is_stay_action:
+            # Explicit 'stay' action
+            pass 
+        elif action < len(neighbors_indices):
+            # Valid action: move to a neighbor
+            try:
+                neighbor_idx = neighbors_indices[action]
+                next_node = self.idx_to_node[neighbor_idx]
                 
-                # Calculate energy for movement if we're moving to a different node
+                # Check for movement
                 if next_node != self.current_node:
-                    try:
-                        edge_data = self.graph[self.current_node][next_node]
-                        edge_energy = self.energy_model.calculate_edge_energy(edge_data)
-                    except:
-                        # If edge doesn't exist or other error, stay in place
-                        next_node = self.current_node
-                        edge_energy = 0.0
-            else:
-                # Invalid action - stay in place with penalty
+                    edge_data = self.graph[self.current_node][next_node]
+                    edge_energy = self.energy_model.calculate_edge_energy(edge_data)
+                
+            except IndexError:
+                # Should not happen if action < len(neighbors_indices) but for safety
+                invalid_action_penalty = -0.5 # Small penalty for logic error
                 next_node = self.current_node
-                # edge_energy remains 0.0
-        
+            except Exception:
+                # Edge doesn't exist or energy model error: stay in place
+                invalid_action_penalty = -0.2
+                next_node = self.current_node
+        else:
+            # Invalid action (agent chose an index beyond the actual number of neighbors + stay)
+            invalid_action_penalty = -1.0 # Significant penalty for invalid choice
+            next_node = self.current_node # Agent stays in place
+
         # Update energy usage
         self.energy_used += edge_energy
         
@@ -404,7 +427,7 @@ class EVPathFindingEnv(gym.Env):
         self.episode_history.append((self.current_node, self.energy_used))
         
         # Calculate rewards
-        reward = self._calculate_reward(edge_energy)
+        reward = self._calculate_reward(edge_energy) + invalid_action_penalty
         
         # Check termination conditions
         terminated = self.current_node == self.target_node
@@ -431,8 +454,7 @@ class EVPathFindingEnv(gym.Env):
         except:
             return False
     
-    def _calculate_reward(self, edge_energy: float) -> float:
-        """Calculate reward with balanced weighting"""
+    """"def _calculate_reward(self, edge_energy: float) -> float:
         
         # Base rewards/penalties
         success_reward = 10.0
@@ -472,7 +494,74 @@ class EVPathFindingEnv(gym.Env):
             revisit_penalty
         )
         
+        return float(reward)"""
+    
+    def _calculate_reward(self, edge_energy: float) -> float:
+        """Calculate reward with balanced weighting, prioritizing progress and energy efficiency."""
+        
+        # --- Weights (Tune these) ---
+        SUCCESS_REWARD = 10.0
+        ENERGY_FAILURE_PENALTY = -5.0
+        
+        # Weights for the combined step reward
+        W_PROGRESS = 5.0  # Emphasize distance reduction
+        W_ENERGY = -2.0  # Explicit penalty for energy consumption
+        W_TIME = -0.05 # Smaller penalty for taking a step
+        W_REVISIT = -0.5
+        
+        # Check if reached target
+        if self.current_node == self.target_node:
+            # Add a final bonus for energy efficiency proportional to remaining energy
+            energy_bonus = (self.battery_capacity - self.energy_used) / self.battery_capacity * 5.0
+            return SUCCESS_REWARD + energy_bonus
+        
+        # Check energy constraint violation (Failure state)
+        if self.energy_used >= self.battery_capacity * (1.0 - self.min_battery_safety):
+            return ENERGY_FAILURE_PENALTY
+        
+        # --- Calculate Step Reward Components ---
+        
+        # 1. Distance Improvement (Progress)
+        if len(self.episode_history) > 1:
+            old_node = self.episode_history[-2][0]
+        else:
+            old_node = self.current_node # Should not happen after first step
+            
+        old_distance = self._get_distance(old_node, self.target_node)
+        new_distance = self._get_distance(self.current_node, self.target_node)
+        distance_improvement = old_distance - new_distance
+        
+        # Normalize distance improvement by max possible distance to the target
+        # This makes the reward more comparable across different graph sizes/paths
+        max_possible_distance = self._get_distance(self.reset_start_node, self.target_node) # Needs change in reset
+        if max_possible_distance > 0:
+            normalized_progress = distance_improvement / max_possible_distance
+        else:
+            normalized_progress = 0.0
+
+        # 2. Revisit Penalty
+        revisit_penalty = 0.0
+        if len(self.episode_history) > 4:
+            # Check if the current node was visited in the last 4 steps (excluding the immediate previous one)
+            recent_nodes = [hist[0] for hist in self.episode_history[-5:-1]]
+            if self.current_node in recent_nodes and self.current_node != old_node:
+                revisit_penalty = W_REVISIT
+
+        # 3. Energy Penalty/Cost
+        energy_cost_penalty = edge_energy 
+
+        # Combined reward
+        reward = (
+            W_PROGRESS * normalized_progress +
+            W_ENERGY * energy_cost_penalty * 10.0 + # Scale up the energy penalty 
+            W_TIME + # Step penalty
+            revisit_penalty
+        )
+        
         return float(reward)
+
+# Note: To implement the max_possible_distance effectively, store the initial starting node 
+# in `reset_start_node` within the `reset` method.
     
     def render(self, mode='human'):
         """Render current environment state"""
@@ -560,7 +649,8 @@ def train_ev_pathfinder(graph: nx.Graph,
                        vehicle_params: Dict[str, Any],
                        total_timesteps: int = 50000) -> PPO:
     """Train an EV pathfinding agent"""
-    
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using device: {device}")
     # Create environments
     train_env = DummyVecEnv([lambda: Monitor(create_ev_environment(graph, vehicle_params))])
     eval_env = create_ev_environment(graph, vehicle_params)
@@ -586,19 +676,15 @@ def train_ev_pathfinder(graph: nx.Graph,
         gamma=0.99,
         gae_lambda=0.95,
         clip_range=0.2,
-        verbose=1,
-        tensorboard_log="./ev_path_tensorboard/",
-        policy_kwargs=policy_kwargs
+        verbose=0,
+        policy_kwargs=policy_kwargs,
+        device=device
     )
     
     # Train
     print("Starting training...")
-    model.learn(
-        total_timesteps=total_timesteps,
-        callback=callback,
-        tb_log_name="ev_path_training"
-    )
     
+    model.learn(total_timesteps=total_timesteps,progress_bar=True)    
     train_env.close()
     return model
 
@@ -678,7 +764,9 @@ if __name__ == "__main__":
             'regen_efficiency': 0.7,
             'battery_capacity_kwh': 75.0
         }
+        nx.draw(G, with_labels=True)
         
+        plt.show()
         # Test environment creation
         print("Testing environment creation...")
         test_env = create_ev_environment(G, vehicle_params)
@@ -688,7 +776,7 @@ if __name__ == "__main__":
         
         # Train model
         print("Training EV Pathfinder...")
-        model = train_ev_pathfinder(G, vehicle_params, total_timesteps=10000)  # Fewer timesteps for testing
+        model = train_ev_pathfinder(G, vehicle_params, total_timesteps=300000) 
         
         # Evaluate
         print("\nEvaluating trained model...")
