@@ -1,0 +1,5 @@
+[2025-10-24 15:22:25,563][ev_fleet.wrapper][INFO] - Using network database path: C:/Users/DHIA/Desktop/My Projects/Tutoré/EV-Energy-Optimization/Graph_Generation/src/New_York_network_enhanced_attributes.pkl.gz
+[2025-10-24 15:22:25,585][ev_fleet.road_network_db][INFO] - Loading network from C:\Users\DHIA\Desktop\My Projects\Tutoré\EV-Energy-Optimization\Graph_Generation\src\New_York_network_enhanced_attributes.pkl.gz
+[2025-10-24 15:22:33,128][ev_fleet.road_network_db][INFO] - Network loaded: 284042 nodes, 733176 edges
+[2025-10-24 15:22:33,128][ev_fleet.road_network_db][INFO] - Created: 2025-10-11T15:59:31.315802
+[2025-10-24 15:22:35,137][ev_fleet.wrapper][INFO] - Graph ready: 284042 nodes, 733176 edges.

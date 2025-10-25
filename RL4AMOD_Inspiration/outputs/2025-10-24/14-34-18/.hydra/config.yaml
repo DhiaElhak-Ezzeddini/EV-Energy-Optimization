@@ -1,0 +1,35 @@
+environment:
+  name: EVRoutingEnv
+  db_path: C:/Users/DHIA/Desktop/My Projects/Tutoré/EV-Energy-Optimization/Graph_Generation/src/New_York_network_enhanced_attributes.pkl.gz
+agent:
+  name: DQNAgent
+  device: cuda
+  learning_rate: 5.0e-05
+  gamma: 0.99
+  epsilon_start: 1.0
+  epsilon_end: 0.05
+  epsilon_decay: 20000
+  buffer_size: 100000
+  batch_size: 128
+  target_update_freq: 500
+  hidden_dim: 128
+training:
+  num_episodes: 5000
+  log_interval: 50
+  save_interval: 500
+  save_path: ev_dqn_gnn_final.pth
+vehicle:
+  battery_capacity_kwh: 60.0
+  min_soc_fraction: 0.1
+  base_kwh_per_km: 0.18
+  slope_factor: 0.05
+  congestion_factor: 0.1
+  speed_factor: 0.0001
+  regen_efficiency: 0.6
+  stop_penalty_kwh: 0.05
+  goal_reward: 1000
+  fail_penalty_soc: -1000
+  fail_penalty_steps: -500
+  fail_penalty_invalid: -100
+  step_penalty: -1.0
+  energy_reward_factor: -1.0
