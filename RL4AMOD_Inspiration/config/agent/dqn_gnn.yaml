@@ -1,0 +1,17 @@
+# config/agent/dqn_gnn.yaml
+name: "DQNAgent"
+device: "cpu" # or "cpu"
+learning_rate: 1e-4
+gamma: 0.99
+epsilon_start: 1.0
+epsilon_end: 0.05
+epsilon_decay: 20000
+buffer_size: 5000
+batch_size: 128
+target_update_freq: 500
+hidden_dim: 8
+
+# Add these keys, initializing them (null is fine)
+node_feature_dim: null # Will be set by the parser during runtime
+edge_feature_dim: null # Will be set by the parser during runtime
+
