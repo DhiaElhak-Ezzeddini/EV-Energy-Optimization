@@ -1,15 +1,16 @@
 # config/agent/dqn_gnn.yaml
 name: "DQNAgent"
-device: "cpu" # or "cpu"
+device: "cuda" # or "cpu"
 learning_rate: 1e-4
 gamma: 0.99
 epsilon_start: 1.0
 epsilon_end: 0.05
-epsilon_decay: 20000
-buffer_size: 5000
-batch_size: 128
-target_update_freq: 500
-hidden_dim: 8
+epsilon_decay: 20000 # Increase for longer exploration
+buffer_size: 100000
+batch_size: 16
+target_update_freq: 500 # Update target net less frequently than policy net steps
+hidden_dim: 64
+# node_feature_dim and edge_feature_dim will be set dynamically by parser
 
 # Add these keys, initializing them (null is fine)
 node_feature_dim: null # Will be set by the parser during runtime

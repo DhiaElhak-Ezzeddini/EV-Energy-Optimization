@@ -9,9 +9,9 @@ hydra:
     dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 training:
-  num_episodes: 2000
-  log_interval: 50
-  save_interval: 500
+  num_episodes: 200
+  log_interval: 5
+  save_interval: 50
   save_path: "ev_dqn_gnn_final.pth"
 
 vehicle:

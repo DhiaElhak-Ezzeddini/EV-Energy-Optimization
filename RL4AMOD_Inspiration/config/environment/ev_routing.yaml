@@ -1,4 +1,4 @@
 # config/environment/ev_routing.yaml
 name: "EVRoutingEnv"
-db_path: "/kaggle/input/tutor/Tutoré/EV-Energy-Optimization/Graph_Generation/src/New_York_network_enhanced_attributes.pkl/New_York_network_enhanced_attributes.pkl" # Path relative to project root
+db_path: "C:\\Users\\YODA\\Documents\\Dhia_Salem_Tutoré_AIM_25-26\\New_repo_clone\\EV-Energy-Optimization\\Graph_Generation\\src\\New_York_network_enhanced_attributes.pkl.gz" # Path relative to project root
 # Add any other environment-specific settings if needed
