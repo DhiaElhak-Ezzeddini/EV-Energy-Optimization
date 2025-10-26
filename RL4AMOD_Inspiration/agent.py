@@ -43,16 +43,21 @@ class DQNAgent:
         self.epsilon_decay = config['epsilon_decay']
         self.current_epsilon = self.epsilon_start
 
+        node_dim = self.parser.node_feature_dim
+        edge_dim = self.parser.edge_feature_dim
+        hidden_dim = config['hidden_dim']
+        print(f"Initializing GNN_QNetwork with node_dim={node_dim}, edge_dim={edge_dim}, hidden_dim={hidden_dim}")
+
         self.policy_net = GNN_QNetwork(
-            node_feature_dim=parser.node_feature_dim,
-            edge_feature_dim=parser.edge_feature_dim,
-            hidden_dim=config['hidden_dim']
+            node_feature_dim=node_dim,
+            edge_feature_dim=edge_dim,
+            hidden_dim=hidden_dim
         ).to(self.device)
 
         self.target_net = GNN_QNetwork(
-             node_feature_dim=parser.node_feature_dim,
-             edge_feature_dim=parser.edge_feature_dim,
-             hidden_dim=config['hidden_dim']
+             node_feature_dim=node_dim,
+             edge_feature_dim=edge_dim,
+             hidden_dim=hidden_dim
          ).to(self.device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.target_net.eval()
