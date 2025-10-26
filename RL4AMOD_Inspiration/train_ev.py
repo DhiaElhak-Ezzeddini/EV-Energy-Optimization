@@ -41,6 +41,8 @@ def main(cfg: DictConfig):
     print(f"\nStarting Training for {cfg.training.num_episodes} episodes...")
 
     for i_episode in range(cfg.training.num_episodes):
+        print(f"\n--- Episode {i_episode+1} ---")
+        torch.cuda.empty_cache()
         state_tuple = env.reset() # Initial state tuple
         total_reward = 0
         total_energy = 0
@@ -84,7 +86,7 @@ def main(cfg: DictConfig):
         #     torch.save(agent.policy_net.state_dict(), f'checkpoint_ep{i_episode+1}.pth')
 
     # --- Final Save & Plot ---
-    # torch.save(agent.policy_net.state_dict(), cfg.training.save_path)
+    torch.save(agent.policy_net.state_dict(), cfg.training.save_path)
     print(f"Training complete. Model saved to {cfg.training.save_path}")
 
     # Plot results

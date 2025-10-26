@@ -5,7 +5,7 @@ import sys
 
 # --- Adjust this path based on your project structure ---
 # Assuming network_gen.py is in Graph_Generation directory sibling to EV_RL_Routing
-sys.path.append("/kaggle/input/tutor/Tutoré/EV-Energy-Optimization/Graph_Generation")
+sys.path.append("C:\\Users\\YODA\\Documents\\Dhia_Salem_Tutoré_AIM_25-26\\New_repo_clone\\EV-Energy-Optimization\\Graph_Generation")
 # Or adjust if network_gen is installed or located elsewhere
 try:
     from Graph_Generation.src.network_gen import NetworkDatabase # type: ignore
@@ -17,7 +17,7 @@ except ImportError as e:
     sys.exit(1)
 # --- End Path Adjustment ---
 
-DB_PATH = "/kaggle/input/tutor/Tutoré/EV-Energy-Optimization/Graph_Generation/src/New_York_network_enhanced_attributes.pkl/New_York_network_enhanced_attributes.pkl"
+DB_PATH = "C:\\Users\\YODA\\Documents\\Dhia_Salem_Tutoré_AIM_25-26\\New_repo_clone\\EV-Energy-Optimization\\Graph_Generation\\src\\New_York_network_enhanced_attributes.pkl.gz"
 def load_or_generate_graph(db_path: str = DB_PATH) -> nx.MultiDiGraph:
     """
     Loads the New York road network from the database if it exists,
