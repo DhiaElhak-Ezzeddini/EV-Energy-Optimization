@@ -4,6 +4,12 @@ notebook = [
     "ipywidgets",
     "matplotlib",
 ]
+
+[[tool.poetry.source]]
+name = "torch"
+url = "https://download.pytorch.org/whl/cu124"
+priority = "explicit"
+
 [tool.poetry]
 name = "ev-energy-optimization"
 version = "0.1.0"
@@ -30,7 +36,7 @@ xgboost = "^2.1.2"
 optuna = "^4.0.0"
 lightgbm = "^4.5.0"
 catboost = "^1.2.7"
-torch = "^2.5.1"
+torch = {version = "2.5.1+cu124", source = "torch"}
 pytorch-lightning = "^2.4.0"
 ortools = "^9.11.4210"
 pulp = "^2.9.0"
@@ -62,3 +68,7 @@ stable-baselines3 = "^2.7.0"
 shimmy = "^2.0.0"
 sb3-contrib = "^2.7.0"
 torch-geometric = "^2.7.0"
+hydra-core = "^1.3.2"
+omegaconf = "^2.3.0"
+torchvision = {version = "0.20.1+cu124", source = "torch"}
+torchaudio = {version = "2.5.1+cu124", source = "torch"}
