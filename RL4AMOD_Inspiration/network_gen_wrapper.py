@@ -18,6 +18,8 @@ except ImportError as e:
 # --- End Path Adjustment ---
 
 DB_PATH = "C:\\Users\\YODA\\Documents\\Dhia_Salem_Tutoré_AIM_25-26\\New_repo_clone\\EV-Energy-Optimization\\Graph_Generation\\src\\New_York_network_enhanced_attributes.pkl.gz"
+
+ 
 def load_or_generate_graph(db_path: str = DB_PATH) -> nx.MultiDiGraph:
     """
     Loads the New York road network from the database if it exists,
@@ -49,7 +51,7 @@ if __name__ == '__main__':
     graph = load_or_generate_graph()
     print(f"Successfully obtained graph with {graph.number_of_nodes()} nodes.")
     # You can add more checks here, like printing sample node/edge data
-    # print("\nSample Node Data:")
-    # print(list(graph.nodes(data=True))[0])
-    # print("\nSample Edge Data:")
-    # print(list(graph.edges(data=True))[0])
+    print("\nSample Node Data:")
+    print(list(graph.nodes(data=True))[0])
+    print("\nSample Edge Data:")
+    print(list(graph.edges(data=True))[0])
