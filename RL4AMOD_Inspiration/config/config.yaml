@@ -1,33 +1,39 @@
 # config/config.yaml
-defaults:
-  - environment: ev_routing
-  - agent: dqn_gnn
-  - _self_
 
-hydra:
-  run:
-    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+defaults:
+  - override hydra/launcher: basic
+
+environment:
+  db_path: "C:\\Users\\YODA\\Documents\\Dhia_Salem_Tutoré_AIM_25-26\\New_repo_clone\\EV-Energy-Optimization\\Graph_Generation\\src\\New_York_network_enhanced_attributes.pkl.gz"
+  # Vehicle Parameters (Example values - adjust as needed)
+  vehicle_params:
+    battery_capacity_kwh: 50.0  # Total capacity of the EV battery
+    min_soc_fraction: 0.1       # Minimum required state of charge (10%)
+    max_charge_kwh: 40.0        # Max charge per charging stop
+    energy_model_params:        # Parameters for the energy calculation in EVRoutingEnv
+      base_consumption_rate: 0.2 # kWh/km (base rate)
+      slope_factor: 0.05        # Multiplier for slope_deg
+      quality_factor: 0.1       # Multiplier for road_quality (lower is better)
+      congestion_penalty: 0.1   # Penalty factor for base_congestion
+
+agent:
+  device: "cuda" # 'cuda' or 'cpu'
+  hidden_dim: 64 # Size of the static embedding and GNN hidden layers
+  replay_capacity: 100000
+  batch_size: 128
+  gamma: 0.99 # Discount factor
+  lr: 0.0005  # Learning rate
+  target_update_freq: 500 # Steps between updating target network
 
 training:
-  num_episodes: 200
-  log_interval: 5
-  save_interval: 50
-  save_path: "ev_dqn_gnn_final.pth"
-
-vehicle:
-  battery_capacity_kwh: 60.0
-  min_soc_fraction: 0.1
-  # --- Energy Model Params (Placeholder values - TUNE THESE) ---
-  base_kwh_per_km: 0.18    # Base consumption on flat road, good quality, no congestion
-  slope_factor: 0.05       # kwh/km added per degree of positive slope
-  congestion_factor: 0.1   # Extra kwh/km added per unit of congestion > 1.0
-  speed_factor: 0.0001     # Quadratic penalty factor for speed > 50 kph
-  regen_efficiency: 0.6    # Fraction of potential gravitational energy recovered
-  stop_penalty_kwh: 0.05   # Energy cost for a stop/start event
-  # --- Reward Params ---
-  goal_reward: 1000
-  fail_penalty_soc: -1000
-  fail_penalty_steps: -500
-  fail_penalty_invalid: -100
-  step_penalty: -1.0       # Cost per step taken
-  energy_reward_factor: -1.0 # Multiplier for kWh cost in reward (make it negative)
+  num_episodes: 50000
+  max_steps_per_episode: 500
+  epsilon_start: 1.0
+  epsilon_end: 0.01
+  epsilon_decay_steps: 50000 # Number of steps over which epsilon decays
+  log_interval: 1000 # Print status every X steps
+  save_path: "models/dqn_policy_net.pth"
+  checkpoint_interval: 10000 # Save a checkpoint every X episodes
+  
+  # --- Stage 1 Config ---++
+  static_embedding_path: "static_node_embeddings.pt" # Where Stage 1 saves its output
