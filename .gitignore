@@ -10,3 +10,4 @@ logs_ev/
 .venv/
 env/
 venv/
+outputs/
