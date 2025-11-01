@@ -2,170 +2,154 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch_geometric.nn import GCNConv, global_add_pool # Or ChebConv, GATConv etc.
+from torch_geometric.nn import GCNConv
 from torch_geometric.data import Data, Batch
 from typing import List, Dict, Tuple, Union, Optional
+from graph_parser import GraphParser
 
 class GNN_QNetwork(nn.Module):
     """
-    Graph Neural Network to estimate Q-values for EV routing.
-    Outputs Q-values for *reachable neighbor* nodes.
-    Uses precomputed edge_idx_map for efficiency.
+    Graph Neural Network to estimate Q-values for EV routing (Stage 2).
+    It processes a combined feature vector (Dynamic + Static Embedding) 
+    using a light GCN layer, and then uses an MLP to estimate Q-values 
+    for the reachable neighbors.
     """
     def __init__(self, node_feature_dim: int, edge_feature_dim: int, hidden_dim: int = 64):
         super().__init__()
-        # Graph Convolution Layers
+        
+        # node_feature_dim = (3 dynamic features) + (hidden_dim static features)
+        # Graph Convolution Layers - processes the combined features
         self.conv1 = GCNConv(node_feature_dim, hidden_dim)
-        self.conv2 = GCNConv(hidden_dim, hidden_dim)
-        # self.conv3 = GCNConv(hidden_dim, hidden_dim) # Optional third layer
-
+        self.conv2 = GCNConv(hidden_dim, hidden_dim) 
+        
         # MLP for Q-value estimation per reachable neighbor
         # Input features: embedding(current_node), embedding(neighbor_node), edge_features(current->neighbor)
         self.q_mlp = nn.Sequential(
             nn.Linear(hidden_dim * 2 + edge_feature_dim, hidden_dim * 2),
             nn.ReLU(),
-            # nn.LayerNorm(hidden_dim * 2), # Optional normalization
-            nn.Linear(hidden_dim * 2, hidden_dim), # Optional intermediate layer
-            nn.ReLU(),
-            nn.Linear(hidden_dim, 1)
+            nn.Linear(hidden_dim * 2, 1) # Output a single Q-value
         )
+        self.hidden_dim = hidden_dim
 
-    def forward(self,
-                data: Union[Data, Batch],
-                current_node_indices: List[int],
-                reachable_neighbor_indices: List[List[int]],
-                edge_idx_map: Dict[Tuple[int, int], int] # Pass the map here
-                ) -> Tuple[List[Optional[torch.Tensor]], List[List[int]]]:
+
+    def forward(self, data: Union[Data, Batch], env_parser: GraphParser, reachable_indices_list: Optional[List[List[int]]] = None) -> Tuple[List[torch.Tensor], List[List[int]]]:
         """
-        Processes a batch of graph states using precomputed edge map.
+        Performs GNN message passing and calculates Q-values for selected neighbors.
 
         Args:
-            data: A PyG Data or Batch object.
-            current_node_indices: List of current node indices (global within the batch).
-            reachable_neighbor_indices: List of lists of reachable neighbor indices (global).
-            edge_idx_map: Dictionary mapping (source_idx, target_idx) -> index in original edge_attr.
+            data: A PyG Data or Batch object containing the graph(s).
+            env_parser: The GraphParser instance to access the edge index map.
+            reachable_indices_list: A list of lists, where each inner list contains 
+                                    the global node indices of reachable neighbors 
+                                    for the current node in the corresponding graph.
+                                    If None (for training/Q-value computation), it 
+                                    assumes a Batch object is passed.
 
         Returns:
-            Tuple: (q_values_list, actual_indices_list)
-                   q_values_list contains tensors of Q-values for reachable neighbors for each batch item, or None if error.
-                   actual_indices_list confirms the neighbor indices corresponding to the Q-values.
+            A tuple: (List of Q-value tensors, List of corresponding action node indices)
         """
-        x, edge_index, edge_attr, batch_map = data.x, data.edge_index, data.edge_attr, data.batch
-        is_batch = isinstance(data, Batch)
+        x, edge_index, edge_attr = data.x, data.edge_index, data.edge_attr
+        
+        # --- GNN Message Passing ---
+        # The input x already contains the static embedding from Stage 1.
+        h = F.relu(self.conv1(x, edge_index, edge_attr=edge_attr))
+        h = F.relu(self.conv2(h, edge_index, edge_attr=edge_attr))
+        # The final node embedding (h) shape: [num_nodes_in_batch, hidden_dim]
 
-        # Apply GNN layers
-        # GCNConv doesn't directly use edge attributes in its message passing formula,
-        # but edge_attr is needed later for the Q-value MLP.
-        h = F.relu(self.conv1(x, edge_index))
-        h = F.relu(self.conv2(h, edge_index))
-        # h = F.relu(self.conv3(h, edge_index)) # Optional
-
-        q_values_list: List[Optional[torch.Tensor]] = []
+        # --- Q-Value Calculation (Per Graph/State) ---
+        q_values_list: List[torch.Tensor] = []
         actual_indices_list: List[List[int]] = []
-
-        num_graphs = data.num_graphs if is_batch else 1
-
-        # Process each graph in the batch
+        
+        # Split the batch back into individual graph representations
+        # ptr is a tensor of indices that define the start of each graph in the batch
+        ptr = data.ptr.cpu().tolist() if data.ptr is not None else [0, h.shape[0]] 
+        
+        num_graphs = len(ptr) - 1
+        
+        # current_node_idx is stored in the Data/Batch object
+        current_node_idx_batch = data.current_node_idx.cpu().tolist()
+        
         for i in range(num_graphs):
-            # Determine the slice of nodes belonging to this graph if batching
-            if is_batch:
-                node_slice = torch.where(batch_map == i)[0]
-                if node_slice.numel() == 0: # Should not happen
-                    q_values_list.append(None)
-                    actual_indices_list.append([])
-                    continue
-                # Important: current_node_indices contains GLOBAL indices within the flattened batch
-                current_node_idx_global = current_node_indices[i]
-                neighbors_global = reachable_neighbor_indices[i]
-            else: # Single Data object
-                current_node_idx_global = current_node_indices[0] # Index within this single graph
-                neighbors_global = reachable_neighbor_indices[0]
-
-            # --- Handle case with no reachable neighbors ---
-            if not neighbors_global:
-                q_values_list.append(torch.tensor([], device=h.device)) # Empty tensor
-                actual_indices_list.append([])
-                continue
-
-            # Gather features for MLP input
+            start_idx = ptr[i]
+            end_idx = ptr[i+1]
+            
+            # Global index of the current node in the batch's tensor
+            current_node_idx_global = current_node_idx_batch[i]
+            
+            # Get the list of reachable neighbor global indices for this graph (state)
+            # This is provided by the agent's select_action or learn loop
+            if reachable_indices_list is None:
+                # Should not happen in typical DQN but safety check
+                raise ValueError("Reachable indices list must be provided during forward pass.")
+            
+            neighbors_global = reachable_indices_list[i]
+            
             try:
-                h_current = h[current_node_idx_global].expand(len(neighbors_global), -1) # Repeat current embedding
-                h_neighbors = h[neighbors_global] # Gather neighbor embeddings (these are global indices)
+                # Get edge attributes for only the current node's outgoing edges to neighbors
+                # Iterate through the global index of the current node and its neighbors
+                
+                # Filter neighbors to only those present in the batch slice (optional if batching is perfect)
+                valid_neighbor_list_for_mlp = [n_idx for n_idx in neighbors_global if start_idx <= n_idx < end_idx]
 
-                # --- Efficiently Gather edge attributes using the map ---
-                edge_attrs_list = []
-                valid_neighbor_list_for_mlp = [] # Track neighbors for which we found edges
-
-                # --- Determine Node Index Offset for Edge Map Lookup ---
-                # The edge_idx_map uses original 0..N-1 indices.
-                # If batching, we need the original index for the current node.
-                if is_batch:
-                    # Find the graph-local index of the current node
-                    current_node_idx_local = (current_node_idx_global - node_slice[0]).item()
-                    # Map global neighbor indices back to local indices relative to the original graph
-                    neighbor_nodes_local_map = {global_idx: (global_idx - node_slice[0]).item() for global_idx in neighbors_global}
-                else: # No batching, indices are already local
-                    current_node_idx_local = current_node_idx_global
-                    neighbor_nodes_local_map = {global_idx: global_idx for global_idx in neighbors_global}
-
-
-                for neighbor_idx_global in neighbors_global:
-                    neighbor_idx_local = neighbor_nodes_local_map[neighbor_idx_global]
-                    edge_tuple_local = (current_node_idx_local, neighbor_idx_local)
-
-                    # --- Lookup in edge_idx_map using LOCAL indices ---
-                    original_edge_attr_index = edge_idx_map.get(edge_tuple_local)
-
-                    if original_edge_attr_index is not None:
-                        # Find where this edge appears in the BATCH edge_index/edge_attr
-                        # This still requires mapping the original_edge_attr_index to the batch index,
-                        # OR searching the batch edge_index for the GLOBAL pair.
-                        # Searching is simpler to implement here, though less ideal.
-                        mask = (edge_index[0] == current_node_idx_global) & (edge_index[1] == neighbor_idx_global)
-                        batch_edge_attr_indices = mask.nonzero(as_tuple=True)[0]
-
-                        if len(batch_edge_attr_indices) > 0:
-                            edge_attr_for_pair = edge_attr[batch_edge_attr_indices[0]] # Take first found in batch
-                            edge_attrs_list.append(edge_attr_for_pair)
-                            valid_neighbor_list_for_mlp.append(neighbor_idx_global) # Store global index
-                        # else: Edge exists in map but not found in batch edge_index? Should not happen.
-                    # else: Edge tuple not in precomputed map? Graph mismatch?
-
-
-                # --- Check if any valid edges were found ---
-                if not edge_attrs_list:
-                    print(f"Warning: No valid edge attributes found for neighbors of node {current_node_idx_global}")
-                    q_values_list.append(torch.tensor([], device=h.device))
+                if not valid_neighbor_list_for_mlp:
+                    # If no valid neighbors, return empty lists for this state
+                    q_values_list.append(torch.tensor([], device=x.device))
                     actual_indices_list.append([])
                     continue
 
-                edge_attrs_tensor = torch.stack(edge_attrs_list)
+                # 1. Edge Attributes (Normalized)
+                # Fetch edge attributes from the parser's map using (current_idx, neighbor_idx)
+                
+                # The indices stored in the Data/Batch object (edge_attr) are local to the graph/batch. 
+                # We need to map global indices to the local edge tensor index.
+                # Since the current node idx is global, we map (global_current, global_neighbor)
+                
+                edge_attr_indices = []
+                for neighbor_idx_global in valid_neighbor_list_for_mlp:
+                    # Map global (u, v) back to the index in the original edge_attr_norm tensor
+                    u_idx_local = current_node_idx_global - start_idx
+                    v_idx_local = neighbor_idx_global - start_idx
+                    
+                    # Need to find the correct index in the batched edge_attr tensor
+                    # This relies on the GNNConv operation respecting batched edge order, which is non-trivial.
+                    
+                    # --- SIMPLIFICATION: ---
+                    # The most reliable way for DQN is to fetch the original, un-batched, normalized edge attributes 
+                    # from the parser, which holds the entire graph's features in `edge_attr_norm`.
+                    
+                    # We use the full parser map (global index to full edge_attr index)
+                    u_idx_full = current_node_idx_global # This is the global index in the full graph!
+                    v_idx_full = neighbor_idx_global
+                    
+                    # Look up the index in the parser's full edge attribute map
+                    full_edge_attr_index = env_parser.edge_idx_map.get((u_idx_full, v_idx_full))
+                    if full_edge_attr_index is not None:
+                        edge_attr_indices.append(full_edge_attr_index)
+                    else:
+                        # Should not happen if parser is correctly built
+                        raise LookupError(f"Edge attribute index missing for edge ({u_idx_full}, {v_idx_full})")
+                
+                edge_attrs_tensor = env_parser.edge_attr_norm[edge_attr_indices] # Shape: [num_valid_neighbors, edge_feature_dim]
 
-                # Adjust h_current and h_neighbors if some neighbors were skipped
-                if len(valid_neighbor_list_for_mlp) != len(neighbors_global):
-                    h_neighbors = h[valid_neighbor_list_for_mlp] # Use filtered global indices
-                    h_current = h[current_node_idx_global].expand(len(valid_neighbor_list_for_mlp), -1)
+                # 2. Node Embeddings
+                # h is the entire batch embedding. Select embeddings using global indices.
+                h_neighbors = h[valid_neighbor_list_for_mlp] # Shape: [num_valid_neighbors, hidden_dim]
+                # Current node embedding, expanded for concatenation
+                h_current = h[current_node_idx_global].expand(len(valid_neighbor_list_for_mlp), -1) # Shape: [num_valid_neighbors, hidden_dim]
 
-                # Concatenate features: [h_current, h_neighbor, edge_attr]
+                # 3. Concatenate features: [h_current, h_neighbor, edge_attr]
                 mlp_input = torch.cat([h_current, h_neighbors, edge_attrs_tensor], dim=-1)
 
-                # Calculate Q-values for the valid reachable neighbors
+                # 4. Calculate Q-values
                 q_values_for_neighbors = self.q_mlp(mlp_input).squeeze(-1) # Shape: [num_valid_neighbors]
 
                 q_values_list.append(q_values_for_neighbors)
                 actual_indices_list.append(valid_neighbor_list_for_mlp) # Store global indices corresponding to calculated Qs
 
-            except IndexError as e:
-                 print(f"Error processing graph {i} in batch: IndexError {e}")
-                 print(f"  current_node_idx_global: {current_node_idx_global}")
-                 print(f"  neighbors_global: {neighbors_global}")
-                 print(f"  h shape: {h.shape}")
-                 q_values_list.append(None) # Indicate error
-                 actual_indices_list.append([])
-            except Exception as e: # Catch other potential errors
+            except Exception as e: 
                  print(f"Error processing graph {i} in batch: {type(e).__name__} {e}")
-                 q_values_list.append(None)
+                 # Append empty lists/tensors to maintain structure
+                 q_values_list.append(torch.tensor([], device=x.device))
                  actual_indices_list.append([])
-
-
+                 
         return q_values_list, actual_indices_list
