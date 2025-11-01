@@ -1,0 +1,22 @@
+{
+    "experiment_name": "stacking_experiment",
+    "model_name": "StackingEnsemble",
+    "start_time": "2025-11-01T00:22:43.563271",
+    "end_time": "2025-11-01T00:22:58.888073",
+    "duration": "0:00:15.324802",
+    "best_params": {},
+    "best_score": null,
+    "metrics": {
+        "rmse": 0.5170914424516232,
+        "mae": 0.4074209740604307,
+        "mse": 0.2673835598567003,
+        "r2": 0.9441490499223995,
+        "mape": 5.428551002205561,
+        "mean_residual": 0.013111780315519912,
+        "std_residual": 0.5169251793767237,
+        "max_error": 1.6339817514387294,
+        "inference_time_seconds": 0.25893039999937173,
+        "samples_per_second": 3089.6333532174713,
+        "time_per_sample_ms": 0.32366299999921466
+    }
+}

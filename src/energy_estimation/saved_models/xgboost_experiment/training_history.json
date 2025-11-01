@@ -1,0 +1,34 @@
+{
+    "experiment_name": "xgboost_experiment",
+    "model_name": "XGBoost",
+    "start_time": "2025-11-01T00:04:08.287501",
+    "end_time": "2025-11-01T00:04:10.780799",
+    "duration": "0:00:02.493298",
+    "best_params": {
+        "n_estimators": 100,
+        "learning_rate": 0.1,
+        "max_depth": 6,
+        "min_child_weight": 1,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "gamma": 0.0,
+        "reg_alpha": 0.0,
+        "reg_lambda": 1.0,
+        "random_state": 42,
+        "verbosity": 0
+    },
+    "best_score": null,
+    "metrics": {
+        "rmse": 0.56606497866326,
+        "mae": 0.45185712259803507,
+        "mse": 0.32042956006903706,
+        "r2": 0.9330688267730651,
+        "mape": 6.10169012908171,
+        "mean_residual": 0.00410701330625202,
+        "std_residual": 0.5660500795077582,
+        "max_error": 1.6849960417093506,
+        "inference_time_seconds": 0.016714100005629007,
+        "samples_per_second": 47863.77966690246,
+        "time_per_sample_ms": 0.02089262500703626
+    }
+}

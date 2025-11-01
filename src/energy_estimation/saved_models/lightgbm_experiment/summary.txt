@@ -1,0 +1,39 @@
+======================================================================
+Training Summary: lightgbm_experiment
+======================================================================
+
+Model: LightGBM
+Experiment: lightgbm_experiment
+Start Time: 2025-11-01T00:04:06.535398
+End Time: 2025-11-01T00:04:07.042717
+Duration: 0:00:00.507319
+
+Best Parameters:
+----------------------------------------------------------------------
+  n_estimators: 100
+  learning_rate: 0.1
+  max_depth: -1
+  num_leaves: 31
+  min_child_samples: 20
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_alpha: 0.0
+  reg_lambda: 0.0
+  random_state: 42
+  verbose: -1
+
+Final Metrics:
+----------------------------------------------------------------------
+  rmse: 0.554198
+  mae: 0.438338
+  mse: 0.307135
+  r2: 0.935846
+  mape: 5.920737
+  mean_residual: -0.002561
+  std_residual: 0.554192
+  max_error: 1.901164
+  inference_time_seconds: 0.005005
+  samples_per_second: 159856.129402
+  time_per_sample_ms: 0.006256
+
+======================================================================
