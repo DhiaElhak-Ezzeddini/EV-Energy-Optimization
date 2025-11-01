@@ -1,0 +1,38 @@
+{
+  "model_name": "StackingEnsemble",
+  "model_type": "StackingEnsemble",
+  "cv_folds": 5,
+  "use_passthrough": false,
+  "final_estimator_alpha": 1.0,
+  "training_history": {
+    "stacking_params": {
+      "cv_folds": 5,
+      "use_passthrough": false,
+      "final_estimator_alpha": 1.0
+    }
+  },
+  "meta_learner_weights": {
+    "lightgbm": 0.2411850928319128,
+    "catboost": 0.786040160691715,
+    "xgboost": -0.0015145126777767514
+  },
+  "experiment_name": "stacking_experiment",
+  "training_results": {
+    "cv_folds": 5,
+    "use_passthrough": false,
+    "final_estimator_alpha": 1.0,
+    "final_metrics": {
+      "rmse": 0.5170914424516232,
+      "mae": 0.4074209740604307,
+      "mse": 0.2673835598567003,
+      "r2": 0.9441490499223995,
+      "mape": 5.428551002205561,
+      "mean_residual": 0.013111780315519912,
+      "std_residual": 0.5169251793767237,
+      "max_error": 1.6339817514387294,
+      "inference_time_seconds": 0.25893039999937173,
+      "samples_per_second": 3089.6333532174713,
+      "time_per_sample_ms": 0.32366299999921466
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+    "model_name": "RandomForest_Demo",
+    "timestamp": "20251031_234632",
+    "best_params": {
+        "n_estimators": 50,
+        "max_depth": 8,
+        "random_state": 42
+    },
+    "training_history": {},
+    "experiment_name": "demo_experiment",
+    "training_results": {
+        "validation_rmse": 0.6651535557564049,
+        "final_metrics": {
+            "rmse": 0.6651535557564049,
+            "mae": 0.5314967535609703,
+            "mse": 0.44242925273538886,
+            "r2": 0.9075855893285387,
+            "mape": 7.271748535152753,
+            "mean_residual": -0.004395603497683947,
+            "std_residual": 0.6651390316357025,
+            "max_error": 2.4554018614036446
+        }
+    }
+}

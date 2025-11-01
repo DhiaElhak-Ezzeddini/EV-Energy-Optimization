@@ -1,0 +1,36 @@
+======================================================================
+Training Summary: catboost_experiment
+======================================================================
+
+Model: CatBoost
+Experiment: catboost_experiment
+Start Time: 2025-11-01T00:04:07.093257
+End Time: 2025-11-01T00:04:08.247160
+Duration: 0:00:01.153903
+
+Best Parameters:
+----------------------------------------------------------------------
+  iterations: 100
+  learning_rate: 0.1
+  depth: 6
+  l2_leaf_reg: 3.0
+  subsample: 0.8
+  colsample_bylevel: 0.8
+  random_state: 42
+  verbose: False
+
+Final Metrics:
+----------------------------------------------------------------------
+  rmse: 0.519352
+  mae: 0.411324
+  mse: 0.269726
+  r2: 0.943660
+  mape: 5.513691
+  mean_residual: 0.015184
+  std_residual: 0.519130
+  max_error: 1.683150
+  inference_time_seconds: 0.006923
+  samples_per_second: 115563.516635
+  time_per_sample_ms: 0.008653
+
+======================================================================

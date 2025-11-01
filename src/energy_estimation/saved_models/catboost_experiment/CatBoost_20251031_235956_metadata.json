@@ -1,0 +1,34 @@
+{
+    "model_name": "CatBoost",
+    "timestamp": "20251031_235956",
+    "best_params": {
+        "iterations": 100,
+        "learning_rate": 0.1,
+        "depth": 6,
+        "l2_leaf_reg": 3.0,
+        "subsample": 0.8,
+        "colsample_bylevel": 0.8,
+        "random_state": 42,
+        "verbose": false
+    },
+    "training_history": {
+        "n_iterations": 100
+    },
+    "experiment_name": "catboost_experiment",
+    "training_results": {
+        "status": "completed",
+        "final_metrics": {
+            "rmse": 0.5193519007417551,
+            "mae": 0.4113240242421472,
+            "mse": 0.26972639680407384,
+            "r2": 0.9436596792615486,
+            "mape": 5.513690866664351,
+            "mean_residual": 0.015184048089766557,
+            "std_residual": 0.5191298888406268,
+            "max_error": 1.6831496420158878,
+            "inference_time_seconds": 0.0060652999964077026,
+            "samples_per_second": 131897.84519707455,
+            "time_per_sample_ms": 0.007581624995509628
+        }
+    }
+}
