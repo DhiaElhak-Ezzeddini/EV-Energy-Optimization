@@ -22,88 +22,116 @@ class GraphParser:
         self.device = device
         self.num_nodes = len(self.nodes)
 
-        # --- Precompute edge_index, edge_attr, and normalization stats ---
+        # --- Precompute edge_index, edge_attr, and normalization stats ---\
         print("Building edge index, attributes, and normalization stats for parser...")
         edge_list_indices: List[List[int]] = []
         edge_attributes_raw: List[List[float]] = []
-        self.edge_idx_map: Dict[Tuple[int, int], int] = {} # Map (u_idx, v_idx) -> index in edge_attr tensor
+        # Map (u_idx, v_idx, key) -> index in edge_attr tensor (Corrected for MultiDiGraph)
+        self.edge_idx_map: Dict[Tuple[int, int, int], int] = {} 
 
         edge_counter = 0
         for i, u_node_id in enumerate(self.nodes):
-            # Check if node exists (robustness for potential graph issues)
-            if u_node_id not in self.graph: continue
+            # NetworkX MultiDiGraph yields (u, v, key, data)
+            for u_id_check, v_node_id, edge_key, data in graph.out_edges(u_node_id, keys=True, data=True):
+                v_idx = self.node_to_idx.get(v_node_id)
+                u_idx = i
+                
+                if v_idx is None:
+                    print(f"Warning: Neighbor node {v_node_id} not in node list. Skipping edge ({u_node_id} -> {v_node_id}).")
+                    continue
+                
+                # 1. Edge Index
+                edge_list_indices.append([u_idx, v_idx])
+                
+                # 2. Raw Edge Attributes (Ensure order is consistent with network_gen)
+                length = data.get('length', 1.0)
+                travel_time = data.get('travel_time', 1.0)
+                slope = data.get('slope_deg', 0.0)
+                quality = data.get('road_quality', 0.5)
+                congestion = data.get('congestion_factor', 1.0)
 
-            for v_node_id in self.graph.neighbors(u_node_id):
-                if v_node_id not in self.node_to_idx: continue # Skip neighbors not in main node list
-                j = self.node_to_idx[v_node_id]
-
-                # Get edge data - Handle MultiDiGraph: find edge with minimum length
-                possible_edges = self.graph.get_edge_data(u_node_id, v_node_id)
-                if not possible_edges: continue # Skip if edge somehow doesn't exist
-                edge_data = min(possible_edges.values(), key=lambda x: x.get('length', float('inf')))
-
-                # Define edge features RAW: [length_m, slope_deg, base_congestion, road_quality]
-                # Ensure these keys exist from network_gen_wrapper
-                features_raw = [
-                    float(edge_data.get('length', 100.0)),
-                    float(edge_data.get('slope_deg', 0.0)),
-                    float(edge_data.get('base_congestion', 1.0)),
-                    float(edge_data.get('road_quality', 0.8))
-                ]
-                edge_list_indices.append([i, j])
-                edge_attributes_raw.append(features_raw)
-                self.edge_idx_map[(i,j)] = edge_counter
+                edge_attributes_raw.append([
+                    length,
+                    travel_time,
+                    slope,
+                    quality,
+                    congestion
+                ])
+                
+                # 3. Edge Map
+                self.edge_idx_map[(u_idx, v_idx, edge_key)] = edge_counter
                 edge_counter += 1
 
+
         if not edge_list_indices:
-             # Handle empty graph case
-             self.edge_index = torch.empty((2, 0), dtype=torch.long, device=device)
-             self.edge_attr_normalized = torch.empty((0, 4), dtype=torch.float, device=device)
-             self.edge_feature_dim = 4
-             self.edge_attr_mean = torch.zeros(4, device=device)
-             self.edge_attr_std = torch.ones(4, device=device)
-        else:
-             self.edge_index = torch.tensor(edge_list_indices, dtype=torch.long, device=device).t().contiguous()
-             edge_attr_raw_tensor = torch.tensor(edge_attributes_raw, dtype=torch.float, device=device)
+             raise ValueError("No edges found in the graph after parsing.")
 
-             # --- Calculate Normalization Stats ---
-             self.edge_attr_mean = torch.mean(edge_attr_raw_tensor, dim=0)
-             self.edge_attr_std = torch.std(edge_attr_raw_tensor, dim=0)
-             # Add epsilon to std to prevent division by zero for constant features
-             self.edge_attr_std = torch.where(self.edge_attr_std == 0, torch.tensor(1.0, device=device), self.edge_attr_std)
+        # Convert to PyG Tensors
+        self.edge_attributes_raw = torch.tensor(edge_attributes_raw, dtype=torch.float, device=self.device)
+        self.edge_feature_dim = self.edge_attributes_raw.shape[1]
+        self.edge_index = torch.tensor(edge_list_indices, dtype=torch.long, device=self.device).t().contiguous()
 
-             # --- Apply Normalization (Standardization) ---
-             self.edge_attr_normalized = (edge_attr_raw_tensor - self.edge_attr_mean) / self.edge_attr_std
-             self.edge_feature_dim = self.edge_attr_normalized.shape[1]
+        # --- Normalization ---
+        self.edge_attr_mean = self.edge_attributes_raw.mean(dim=0, keepdim=True)
+        self.edge_attr_std = self.edge_attributes_raw.std(dim=0, keepdim=True)
+        self.edge_attr_std[self.edge_attr_std == 0] = 1.0 
 
-             print("Edge Attribute Normalization Stats:")
-             print(f"  Mean: {self.edge_attr_mean.cpu().numpy()}")
-             print(f"  Std Dev: {self.edge_attr_std.cpu().numpy()}")
-
-
-        # Define node features: [is_current, is_target, current_soc]
+        # Normalize the attributes
+        self.edge_attr = (self.edge_attributes_raw - self.edge_attr_mean) / self.edge_attr_std
+        
         self.node_feature_dim = 3
         print(f"Parser ready: {self.num_nodes} nodes, {self.edge_index.shape[1]} edges.")
         print(f"Node feature dim: {self.node_feature_dim}, Edge feature dim: {self.edge_feature_dim}")
 
 
     def parse_obs(self, state: Tuple[int, int, float]) -> Optional[Data]:
-        """ Converts state tuple to PyG Data object. Returns None if state is invalid."""
-        current_idx, target_idx, current_soc = state
+        """ 
+        Converts state tuple (current_node_ID, target_node_ID, current_soc) to PyG Data object. 
+        Returns None if state is invalid.
+        """
+        current_node_id, target_node_id, current_soc = state
+
+        # Convert Node IDs to PyG Indices (0-to-N)
+        current_idx = self.node_to_idx.get(current_node_id)
+        target_idx = self.node_to_idx.get(target_node_id)
 
         # --- Validate indices ---
-        if not (0 <= current_idx < self.num_nodes and 0 <= target_idx < self.num_nodes):
-             print(f"Error in parse_obs: Invalid indices! current={current_idx}, target={target_idx}, num_nodes={self.num_nodes}")
-             return None # Return None to indicate invalid state
+        if current_idx is None or target_idx is None:
+             print(f"Error in parse_obs: Invalid node ID! current_id={current_node_id}, target_id={target_node_id}. One or both IDs were not found in the graph map.")
+             return None
 
-
+        # Feature Tensor x
         x = torch.zeros((self.num_nodes, self.node_feature_dim), dtype=torch.float, device=self.device)
         x[current_idx, 0] = 1.0
         x[target_idx, 1] = 1.0
-        x[:, 2] = current_soc # Broadcast SoC to all nodes (SoC is already 0-1)
+        x[:, 2] = current_soc # Broadcast SoC to all nodes
 
-        # Create PyG Data object - Use precomputed edge_index and NORMALIZED edge_attr
-        data = Data(x=x, edge_index=self.edge_index, edge_attr=self.edge_attr_normalized)
-        # Store edge map for the agent/model to use - IMPORTANT
-        data.edge_idx_map = self.edge_idx_map
+        # Create PyG Data object
+        data = Data(
+            x=x,
+            edge_index=self.edge_index,
+            edge_attr=self.edge_attr,
+            num_nodes=self.num_nodes,
+            # CRITICAL FIX: Convert scalar indices (current_idx, target_idx) to 0D tensors
+            current_node_idx=torch.tensor(current_idx, dtype=torch.long, device=self.device),
+            target_node_idx=torch.tensor(target_idx, dtype=torch.long, device=self.device),
+            # Pass map for Q-value lookup later
+            original_node_to_idx=self.node_to_idx,
+            original_idx_to_node=self.nodes,
+            original_graph=self.graph
+        ).to(self.device)
+        
         return data
+
+    def get_edge_attribute_normalized(self, u_idx: int, v_idx: int, edge_key: int) -> torch.Tensor:
+        """
+        Retrieves the normalized edge attribute vector for a specific edge key.
+        This is primarily for debugging/testing.
+        """
+        map_key = (u_idx, v_idx, edge_key)
+        
+        if map_key in self.edge_idx_map:
+            tensor_idx = self.edge_idx_map[map_key]
+            return self.edge_attr[tensor_idx]
+        else:
+            raise IndexError(f"Edge ({u_idx}, {v_idx}, {edge_key}) not found in map.")
