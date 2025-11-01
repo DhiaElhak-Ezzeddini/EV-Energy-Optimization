@@ -9,7 +9,11 @@ from models import GNN_QNetwork
 from graph_parser import GraphParser
 from ev_routing_env import EVRoutingEnv # For type hinting and env access
 from torch_geometric.data import Batch
-from typing import Union,Tuple,Dict, List, Optional
+from typing import Union, Tuple, Dict, List, Optional
+import math
+
+# Define StateType as a type alias
+StateType = Tuple[int, int, float]
 
 # Experience Replay Buffer
 Transition = namedtuple('Transition', ('state_tuple', 'action_node_idx', 'reward', 'next_state_tuple', 'done'))
@@ -36,199 +40,196 @@ class DQNAgent:
         self.parser = parser
         self.config = config
         self.device = torch.device(config.get('device', 'cpu')) # Safer default
-        self.gamma = config['gamma']
-        self.batch_size = config['batch_size']
-        self.target_update_freq = config['target_update_freq']
-        self.epsilon_start = config['epsilon_start']
-        self.epsilon_end = config['epsilon_end']
-        self.epsilon_decay = config['epsilon_decay']
-        self.current_epsilon = self.epsilon_start
-
-        node_dim = self.parser.node_feature_dim
-        edge_dim = self.parser.edge_feature_dim
-        hidden_dim = config['hidden_dim']
-        print(f"Initializing GNN_QNetwork with node_dim={node_dim}, edge_dim={edge_dim}, hidden_dim={hidden_dim}")
-
-        self.policy_net = GNN_QNetwork(
-            node_feature_dim=node_dim,
-            edge_feature_dim=edge_dim,
-            hidden_dim=hidden_dim
-        ).to(self.device)
-
-        self.target_net = GNN_QNetwork(
-             node_feature_dim=node_dim,
-             edge_feature_dim=edge_dim,
-             hidden_dim=hidden_dim
-         ).to(self.device)
-        self.target_net.load_state_dict(self.policy_net.state_dict())
-        self.target_net.eval()
-
-        self.optimizer = optim.Adam(self.policy_net.parameters(), lr=config['learning_rate'])
-        self.memory = ReplayBuffer(config['buffer_size'])
+        self.gamma = config.get('gamma', 0.99)
+        self.batch_size = config.get('batch_size', 128)
+        self.target_update_freq = config.get('target_update_freq', 500)
+        
+        # Epsilon management
+        self.epsilon_start = config.get('epsilon_start', 1.0)
+        self.epsilon_end = config.get('epsilon_end', 0.01)
+        self.epsilon_decay_steps = config.get('epsilon_decay_steps', 50000)
         self.train_step_counter = 0
 
-    def select_action(self, state_tuple: Tuple[int, int, float]) -> int:
-        """ Selects action (neighbor node index) using epsilon-greedy policy. Returns -1 if stuck."""
-        self.current_epsilon = self.epsilon_end + (self.epsilon_start - self.epsilon_end) * \
-                               np.exp(-1. * self.train_step_counter / self.epsilon_decay)
+        # Model initialization
+        node_feature_dim = self.parser.node_feature_dim
+        edge_feature_dim = self.parser.edge_feature_dim
+        hidden_dim = config.get('hidden_dim', 64)
+        lr = config.get('lr', 0.0005)
 
-        current_node_idx, _, current_soc = state_tuple
-        # Use node ID for environment interaction, index for internal logic/model
-        current_node_id = self.env.idx_to_node.get(current_node_idx)
-        if current_node_id is None:
-             print(f"Error: Invalid current_node_idx {current_node_idx} in select_action")
-             return -1 # Invalid state index
+        self.policy_net = GNN_QNetwork(node_feature_dim, edge_feature_dim, hidden_dim).to(self.device)
+        self.target_net = GNN_QNetwork(node_feature_dim, edge_feature_dim, hidden_dim).to(self.device)
+        self.target_net.load_state_dict(self.policy_net.state_dict())
+        self.target_net.eval() # Target network is frozen
 
-        reachable_action_indices = self.env.get_reachable_actions_indices(
-            current_node_id=current_node_id,
-            current_soc=current_soc
-        )
+        # Optimizer and Buffer
+        self.optimizer = optim.Adam(self.policy_net.parameters(), lr=lr)
+        self.memory = ReplayBuffer(config.get('replay_capacity', 100000))
+        
+        # State: (current_node_id, target_node_id, current_soc_fraction)
+        # StateType is defined at module level
 
-        if not reachable_action_indices:
-            # Handle case where no actions are possible (e.g., stuck)
-            return -1 # Indicate no valid action
 
-        if random.random() > self.current_epsilon:
-            # --- Greedy action ---
-            with torch.no_grad():
-                data = self.parser.parse_obs(state_tuple).to(self.device)
-                # Pass the actual graph Data object's edge map
-                edge_idx_map = self.parser.edge_idx_map # Get map from parser
+    @property
+    def current_epsilon(self) -> float:
+        """Calculates the current epsilon value based on linear decay."""
+        return self.epsilon_end + (self.epsilon_start - self.epsilon_end) * \
+            math.exp(-1. * self.train_step_counter / self.epsilon_decay_steps)
 
-                q_values_tensor, actual_indices = self.policy_net(
-                    data, # Pass single Data object
-                    current_node_idx=current_node_idx, # Pass index
-                    reachable_neighbor_indices=reachable_action_indices,
-                    edge_idx_map=edge_idx_map # Pass the map
-                )
+    @property
+    def ready_to_learn(self) -> bool:
+        """Checks if there are enough samples in the replay buffer to start training."""
+        return len(self.memory) >= self.batch_size
 
-                if q_values_tensor is None or q_values_tensor.numel() == 0: # Check if empty
-                    # Fallback if Q-value calculation failed for some reason
-                    print(f"Warning: No Q-values computed for reachable actions from {current_node_idx}. Choosing random reachable.")
-                    action_node_idx = random.choice(reachable_action_indices)
-                else:
-                    # Find the index within the q_values tensor that has the maximum value
-                    max_q_local_idx = q_values_tensor.argmax().item()
-                    # Get the actual node index corresponding to this Q-value
-                    action_node_idx = actual_indices[max_q_local_idx]
+    @torch.no_grad()
+    def select_action(self, state: StateType, explore: bool = True) -> Tuple[int, Optional[torch.Tensor]]:
+        """
+        Selects an action (next node index) using an epsilon-greedy strategy.
+        Returns the action node ID (osmid) and its Q-value (for logging/debugging).
+        """
+        current_node_id = state[0]
+        # Get list of valid action node IDs (osmid)
+        action_node_ids: List[int] = self.env.get_reachable_actions(current_node_id, state[2])
+
+        if not action_node_ids:
+            return current_node_id, None # Stay put or indicate failure if no actions are possible
+
+        # Convert node IDs to global indices for model processing
+        action_node_indices: List[int] = [self.parser.node_to_idx[nid] for nid in action_node_ids if nid in self.parser.node_to_idx]
+        
+        if not action_node_indices:
+             # Fallback: if no indexed neighbors found (shouldn't happen with correct parsing)
+             return current_node_id, None 
+
+        if explore and random.random() < self.current_epsilon:
+            # Exploration: Choose a random action
+            chosen_node_idx = random.choice(action_node_indices)
+            chosen_q_value = None # Q-value is not calculated in exploration
         else:
-            # --- Exploration ---
-            action_node_idx = random.choice(reachable_action_indices)
+            # Exploitation: Choose the action with the highest Q-value
+            
+            # Prepare state for model input
+            data = self.parser.parse_obs(state).to(self.device)
+            if data is None:
+                # Fallback on invalid state
+                return current_node_id, None 
+            
+            # Run the policy network on the single state/graph
+            # The model is forced to only consider the reachable indices
+            # The result is a list of one tensor (q_values_for_neighbors)
+            q_values_list, _ = self.policy_net(data, self.parser, [action_node_indices])
+            
+            if not q_values_list or q_values_list[0].numel() == 0:
+                 # Fallback if model returns no Q-values (e.g., error in forward pass)
+                 return current_node_id, None 
 
-        return action_node_idx # Return the chosen node index
+            q_values = q_values_list[0]
+            
+            # Select the action with the highest Q-value
+            max_q_index_local = q_values.argmax(dim=0).item()
+            chosen_node_idx = action_node_indices[max_q_index_local]
+            chosen_q_value = q_values[max_q_index_local].item()
+            
+        # Convert the chosen global index back to the Node ID (osmid) for the environment
+        chosen_node_id = self.parser.nodes[chosen_node_idx]
 
-    def learn(self) -> Optional[float]:
-        """ Performs a single optimization step on the policy network. """
+        return chosen_node_id, chosen_q_value
+
+    def learn(self):
+        """Performs one step of optimization on the policy network."""
         if len(self.memory) < self.batch_size:
-            return None # Not enough samples
-
+            return None # Not enough samples to learn
+        
+        # Sample a batch of transitions
         transitions = self.memory.sample(self.batch_size)
         batch = Transition(*zip(*transitions))
 
-        # --- Prepare batch for GNN ---
-        state_pyg_list = [self.parser.parse_obs(st) for st in batch.state_tuple]
-        next_state_pyg_list = [self.parser.parse_obs(nst) for nst in batch.next_state_tuple]
-        # Batch the Data objects
-        state_batch_pyg = Batch.from_data_list(state_pyg_list).to(self.device)
-        next_state_batch_pyg = Batch.from_data_list(next_state_pyg_list).to(self.device)
+        # Separate components of the batch
+        state_batch: List[StateType] = list(batch.state_tuple)
+        action_node_idx_batch: List[int] = list(batch.action_node_idx)
+        reward_batch = torch.tensor(batch.reward, dtype=torch.float, device=self.device)
+        next_state_batch: List[Optional[StateType]] = list(batch.next_state_tuple)
+        done_batch = torch.tensor(batch.done, dtype=torch.float, device=self.device)
+        
+        # --- Process States into PyG Batch Object ---
+        data_list = [self.parser.parse_obs(s) for s in state_batch if self.parser.parse_obs(s) is not None]
+        if not data_list: return None # Safety check
+        state_batch_pyg = Batch.from_data_list(data_list).to(self.device)
 
-        action_indices_tensor = torch.tensor(batch.action_node_idx, device=self.device, dtype=torch.long) # Shape: [batch_size]
-        rewards = torch.tensor(batch.reward, device=self.device, dtype=torch.float)
-        dones = torch.tensor(batch.done, device=self.device, dtype=torch.bool)
-
-        # --- Calculate Q(s, a) for the actions taken (More Efficiently) ---
-        current_node_indices_batch = [st[0] for st in batch.state_tuple]
-        # Get ALL reachable actions for the states in the batch (needed for indexing)
-        # Note: This uses the state *at the time of transition*, stored in batch.state_tuple
-        reachable_neighbors_batch = []
-        for state_tuple in batch.state_tuple:
-            c_node_idx, _, c_soc = state_tuple
-            c_node_id = self.env.idx_to_node.get(c_node_idx)
-            if c_node_id is None: # Should not happen if data is clean
-                 reachable_neighbors_batch.append([])
-                 continue
-            reachable = self.env.get_reachable_actions_indices(c_node_id, c_soc)
-            reachable_neighbors_batch.append(reachable)
-
-        # Pass the precomputed edge map from the parser
-        edge_idx_map = self.parser.edge_idx_map
-
-        # Get Q-values for all reachable actions for each state in the batch
-        q_values_list_all_reachable, actual_indices_list = self.policy_net(
-            state_batch_pyg,
-            current_node_indices=current_node_indices_batch,
-            reachable_neighbor_indices=reachable_neighbors_batch,
-            edge_idx_map=edge_idx_map
-        )
-
-        # Select the Q-value corresponding to the action actually taken
-        state_action_values_list = []
-        for i in range(self.batch_size):
-            action_taken = action_indices_tensor[i].item()
-            q_values_for_state = q_values_list_all_reachable[i]
-            indices_for_state = actual_indices_list[i]
-
+        # --- Policy Net Forward Pass (Q(s, a)) ---
+        # 1. Get all *possible* neighbor Q-values for all nodes in the state batch
+        # This requires re-running the logic for action selection for *each* state in the batch
+        
+        # Collect all reachable indices lists for the batch (necessary for the model's forward pass)
+        reachable_indices_batch_list: List[List[int]] = []
+        for state in state_batch:
+            current_node_id = state[0]
+            action_node_ids: List[int] = self.env.get_reachable_actions(current_node_id, state[2])
+            action_node_indices: List[int] = [self.parser.node_to_idx[nid] for nid in action_node_ids if nid in self.parser.node_to_idx]
+            reachable_indices_batch_list.append(action_node_indices)
+            
+        # Run Policy Net to get Q-values for the sampled actions (state_action_values)
+        # q_values_for_all_neighbors is a list of tensors, one for each graph in the batch
+        q_values_for_all_neighbors, all_neighbor_indices = self.policy_net(state_batch_pyg, self.parser, reachable_indices_batch_list)
+        
+        # Identify the Q-value corresponding to the actual taken action (a)
+        state_action_values = []
+        for i, q_tensor in enumerate(q_values_for_all_neighbors):
+            action_idx = action_node_idx_batch[i] # The global index of the action taken
+            # Find the position of the taken action (action_idx) within the list of calculated neighbors
             try:
-                # Find the position of the action_taken within the indices_for_state list
-                action_pos = indices_for_state.index(action_taken)
-                state_action_values_list.append(q_values_for_state[action_pos])
-            except (ValueError, IndexError):
-                # Action taken wasn't found among reachable/calculated Qs.
-                # This could happen due to state changes or rare edge cases.
-                # Append 0 or handle as an error, depending on strictness.
-                state_action_values_list.append(torch.tensor(0.0, device=self.device))
-                # print(f"Warning: Action {action_taken} not found in Q-value output indices {indices_for_state} for state {batch.state_tuple[i]}")
+                # The index of the action node within the list of neighbors for this state
+                local_idx = all_neighbor_indices[i].index(action_idx)
+                state_action_values.append(q_tensor[local_idx])
+            except ValueError:
+                # This should not happen if transitions are correctly stored
+                # If it does, the action was not considered reachable, skip this transition
+                print(f"Warning: Taken action {action_idx} not found in calculated neighbors for state {i}. Skipping.")
+                return None
+                
+        # Stack the calculated Q(s,a) values
+        state_action_values = torch.stack(state_action_values) # Shape: [batch_size]
 
-        state_action_values = torch.stack(state_action_values_list) # Shape: [batch_size]
-
-
-        # --- Calculate max Q_target(s', a') for the next states (Efficiently) ---
+        # --- Target Net Forward Pass (max_a' Q(s', a')) ---
+        
+        # Create mask for non-final (non-done) states
+        non_final_mask = (done_batch == 0)
+        non_final_next_states_tuple = [s for s, done in zip(next_state_batch, done_batch) if done == 0]
+        
         next_state_max_q_values = torch.zeros(self.batch_size, device=self.device)
-        non_final_mask = ~dones
 
-        # Process only non-final next states
-        non_final_next_state_tuples = [nst for i, nst in enumerate(batch.next_state_tuple) if non_final_mask[i]]
-
-        if non_final_next_state_tuples:
-            # Prepare batch for target network
-            non_final_next_state_pyg_list = [self.parser.parse_obs(nst) for nst in non_final_next_state_tuples]
-            non_final_next_state_batch_pyg = Batch.from_data_list(non_final_next_state_pyg_list).to(self.device)
-
-            non_final_next_current_nodes = [nst[0] for nst in non_final_next_state_tuples]
-            non_final_next_socs = [nst[2] for nst in non_final_next_state_tuples]
-
-            # Get reachable actions for non-final next states
-            next_reachable_neighbors_batch_non_final = []
-            for i in range(len(non_final_next_state_tuples)):
-                 node_id = self.env.idx_to_node.get(non_final_next_current_nodes[i])
-                 if node_id is None:
-                      next_reachable_neighbors_batch_non_final.append([])
-                      continue
-                 reachable = self.env.get_reachable_actions_indices(node_id, non_final_next_socs[i])
-                 next_reachable_neighbors_batch_non_final.append(reachable)
-
-            with torch.no_grad():
-                # Get Q-values from target net for all reachable actions in next states
-                next_q_values_list_target, _ = self.target_net(
-                    non_final_next_state_batch_pyg,
-                    current_node_indices=non_final_next_current_nodes,
-                    reachable_neighbor_indices=next_reachable_neighbors_batch_non_final,
-                    edge_idx_map=edge_idx_map
-                )
-
-                # Find the max Q value for each non-final next state
+        if non_final_next_states_tuple:
+            # 1. Process Next States into PyG Batch Object
+            next_data_list = [self.parser.parse_obs(s) for s in non_final_next_states_tuple if self.parser.parse_obs(s) is not None]
+            if next_data_list:
+                next_state_batch_pyg = Batch.from_data_list(next_data_list).to(self.device)
+                
+                # 2. Get the list of reachable indices for each next state
+                next_reachable_indices_list: List[List[int]] = []
+                for state in non_final_next_states_tuple:
+                    current_node_id = state[0]
+                    action_node_ids: List[int] = self.env.get_reachable_actions(current_node_id, state[2])
+                    action_node_indices: List[int] = [self.parser.node_to_idx[nid] for nid in action_node_ids if nid in self.parser.node_to_idx]
+                    next_reachable_indices_list.append(action_node_indices)
+                    
+                # 3. Target Net Forward Pass: Q'(s', a')
+                # q_values_for_next_neighbors is a list of tensors, one for each non-final next state
+                q_values_for_next_neighbors, _ = self.target_net(next_state_batch_pyg, self.parser, next_reachable_indices_list)
+                
                 max_q_per_item = []
-                for q_vals in next_q_values_list_target:
-                    if q_vals is not None and q_vals.numel() > 0:
-                        max_q_per_item.append(q_vals.max().item())
+                for q_tensor in q_values_for_next_neighbors:
+                    if q_tensor.numel() > 0:
+                        max_q_per_item.append(q_tensor.max().item())
                     else:
-                        max_q_per_item.append(0.0) # If no reachable actions from next state or error
-
-                # Place these max Q values into the correct positions
+                        # If a non-final state has no reachable actions, max Q is 0
+                        max_q_per_item.append(0.0) 
+                        
+                # Put the max Q values into the correct positions
                 next_state_max_q_values[non_final_mask] = torch.tensor(max_q_per_item, device=self.device)
 
 
         # --- Compute TD Target ---
+        rewards = reward_batch # Shape: [batch_size] - rewards are already tensor
+        # Expected Q = R + gamma * max_a'(Q'(s', a'))
         expected_state_action_values = (next_state_max_q_values * self.gamma) + rewards
 
         # --- Compute Loss ---
@@ -238,7 +239,7 @@ class DQNAgent:
         # --- Optimize ---
         self.optimizer.zero_grad()
         loss.backward()
-        # Optional: Clip gradients if they explode
+        # Clip gradients if they explode (optional but good practice)
         # torch.nn.utils.clip_grad_norm_(self.policy_net.parameters(), max_norm=1.0)
         self.optimizer.step()
 
@@ -247,13 +248,15 @@ class DQNAgent:
         # --- Update Target Network ---
         if self.train_step_counter % self.target_update_freq == 0:
             self.target_net.load_state_dict(self.policy_net.state_dict())
-            # print(f"--- Updated Target Network at step {self.train_step_counter} ---") # Debug print
 
         return loss.item()
 
-    def store_transition(self, state_tuple, action_node_idx, reward, next_state_tuple, done):
-         """Stores the transition."""
-         # Ensure action index is valid before storing
-         if action_node_idx >= 0:
-              self.memory.push(state_tuple, action_node_idx, reward, next_state_tuple, done)
-         # else: Optionally log or handle the 'stuck' case where action_node_idx is -1
+    def store_transition(self, state_tuple, action_node_id, reward, next_state_tuple, done):
+         """Stores the transition. Converts action node ID to global index."""
+         # Ensure action index is available
+         action_node_idx = self.parser.node_to_idx.get(action_node_id)
+         if action_node_idx is None:
+             print(f"Warning: Tried to store transition with invalid action ID {action_node_id}. Skipping.")
+             return
+             
+         self.memory.push(state_tuple, action_node_idx, reward, next_state_tuple, done)
