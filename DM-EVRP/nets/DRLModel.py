@@ -134,10 +134,10 @@ class AttentionModel(nn.Module):
 
         information = torch.cat((static, dynamic),dim=1).permute(0, 2, 1)
         embeddings, _ = self.embedder(self._init_embed(information[:, :, [0,1,3]]))
-        _log_p,  pi,  cost= self._inner(information, distances, slope, embeddings)
+        _log_p,  pi,  cost, energy = self._inner(information, distances, slope, embeddings)
 
         ll = self._calc_log_likelihood(_log_p, pi)
-        return pi , ll , cost
+        return pi , ll , cost, energy
 
 
     def beam_search(self, *args, **kwargs):
@@ -221,7 +221,7 @@ class AttentionModel(nn.Module):
                 -1
             )
         else:
-            mean_tour = torch.zeros([batch_size,  embed_dim]).float().cuda()
+            mean_tour = torch.zeros([batch_size,  embed_dim]).float().to(device)
             veh_context = torch.cat(
                 (
                     dynamic[:, 0:1, 0],
@@ -248,6 +248,7 @@ class AttentionModel(nn.Module):
         outputs = []
         tour_idx = []
         R = []
+        Energy = []  # Track energy consumption
         batch_size, sequences_size, _ = information.size()
         dynamic = information[:,:,2:].permute(0, 2, 1)
         fixed = self._precompute(embeddings)
@@ -264,7 +265,7 @@ class AttentionModel(nn.Module):
             log_p = self._get_log_p(fixed, now_idx, mask, route_feature, embeddings)
             selected = self._select_node(log_p.exp()[:, 0, :], mask)
 
-            dynamic, reward = self.update_dynamic(dynamic, distances, slopes, now_idx, selected)
+            dynamic, reward, soc_consume = self.update_dynamic(dynamic, distances, slopes, now_idx, selected)
 
             mask = self.update_mask(dynamic, distances, slopes, selected.data).detach()
 
@@ -273,11 +274,13 @@ class AttentionModel(nn.Module):
             outputs.append(log_p[:, 0, :])
             tour_idx.append(selected)
             R.append(reward)
+            Energy.append(soc_consume)  # Accumulate energy consumption
             i += 1
 
         R = torch.cat(R, dim=1)  # (batch_size, seq_len)
+        Energy = torch.cat(Energy, dim=1)  # (batch_size, seq_len)
 
-        return torch.stack(outputs, 1), torch.stack(tour_idx, 1), R
+        return torch.stack(outputs, 1), torch.stack(tour_idx, 1), R, Energy
 
 
     def sample_many(self, input, batch_rep=1, iter_rep=1):
@@ -296,12 +299,16 @@ class AttentionModel(nn.Module):
 
         costs = []
         pis = []
+        energies = []
         for i in range(iter_rep):
-            tour_idx, tour_logp, R = self.forward(batch)
+            tour_idx, tour_logp, R, E = self.forward(batch)
             cost = torch.sum(R, dim=1)
+            energy = torch.sum(E, dim=1)
             costs.append(cost.view(batch_rep, -1).t())
             pis.append(tour_idx.view(batch_rep, -1, tour_idx.size(-1)).transpose(0, 1))
+            energies.append(energy.view(batch_rep, -1).t())
         costs = torch.cat(costs, 1)
+        energies = torch.cat(energies, 1)
 
         max_length = max(pi.size(-1) for pi in pis)
         pis = torch.cat(
@@ -309,8 +316,9 @@ class AttentionModel(nn.Module):
             1)
         mincosts, argmincosts = costs.min(-1)  # [batch]
         minpis = pis[torch.arange(pis.size(0), out=argmincosts.new()), argmincosts]
+        minenergies = energies[torch.arange(energies.size(0), out=argmincosts.new()), argmincosts]
 
-        return mincosts, minpis
+        return mincosts, minpis, minenergies
 
 
     def _select_node(self, probs, mask):

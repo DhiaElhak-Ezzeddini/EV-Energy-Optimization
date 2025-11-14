@@ -221,7 +221,7 @@ class AttentionModel(nn.Module):
                 -1
             )
         else:
-            mean_tour = torch.zeros([batch_size,  embed_dim]).float().cuda()
+            mean_tour = torch.zeros([batch_size,  embed_dim]).float().to(device)
             veh_context = torch.cat(
                 (
                     dynamic[:, 0:1, 0],

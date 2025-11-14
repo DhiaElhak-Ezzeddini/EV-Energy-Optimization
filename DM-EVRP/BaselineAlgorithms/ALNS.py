@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-# Author: tangmengcheng
-# Email: 745274877@qq.com
-# Date: 2023-07-20
 import random
 import numpy as np
 import copy

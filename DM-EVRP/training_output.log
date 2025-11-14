@@ -1,0 +1,10 @@
+cpu
+NOTE: CHECKPOINT PATH: ExperimentalLog\train\20\rollout\best.pt
+[*] the test date from: ExperimentalData\test_data\20\256_seed12345.pkl
+  [!] Checkpoint file not found: ExperimentalLog\train\20\rollout\best.pt. Starting with untrained model.
+generate test data
+Average cost: 783.4752807617188 +- 7.323800563812256
+Average energy: 340.0313720703125 +- 3.289093017578125
+Average batch duration: 148.11855198536068 +- 145.53529909684164
+Average parallel duration: 148.11855198536068
+Calculated total duration: 10:31:58

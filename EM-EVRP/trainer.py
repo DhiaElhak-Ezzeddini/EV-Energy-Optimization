@@ -257,7 +257,7 @@ def train_EVRP(args):
                          train_data.update_mask,
                          args.num_layers,
                          args.dropout).to(device)
-    elif args.model == "attention":
+    elif args.model == "DRL" or args.model == "AM":
         actor = AttentionModel(
             args.embedding_dim,
             args.hidden_size,
@@ -276,9 +276,11 @@ def train_EVRP(args):
     load_data = {}
     if args.checkpoint:
         load_path = os.path.join(args.checkpoint)
-        if load_path is not None:
+        if load_path is not None and os.path.exists(load_path):
             print('  [*] Loading data from {}'.format(load_path))
             load_data = torch_load_cpu(load_path)
+        elif load_path is not None:
+            print(f'  [!] Checkpoint file not found: {load_path}. Starting with untrained model.')
 
     actor.load_state_dict({**actor.state_dict(), **load_data.get('model', {})})
 
