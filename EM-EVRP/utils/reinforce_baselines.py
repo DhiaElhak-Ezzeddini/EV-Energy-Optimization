@@ -3,7 +3,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset
 from scipy.stats import ttest_rel
 import copy
-from nets.point_network import  Encoder
+from nets.PointNetwork import  Encoder
 import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm

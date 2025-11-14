@@ -54,7 +54,7 @@ class VehicleRoutingDataset(Dataset):
                 stations[:, :, i] = torch.cat((coordinate_x2[:,:,i], coordinate_y1[:,:,i]), dim=1)
             if i % 4 == 3:
                 stations[:, :, i] = torch.cat((coordinate_x2[:,:,i], coordinate_y2[:,:,i]), dim=1)
-        dynamic_shape = (num_samples, 1, input_size + 1 + charging_num)
+        dynamic_shape = (num_samples, 1, input_size + 2 + charging_num)  # depot + depot_charging + stations + customers
         if args.CVRP_lib_test:
             all_loc, all_demand, capacity= read_file(args.CVRP_lib_path)
             depot = torch.tensor(all_loc[0])[None, :, None]
@@ -71,10 +71,10 @@ class VehicleRoutingDataset(Dataset):
             locations = torch.cat((depot, depot_charging,  stations, locations),2)
             demands = torch.randint(1, max_demand + 1, dynamic_shape) * 0.25
             demands = demands / float(max_load)
-            demands[:, :, 0:1 + charging_num] = 0
+            demands[:, :, 0:2 + charging_num] = 0  # depot + depot_charging + stations have zero demand
         self.static = locations
         # Generation of elevation, unit m
-        Elevations =torch.randint(0,101,(num_samples, input_size + 1 + charging_num),device=device)
+        Elevations =torch.randint(0,101,(num_samples, input_size + 2 + charging_num),device=device)  # depot + depot_charging + stations + customers
         Elevations =( Elevations / 1000 )
         loads = torch.full(dynamic_shape, 1.)
         self.Elevation = Elevations
@@ -83,7 +83,7 @@ class VehicleRoutingDataset(Dataset):
         self.dynamic = torch.as_tensor(np.concatenate((loads, demands, SOC, time1), axis=1))
 
         if (input_size <= 20 or num_samples <= 12800):   #  If the scale of the problem is small, it is directly calculated when making the data
-            seq_len = 1 + charging_num + input_size
+            seq_len = 2 + charging_num + input_size  # depot + depot_charging + stations + customers
             self.distances = torch.zeros(num_samples, seq_len, seq_len,device=device,)
             for i in range(seq_len):
                 self.distances[:, i] = torch.sqrt(torch.sum(torch.pow(self.static[:,:,i:i+1]-self.static[:,:,:],2),dim=1))

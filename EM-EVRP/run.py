@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-# Author: tangmengcheng
-# Email: 745274877@qq.com
-# Date: 2023-07-20
 import os
 import argparse
 from trainer import train_EVRP
@@ -79,9 +76,12 @@ def main():
     if args.bl_warmup_epochs is None:
         args.bl_warmup_epochs = 1 if args.baselines == 'rollout' else 0
 
-    print('NOTE: SETTTING CHECKPOINT:')
-    args.checkpoint = os.path.join()
-    print(args.checkpoint)
+    # print('NOTE: SETTTING CHECKPOINT:')
+    # args.checkpoint = os.path.join()
+    # print(args.checkpoint)
+    if args.checkpoint is None:
+        args.checkpoint = os.path.join("ExperimentalLog", "train", f'{args.num_nodes}', args.baselines, 'best.pt')
+    print(f'NOTE: CHECKPOINT PATH: {args.checkpoint}')
 
     if args.test:
         if args.CVRP_lib_test:
