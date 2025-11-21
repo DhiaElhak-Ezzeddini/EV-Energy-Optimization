@@ -88,7 +88,7 @@ class AttentionModel(nn.Module):
         # routing context
         self.tour = nn.Linear(node_dim, self.embedding_dim, bias=False)
         self.FF_tour = nn.Sequential(
-            nn. Linear(2*self.embedding_dim, self.feed_forward_hidden),
+            nn.Linear(2*self.embedding_dim, self.feed_forward_hidden),
             nn.ReLU(),
             nn.Linear(self.feed_forward_hidden, self.embedding_dim)
         )
@@ -114,15 +114,15 @@ class AttentionModel(nn.Module):
         """
 
         batch_size, _, num_node = input[0].shape
-        lenth = len(input)
-        if lenth == 4:
-            static, dynamic, distances, slope = input
+        length = len(input)
+        if length == 4:
+            static, dynamic, distances, slope = input ## vertices
             static = static.float().to(device)
             dynamic = dynamic.float().to(device)
             distances = distances.float()
             slope = slope.float()
-        else:
-            static, dynamic, Elevations = input
+        else: 
+            static, dynamic, Elevations = input       ## nodes
             static = static.float().to(device)
             dynamic = dynamic.float().to(device)
             distances = torch.zeros(batch_size, num_node, num_node, device=device)
@@ -133,7 +133,7 @@ class AttentionModel(nn.Module):
                 slope[:, i] = torch.clamp(torch.div((Elevations[:, i:i + 1] - Elevations[:, :]), distances[:, i] + 0.000001), min=-0.10,max=0.10)
 
         information = torch.cat((static, dynamic),dim=1).permute(0, 2, 1)
-        embeddings, _ = self.embedder(self._init_embed(information[:, :, [0,1,3]]))
+        embeddings, _ = self.embedder(self._init_embed(information[:, :, [0,1,3]])) ## Graph embedding ==> output of the encoder
         _log_p,  pi,  cost= self._inner(information, distances, slope, embeddings)
 
         ll = self._calc_log_likelihood(_log_p, pi)
