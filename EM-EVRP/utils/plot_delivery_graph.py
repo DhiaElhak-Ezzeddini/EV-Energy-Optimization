@@ -4,8 +4,6 @@ import numpy as np
 
 
 def render(static, tour_indices, save_path, dynamic, num_nodes, charging_num):
-    """画出图形的解决方案."""
-
     plt.close('all')
     plt.figure(figsize=(8,8))
 
@@ -33,7 +31,9 @@ def render(static, tour_indices, save_path, dynamic, num_nodes, charging_num):
             continue
         plt.plot(x[low: high + 1], y[low: high + 1], zorder=1, linewidth=2,label=f"Vehicle{j}")
 
-    plt.scatter(point[0, charging_num + 1:], point[1, charging_num + 1:], s=40, c='black', zorder=2, label="Customer")
+    # Customers start after: depot(0), depot_charging(1), stations(2..charging_num+1)
+    # Therefore first customer index is charging_num + 2
+    plt.scatter(point[0, charging_num + 2:], point[1, charging_num + 2:], s=40, c='black', zorder=2, label="Customer")
     plt.scatter(point[0, 0], point[1, 0], s=200, c='r', marker='*', zorder=3, label="Depot")
     plt.scatter(point[0, 1:charging_num + 1], point[1, 1:charging_num + 1], s=40, c='green',marker='s', zorder=3, label="Station")
     plt.legend(loc=2, fontsize=12, framealpha=0.2,bbox_to_anchor=(1.05, 1), borderaxespad=0)
@@ -41,7 +41,7 @@ def render(static, tour_indices, save_path, dynamic, num_nodes, charging_num):
     plt.xlim(-5, 105)
     plt.ylim(-5, 105)
     plt.title(f"C{num_nodes}-S{charging_num}",size=25, weight='bold')
-    plt.yticks(fontproperties='Times New Roman', size=20)#设置大小及加粗
+    plt.yticks(fontproperties='Times New Roman', size=20)
     plt.xticks(fontproperties='Times New Roman', size=20)
     # for i in range(charging_num + 1, num_nodes + charging_num + 1):
     #     plt.text((point[0, i]), point[1, i], f"{demand[i]}", size=12, color = "k",
