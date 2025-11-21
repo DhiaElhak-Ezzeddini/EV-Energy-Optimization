@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gurobipy import *
+from gurobipy import * # type: ignore
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
