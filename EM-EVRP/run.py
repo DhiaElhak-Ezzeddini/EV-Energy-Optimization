@@ -8,7 +8,7 @@ from utils.functions import parse_softmax_temperature, read_file
 def main():
     # basic args
     parser = argparse.ArgumentParser(description='Reinforcement learning solving for electric vehicle routing problem')
-    parser.add_argument('--test', action='store_true', default=True)
+    parser.add_argument('--test', action='store_true', default=False)
     parser.add_argument('--CVRP_lib_test', action='store_true', default=False,
                         help="Whether to test on the CVRPLIB instances")
     parser.add_argument('--plot_num', default=0, type=int, help="Number of test charts")
@@ -90,7 +90,7 @@ def main():
         else:
             args.test_file = os.path.join("ExperimentalData", 'test_data', f'{args.num_nodes}',
                                           f'{args.test_size}_seed{args.test_seed}.pkl')
-            print(f"[*] the test date from: {args.test_file}")
+            print(f"[*] the test data from: {args.test_file}")
             if not os.path.exists(args.test_file):
                 args.test_file = None
     if args.task == 'evrp':
