@@ -65,8 +65,23 @@ class VehicleRoutingDataset(Dataset):
             station_demands = torch.zeros((1, 1, 1 + self.charging_num))
             demands = torch.cat([station_demands, cus_demands], dim=2)
         else:
+            # Generate depot and a distinct depot_charging (avoid exact overlap)
             depot = torch.randint(25, 75, (num_samples, 2, 1))
-            depot_charging = depot
+            # small jitter to make depot_charging near but not identical to depot
+            jitter = torch.randint(-3, 4, (num_samples, 2, 1))
+            # ensure jitter is not exactly zero for any sample
+            zero_mask = (jitter == 0).all(dim=1, keepdim=True)
+            if zero_mask.any():
+                jitter[zero_mask.expand_as(jitter)] = torch.randint(-3, 4, jitter[zero_mask.expand_as(jitter)].shape)
+            depot_charging = torch.clamp(depot + jitter, 0, 100)
+
+            # Ensure stations do not coincide with depot or depot_charging
+            for s in range(self.charging_num):
+                for n in range(num_samples):
+                    while (stations[n, :, s] == depot[n, :, 0]).all() or (stations[n, :, s] == depot_charging[n, :, 0]).all():
+                        stations[n, 0, s] = torch.randint(0, 101, (1,))
+                        stations[n, 1, s] = torch.randint(0, 101, (1,))
+
             locations = torch.randint(0, 101, (num_samples, 2, input_size))
             locations = torch.cat((depot, depot_charging,  stations, locations),2)
             demands = torch.randint(1, max_demand + 1, dynamic_shape) * 0.25
@@ -77,7 +92,7 @@ class VehicleRoutingDataset(Dataset):
         Elevations =torch.randint(0,101,(num_samples, input_size + 2 + charging_num),device=device)  # depot + depot_charging + stations + customers
         Elevations =( Elevations / 1000 )
         loads = torch.full(dynamic_shape, 1.)
-        self.Elevation = Elevations
+        self.Elevation = Elevations 
         SOC = torch.full(dynamic_shape, self.Start_SOC)
         time1 = torch.full(dynamic_shape, t_limit)
         self.dynamic = torch.as_tensor(np.concatenate((loads, demands, SOC, time1), axis=1))
