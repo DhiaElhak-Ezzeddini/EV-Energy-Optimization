@@ -8,13 +8,15 @@ import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from utils.reinforce_baselines import ExponentialBaseline, CriticBaseline, RolloutBaseline, WarmupBaseline, StateCritic
-from utils import torch_load_cpu, move_to, plot_delivery_graph
+from utils import torch_load_cpu, move_to
+from utils.plot_delivery_graph import render as plot_delivery_graph
 import math
-import xlwt
+import xlwt  # type: ignore
 import csv
 from datetime import timedelta
 from utils.data_utils import save_dataset
 import pickle
+from tqdm import tqdm # type: ignore
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
@@ -44,7 +46,7 @@ def validate(data_loader, actor, render_fn, num_nodes, charging_num, save_dir='.
         if render_fn is not None and batch_idx < num_plot:
             name = 'batch%d_%2.4f.png' % (batch_idx, reward)
             path = os.path.join(save_dir, name)
-            render_fn(static, tour_indices, path, dynamic, num_nodes, charging_num, batch_idx)
+            render_fn(static, tour_indices, path, dynamic, num_nodes, charging_num)
 
     actor.train()
     return np.mean(rewards)
@@ -97,10 +99,10 @@ def train(actor, baseline, optimizer, lr_scheduler, task, num_nodes, train_data_
     out_path_epoch = os.path.join(out_path, f"Epoch_C{num_nodes}_{now}.csv")
     out_path_batch = os.path.join(out_path, f"Batch_C{num_nodes}_{now}.csv")
 
-    for epoch in range(iterations):  # train epoch
+    for epoch in range(iterations):  # type: ignore # train epoch
         train_data = baseline.wrap_dataset(train_data_out)
         train_loader = DataLoader(train_data, batch_size, True, num_workers=0)
-
+ 
         actor.train()
         actor.set_decode_type("sample")
 
@@ -108,7 +110,7 @@ def train(actor, baseline, optimizer, lr_scheduler, task, num_nodes, train_data_
         epoch_start = time.time()
         start = epoch_start
 
-        for batch_idx, batch in enumerate(train_loader):  # train batch
+        for batch_idx, batch in enumerate(tqdm(train_loader, desc=f"Epoch {epoch}")):  # train batch
 
             x, bl_val = baseline.unwrap_batch(batch)
             bl_val = move_to(bl_val, device) if bl_val is not None else None
@@ -464,7 +466,7 @@ def _eval_dataset(model, dataset, width, softmax_temp, args, render=None):
             if not os.path.exists(path):
                 os.makedirs(path)
             save_path =os.path.join(path, name)
-            render(static.cpu(), min_sequence.cpu(), save_path, dynamic.cpu(), args.num_nodes, args.charging_num, batch_idx)
+            render(static.cpu(), min_sequence.cpu(), save_path, dynamic.cpu(), args.num_nodes, args.charging_num)
     return results
 
 
