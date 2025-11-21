@@ -134,7 +134,11 @@ class AttentionModel(nn.Module):
 
         information = torch.cat((static, dynamic),dim=1).permute(0, 2, 1)
         embeddings, _ = self.embedder(self._init_embed(information[:, :, [0,1,3]]))
+<<<<<<<< HEAD:DM-EVRP/nets/DRLModel.py
         _log_p,  pi,  cost, energy = self._inner(information, distances, slope, embeddings)
+========
+        _log_p,  pi,  cost= self._inner(information, distances, slope, embeddings)
+>>>>>>>> 128d38e588a88c62cdcc0b8698cc9f4352ec791f:EM-EVRP/nets/DRLModel.py
 
         ll = self._calc_log_likelihood(_log_p, pi)
         return pi , ll , cost, energy
@@ -265,7 +269,11 @@ class AttentionModel(nn.Module):
             log_p = self._get_log_p(fixed, now_idx, mask, route_feature, embeddings)
             selected = self._select_node(log_p.exp()[:, 0, :], mask)
 
+<<<<<<<< HEAD:DM-EVRP/nets/DRLModel.py
             dynamic, reward, soc_consume = self.update_dynamic(dynamic, distances, slopes, now_idx, selected)
+========
+            dynamic, reward = self.update_dynamic(dynamic, distances, slopes, now_idx, selected)
+>>>>>>>> 128d38e588a88c62cdcc0b8698cc9f4352ec791f:EM-EVRP/nets/DRLModel.py
 
             mask = self.update_mask(dynamic, distances, slopes, selected.data).detach()
 
@@ -276,6 +284,11 @@ class AttentionModel(nn.Module):
             R.append(reward)
             Energy.append(soc_consume)  # Accumulate energy consumption
             i += 1
+<<<<<<<< HEAD:DM-EVRP/nets/DRLModel.py
+========
+
+        R = torch.cat(R, dim=1)  # (batch_size, seq_len)
+>>>>>>>> 128d38e588a88c62cdcc0b8698cc9f4352ec791f:EM-EVRP/nets/DRLModel.py
 
         R = torch.cat(R, dim=1)  # (batch_size, seq_len)
         Energy = torch.cat(Energy, dim=1)  # (batch_size, seq_len)
@@ -301,6 +314,7 @@ class AttentionModel(nn.Module):
         pis = []
         energies = []
         for i in range(iter_rep):
+<<<<<<<< HEAD:DM-EVRP/nets/DRLModel.py
             tour_idx, tour_logp, R, E = self.forward(batch)
             cost = torch.sum(R, dim=1)
             energy = torch.sum(E, dim=1)
@@ -309,6 +323,13 @@ class AttentionModel(nn.Module):
             energies.append(energy.view(batch_rep, -1).t())
         costs = torch.cat(costs, 1)
         energies = torch.cat(energies, 1)
+========
+            tour_idx, tour_logp, R = self.forward(batch)
+            cost = torch.sum(R, dim=1)
+            costs.append(cost.view(batch_rep, -1).t())
+            pis.append(tour_idx.view(batch_rep, -1, tour_idx.size(-1)).transpose(0, 1))
+        costs = torch.cat(costs, 1)
+>>>>>>>> 128d38e588a88c62cdcc0b8698cc9f4352ec791f:EM-EVRP/nets/DRLModel.py
 
         max_length = max(pi.size(-1) for pi in pis)
         pis = torch.cat(
@@ -316,9 +337,14 @@ class AttentionModel(nn.Module):
             1)
         mincosts, argmincosts = costs.min(-1)  # [batch]
         minpis = pis[torch.arange(pis.size(0), out=argmincosts.new()), argmincosts]
+<<<<<<<< HEAD:DM-EVRP/nets/DRLModel.py
         minenergies = energies[torch.arange(energies.size(0), out=argmincosts.new()), argmincosts]
 
         return mincosts, minpis, minenergies
+========
+
+        return mincosts, minpis
+>>>>>>>> 128d38e588a88c62cdcc0b8698cc9f4352ec791f:EM-EVRP/nets/DRLModel.py
 
 
     def _select_node(self, probs, mask):
