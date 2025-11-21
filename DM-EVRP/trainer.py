@@ -8,7 +8,8 @@ import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from utils.reinforce_baselines import ExponentialBaseline, CriticBaseline, RolloutBaseline, WarmupBaseline, StateCritic
-from utils import torch_load_cpu, move_to, plot_delivery_graph
+from utils import torch_load_cpu, move_to
+from utils.plot_delivery_graph import render as plot_delivery_graph
 import math
 import xlwt
 import csv
