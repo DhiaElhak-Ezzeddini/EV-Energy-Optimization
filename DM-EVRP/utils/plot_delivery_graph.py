@@ -33,7 +33,9 @@ def render(static, tour_indices, save_path, dynamic, num_nodes, charging_num):
             continue
         plt.plot(x[low: high + 1], y[low: high + 1], zorder=1, linewidth=2,label=f"Vehicle{j}")
 
-    plt.scatter(point[0, charging_num + 1:], point[1, charging_num + 1:], s=40, c='black', zorder=2, label="Customer")
+    # Customers start after: depot(0), depot_charging(1), stations(2..charging_num+1)
+    # Therefore first customer index is charging_num + 2
+    plt.scatter(point[0, charging_num + 2:], point[1, charging_num + 2:], s=40, c='black', zorder=2, label="Customer")
     plt.scatter(point[0, 0], point[1, 0], s=200, c='r', marker='*', zorder=3, label="Depot")
     plt.scatter(point[0, 1:charging_num + 1], point[1, 1:charging_num + 1], s=40, c='green',marker='s', zorder=3, label="Station")
     plt.legend(loc=2, fontsize=12, framealpha=0.2,bbox_to_anchor=(1.05, 1), borderaxespad=0)
