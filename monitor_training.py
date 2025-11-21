@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 import pandas as pd
 
-def monitor_training(base_dir="DM-EVRP", nodes=20, baseline="rollout"):
+def monitor_training(base_dir="EM-EVRP", nodes=10, baseline="rollout"):
     """Monitor training progress in real-time"""
 
     print("\n" + "="*80)
