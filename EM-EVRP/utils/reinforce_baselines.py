@@ -6,7 +6,7 @@ import copy
 from nets.PointNetwork import  Encoder
 import torch.nn as nn
 import torch.nn.functional as F
-from tqdm import tqdm
+from tqdm import tqdm # type: ignore
 from torch.utils.data import DataLoader
 from utils import move_to
 
@@ -77,7 +77,7 @@ class Baseline(object):
         return batch, None
 
     def eval(self, x, c):
-        raise NotImplementedError("Override this method")  # 基线基类的eval，之后子类的都要对这个进行重写
+        raise NotImplementedError("Override this method")  
 
     def get_learnable_parameters(self):
         return []
