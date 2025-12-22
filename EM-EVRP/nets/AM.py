@@ -60,7 +60,7 @@ class AttentionModel(nn.Module):
         self.hidden_dim = hidden_dim
         self.n_encode_layers = n_encode_layers
         self.decode_type = None
-        self.temp = 1.0  # 解码温度
+        self.temp = 1.0  
         self.tanh_clipping = tanh_clipping
         self.mask_inner = mask_inner
         self.mask_logits = mask_logits
