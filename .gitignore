@@ -1,0 +1,6 @@
+Experimental*/
+__pycache__/
+*.rar
+*.pdf
+*.pkl.gz
+cache/
