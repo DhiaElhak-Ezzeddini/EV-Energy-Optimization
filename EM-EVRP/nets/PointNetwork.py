@@ -222,7 +222,6 @@ class DRL4EVRP(nn.Module):
 
 
     def beam_search(self,  x, beam_width, last_hh=None):
-        # 拿出数据
         static, dynamic, distances, slope = x
         static = static.float().to(device)
         dynamic = dynamic.float().to(device)
