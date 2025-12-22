@@ -445,7 +445,7 @@ def main():
     parser.add_argument('--tanh_clipping', type=float, default=10.0)
     parser.add_argument('--decode', type=str, default='greedy', choices=['greedy', 'sample'])
     parser.add_argument('--velocity', type=float, default=50.0, help='km/h for time conversions if needed')
-    parser.add_argument('--start_soc', type=float, default=150.0)
+    parser.add_argument('--start_soc', type=float, default=80.0)
     parser.add_argument('--t_limit', type=float, default=10.0)
     parser.add_argument('--max_load', type=float, default=4.0)
     parser.add_argument('--max_demand', type=int, default=4, help='Integer upper bound for torch.randint; must be int')
