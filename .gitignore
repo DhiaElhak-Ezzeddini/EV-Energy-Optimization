@@ -4,3 +4,5 @@ __pycache__/
 *.pdf
 *.pkl.gz
 cache/
+.idea/
+*.pyc
