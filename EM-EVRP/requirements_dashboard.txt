@@ -1,0 +1,26 @@
+# Requirements for EV Route Optimization Dashboard
+
+# Core dependencies (already in project)
+torch>=1.8.0
+numpy>=1.19.0
+scipy>=1.5.0
+networkx>=2.5
+
+# Dashboard and visualization
+streamlit>=1.28.0
+plotly>=5.14.0
+pandas>=1.3.0
+
+# ML and clustering
+scikit-learn>=0.24.0
+
+# Map visualization (for static plots)
+matplotlib>=3.3.0
+folium>=0.12.0
+
+# Street routing
+requests>=2.25.0
+polyline>=1.4.0
+
+# Additional utilities
+Pillow>=8.0.0
