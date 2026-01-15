@@ -37,10 +37,25 @@ st.markdown("""
         background-color: #f8f9fa;
     }
     .stMetric {
-        background-color: white;
+        background-color: #1a1a2e !important;
         padding: 15px;
         border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        border: 1px solid #2d2d44;
+    }
+    .stMetric > div {
+        background-color: transparent !important;
+    }
+    .stMetric label {
+        color: #4ECDC4 !important;
+        font-weight: 600 !important;
+    }
+    .stMetric [data-testid="stMetricValue"] {
+        color: #ffffff !important;
+        font-weight: bold !important;
+    }
+    .stMetric [data-testid="stMetricDelta"] {
+        color: #98D8C8 !important;
     }
     .stButton>button {
         background-color: #4CAF50;
@@ -63,7 +78,7 @@ st.markdown("""
         color: #2c3e50;
     }
     .info-box {
-        background-color: #e3f2fd;
+        background-color: #e3f2fd !important;
         padding: 15px;
         border-radius: 8px;
         border-left: 4px solid #2196F3;
@@ -77,7 +92,7 @@ st.markdown("""
         color: #1a1a2e;
     }
     .success-box {
-        background-color: #e8f5e9;
+        background-color: #e8f5e9 !important;
         padding: 15px;
         border-radius: 8px;
         border-left: 4px solid #4CAF50;
@@ -85,7 +100,7 @@ st.markdown("""
         color: #1a1a2e;
     }
     .warning-box {
-        background-color: #fff3e0;
+        background-color: #fff3e0 !important;
         padding: 15px;
         border-radius: 8px;
         border-left: 4px solid #FF9800;
@@ -254,24 +269,27 @@ def create_cost_chart(results):
     fig = px.bar(df, x='Group', y='Cost', 
                  color='Customers',
                  hover_data=['Customers', 'Stations'],
-                 title='Energy Cost per Customer Group',
                  labels={'Cost': 'Energy Cost', 'Customers': 'Number of Customers'},
                  color_continuous_scale='Turbo')
     
     fig.update_layout(
         height=400,
+        title={
+            'text': 'Energy Cost per Customer Group',
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 16, 'color': '#4ECDC4', 'family': 'Arial Black'}
+        },
         xaxis_title='Customer Group',
         yaxis_title='Energy Cost',
-        title_font_size=16,
-        title_x=0.5,
-        plot_bgcolor='#f8f9fa',
-        paper_bgcolor='white',
-        font=dict(color='#2c3e50', size=12),
-        xaxis=dict(showgrid=True, gridcolor='#e0e0e0'),
-        yaxis=dict(showgrid=True, gridcolor='#e0e0e0')
+        plot_bgcolor='#1a1a2e',
+        paper_bgcolor='#1a1a2e',
+        font=dict(color='#ffffff', size=12),
+        xaxis=dict(showgrid=True, gridcolor='#2d2d44', title_font=dict(color='#4ECDC4')),
+        yaxis=dict(showgrid=True, gridcolor='#2d2d44', title_font=dict(color='#4ECDC4'))
     )
     
-    fig.update_traces(textposition='outside', textfont=dict(color='#2c3e50', size=11))
+    fig.update_traces(textposition='outside', textfont=dict(color='#ffffff', size=11))
     
     return fig
 
@@ -291,21 +309,24 @@ def create_performance_metrics(results):
     
     fig = px.bar(df, x='Group', y='Inference Time (s)',
                  color='Customers',
-                 title='Inference Time per Group',
                  color_continuous_scale='Tealgrn')
     
     fig.update_layout(
         height=400,
-        title_font_size=16,
-        title_x=0.5,
-        plot_bgcolor='#f8f9fa',
-        paper_bgcolor='white',
-        font=dict(color='#2c3e50', size=12),
-        xaxis=dict(showgrid=True, gridcolor='#e0e0e0', title='Customer Group'),
-        yaxis=dict(showgrid=True, gridcolor='#e0e0e0', title='Time (seconds)')
+        title={
+            'text': 'Inference Time per Group',
+            'x': 0.5,
+            'xanchor': 'center',
+            'font': {'size': 16, 'color': '#4ECDC4', 'family': 'Arial Black'}
+        },
+        plot_bgcolor='#1a1a2e',
+        paper_bgcolor='#1a1a2e',
+        font=dict(color='#ffffff', size=12),
+        xaxis=dict(showgrid=True, gridcolor='#2d2d44', title='Customer Group', title_font=dict(color='#4ECDC4')),
+        yaxis=dict(showgrid=True, gridcolor='#2d2d44', title='Time (seconds)', title_font=dict(color='#4ECDC4'))
     )
     
-    fig.update_traces(textposition='outside', textfont=dict(color='#2c3e50', size=11))
+    fig.update_traces(textposition='outside', textfont=dict(color='#ffffff', size=11))
     
     return fig
 
@@ -365,7 +386,7 @@ def main():
     
     # Sidebar for inputs
     with st.sidebar:
-        st.image("https://via.placeholder.com/300x100/4CAF50/FFFFFF?text=EV+Optimizer", 
+        st.image("dashboard_image.png", 
                 use_container_width=True)
         
         st.markdown("## 📍 Configuration")
