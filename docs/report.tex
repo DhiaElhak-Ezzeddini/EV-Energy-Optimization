@@ -1,0 +1,607 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}
+\usepackage{tabularx}
+
+% Custom commands
+\newcommand{\titlerule}{\noindent\makebox[\linewidth]{\rule{0.7\textwidth}{0.4pt}}}
+
+% Page geometry
+\geometry{margin=1in}
+
+% Header/Footer style
+\pagestyle{fancy}
+\fancyhf{}
+
+% List settings - slightly more spacing
+\setlist{itemsep=2pt, parsep=2pt}
+
+% Caption settings
+\captionsetup{font=normalsize, labelfont=bf, skip=8pt}
+
+% Hyperlinks
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=cyan, citecolor=blue}
+
+% Equation spacing
+\setlength{\abovedisplayskip}{12pt}
+\setlength{\belowdisplayskip}{12pt}
+\setlength{\abovedisplayshortskip}{8pt}
+\setlength{\belowdisplayshortskip}{8pt}
+
+% Paragraph spacing
+\setlength{\parskip}{6pt}
+
+\begin{document}
+
+%=============================================================================
+% TITLE PAGE
+%=============================================================================
+\begin{titlepage}
+\newgeometry{margin=1in}
+\pagestyle{empty}
+
+% Logos with proper spacing
+\begin{minipage}[t]{0.45\textwidth}
+    \flushleft
+    \includegraphics[width=4cm]{logo_carthage.png}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+    \flushright
+    \includegraphics[width=5cm]{logo_supcom.png}
+\end{minipage}
+
+\vspace{1.5cm}
+
+\centering
+{\LARGE\bfseries Carthage University}\\[0.3cm]
+{\Large Higher School of Communication of Tunis}
+
+\vfill
+
+{\Huge\bfseries End-of-Studies Report}
+
+\vspace{1.5cm}
+
+\titlerule\\[0.5cm]
+{\LARGE\bfseries Electric Vehicle Routing Optimization}\\[0.3cm]
+{\Large Deep Reinforcement Learning for Energy-Minimizing EVRP}\\[0.5cm]
+\titlerule
+
+\vfill
+
+\begin{center}
+\begin{minipage}{0.65\textwidth}
+\raggedright
+{\large\bfseries Authors:}\\[0.2cm]
+{\Large Salem Fradi}\\
+{\Large Dhia Elhak Ezzeddini}\\[1cm]
+{\large\bfseries Supervisor:}\\[0.2cm]
+{\Large Dr. Ferdaoues Chaabane}\\[1cm]
+{\large\bfseries Host Company:}\\[0.2cm]
+{\Large Sagemcom}
+\end{minipage}
+\end{center}
+
+\vfill
+
+{\Large Academic Year: 2024--2025}
+
+\restoregeometry
+\end{titlepage}
+
+%=============================================================================
+% ACKNOWLEDGMENTS
+%=============================================================================
+\cleardoublepage
+\newgeometry{margin=1in}
+\pagestyle{empty}
+\vspace*{2cm}
+
+\begin{center}
+\section*{Acknowledgments}
+\addcontentsline{toc}{section}{Acknowledgments}
+\end{center}
+
+\vspace{1cm}
+
+\begin{large}
+\begin{onehalfspacing}
+We express our deepest gratitude to our supervisor, Dr. Ferdaoues Chaabane, for her guidance and support throughout this project. We thank Sagemcom for the opportunity and resources, and the faculty at Sup'Com and University of Carthage for our academic foundation.
+\end{onehalfspacing}
+\end{large}
+
+\vfill
+\restoregeometry
+
+%=============================================================================
+% TABLE OF CONTENTS
+%=============================================================================
+\cleardoublepage
+\pagenumbering{roman}
+\fancyhf{}
+\lhead{Contents}
+\rhead{\thepage}
+\tableofcontents
+
+%=============================================================================
+% MAIN CONTENT
+%=============================================================================
+\cleardoublepage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\fancyhf{}
+\lhead{EV Routing Optimization}
+\rhead{\thepage}
+\onehalfspacing
+
+%-----------------------------------------------------------------------------
+\section{Introduction}
+%-----------------------------------------------------------------------------
+
+\subsection{Context and Motivation}
+
+The rapid adoption of Electric Vehicles (EVs) presents challenges for logistics systems. Unlike conventional vehicles, EVs have limited driving range and require recharging, making route planning more complex. The \textbf{Electric Vehicle Routing Problem (EVRP)} extends classical VRP by incorporating battery capacity, charging station locations, and energy consumption patterns.
+
+\subsection{Problem Statement}
+
+We address the \textbf{Energy-Minimizing EVRP (EM-EVRP)}, minimizing total energy consumption while satisfying:
+\begin{itemize}
+    \item Customer demand fulfillment
+    \item Vehicle capacity constraints
+    \item Battery State of Charge (SOC) limitations
+    \item Time window requirements
+    \item Real-world road network constraints
+\end{itemize}
+
+Specifically, we consider a scenario where a fleet of EVs must serve $n$ customers from a central depot, potentially visiting charging stations to maintain sufficient battery levels.
+
+\subsection{Objectives}
+
+The main objectives are:
+\begin{enumerate}
+    \item Formulate a comprehensive Mixed Integer Linear Programming (MILP) model for EM-EVRP
+    \item Implement and evaluate classical optimization baselines including Google OR-Tools, Hill Climbing, Simulated Annealing, and Ant Colony Optimization
+    \item Develop a Deep Reinforcement Learning (DRL) solution using attention-based neural networks
+    \item Create an interactive dashboard for visualization and real-world deployment
+\end{enumerate}
+
+%-----------------------------------------------------------------------------
+\section{Mathematical Formulation}
+%-----------------------------------------------------------------------------
+
+\subsection{Sets and Indices}
+
+Table~\ref{tab:sets} defines the sets used in our formulation.
+
+\begin{table}[H]
+\centering
+\caption{Sets and indices notation}
+\label{tab:sets}
+\begin{tabular}{@{}cl@{}}
+\toprule
+\textbf{Symbol} & \textbf{Description} \\
+\midrule
+$N$ & Set of all nodes $\{0, 1, \ldots, n\}$ where $0$ is the depot \\
+$C$ & Set of customers $C = N \setminus \{0\}$ \\
+$S$ & Set of charging stations \\
+$K$ & Set of vehicles $\{1, \ldots, m\}$ \\
+$R$ & Set of trip indices $\{1, \ldots, R_{\max}\}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Network Parameters}
+
+Table~\ref{tab:network_params} presents the network-related parameters.
+
+\begin{table}[H]
+\centering
+\caption{Network parameters}
+\label{tab:network_params}
+\begin{tabular}{@{}cl@{}}
+\toprule
+\textbf{Symbol} & \textbf{Description} \\
+\midrule
+$d_i$ & Demand of customer $i$ \\
+$Q_k$ & Capacity of vehicle $k$ \\
+$t_{ij}$ & Travel time on arc $(i, j)$ \\
+$[a_i, b_i]$ & Time window at node $i$ \\
+$g_i$ & Service time at node $i$ \\
+$T_{\max}$ & Time horizon \\
+$M$ & Big-M constant for linearization \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{EV Energy Parameters}
+
+Table~\ref{tab:energy_params} lists the parameters for the physics-based energy model.
+
+\begin{table}[H]
+\centering
+\caption{EV energy parameters}
+\label{tab:energy_params}
+\begin{tabular}{@{}cl@{}}
+\toprule
+\textbf{Symbol} & \textbf{Description} \\
+\midrule
+$m_c$ & Curb mass of the vehicle (kg) \\
+$C_d$ & Aerodynamic drag coefficient \\
+$C_r$ & Rolling resistance coefficient \\
+$\rho$ & Air density (kg/m$^3$) \\
+$A$ & Frontal area of the vehicle (m$^2$) \\
+$g$ & Gravitational acceleration (m/s$^2$) \\
+$\alpha_{ij}$ & Slope angle on arc $(i, j)$ \\
+$v_{ij}$ & Average speed on arc $(i, j)$ (m/s) \\
+$\varphi_d$ & Motor efficiency for propulsion \\
+$\varphi_r$ & Motor efficiency for regeneration \\
+$\phi_d$ & Battery discharge efficiency \\
+$\phi_r$ & Battery charge efficiency (regenerative braking) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Decision Variables}
+
+Table~\ref{tab:variables} describes the decision variables in our model.
+
+\begin{table}[H]
+\centering
+\caption{Decision variables}
+\label{tab:variables}
+\begin{tabular}{@{}cl@{}}
+\toprule
+\textbf{Variable} & \textbf{Description} \\
+\midrule
+$x_{ijk}^r \in \{0,1\}$ & 1 if vehicle $k$ traverses arc $(i,j)$ in trip $r$ \\
+$y_{ik}^r \in \{0,1\}$ & 1 if customer $i$ is served by vehicle $k$ in trip $r$ \\
+$z_k \in \{0,1\}$ & 1 if vehicle $k$ is used \\
+$\tau_{ik}^r \geq 0$ & Service start time at node $i$ by vehicle $k$ in trip $r$ \\
+$w_{ik}^r \geq 0$ & MTZ subtour elimination variable \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Energy Consumption Model}
+
+The physics-based energy model considers vehicle mass, aerodynamic drag, rolling resistance, and gravitational effects.
+
+\textbf{Total mass on arc $(i,j)$:}
+\begin{equation}
+m_{ij} = m_c + u_{ij}
+\end{equation}
+where $u_{ij}$ is the cargo load.
+
+\textbf{Power required for traversal:}
+\begin{equation}
+P_{ij} = \left( m_{ij} a + m_{ij} g \left( \sin\alpha_{ij} + C_r \cos\alpha_{ij} \right) + \frac{1}{2} C_d \rho A v_{ij}^2 \right) v_{ij}
+\end{equation}
+
+\textbf{Energy consumption:}
+\begin{equation}
+E_{ij} =
+\begin{cases}
+\phi_d \varphi_d P_{ij} t_{ij} & \text{if } P_{ij} \geq 0 \text{ (propulsion)} \\
+\phi_r \varphi_r P_{ij} t_{ij} & \text{if } P_{ij} < 0 \text{ (regenerative braking)}
+\end{cases}
+\end{equation}
+
+\subsection{MILP Formulation}
+
+\textbf{Objective Function:} Minimize total energy consumption
+\begin{equation}
+\min \sum_{k \in K} \sum_{r \in R} \sum_{(i,j)} E_{ij} \cdot x_{ijk}^r
+\end{equation}
+
+\textbf{Subject to:}
+
+\textit{Each customer served exactly once:}
+\begin{equation}
+\sum_{k \in K} \sum_{r \in R} y_{ik}^r = 1, \quad \forall i \in C
+\end{equation}
+
+\textit{Flow conservation:}
+\begin{equation}
+\sum_{j} x_{ijk}^r = y_{ik}^r = \sum_{j} x_{jik}^r, \quad \forall i \in C, k \in K, r \in R
+\end{equation}
+
+\textit{Vehicle capacity:}
+\begin{equation}
+\sum_{i \in C} d_i \cdot y_{ik}^r \leq Q_k, \quad \forall k \in K, r \in R
+\end{equation}
+
+\textit{Subtour elimination (MTZ):}
+\begin{equation}
+w_{ik}^r - w_{jk}^r + |C| \cdot x_{ijk}^r \leq |C| - 1, \quad \forall i,j \in C, k \in K, r \in R
+\end{equation}
+
+\textit{Time window constraints:}
+\begin{equation}
+a_i \cdot y_{ik}^r \leq \tau_{ik}^r \leq b_i + M(1 - y_{ik}^r), \quad \forall i \in C, k \in K, r \in R
+\end{equation}
+
+%-----------------------------------------------------------------------------
+\section{Baseline Optimization Methods}
+%-----------------------------------------------------------------------------
+
+\subsection{Google OR-Tools}
+
+Google OR-Tools is an open-source optimization suite providing powerful constraint programming and routing solvers. Our implementation uses the CP solver with arc cost callbacks incorporating energy considerations. The solver employs the AUTOMATIC first solution strategy and iteratively improves using local search. A routing index manager handles node-to-index mapping, while capacity constraints are enforced through dimension callbacks.
+
+\subsection{Hill Climbing}
+
+Hill Climbing is a local search algorithm that iteratively improves solutions by making incremental changes. Starting from an initial solution generated by nearest neighbor heuristic, it explores the neighborhood using:
+\begin{itemize}
+    \item \textbf{2-opt:} Reverse a segment of the route
+    \item \textbf{Or-opt:} Relocate a sequence of customers
+    \item \textbf{Exchange:} Swap customers between routes
+\end{itemize}
+
+The algorithm terminates when no improving neighbor exists:
+\begin{equation}
+S' \gets \arg\min_{s \in \mathcal{N}(S)} f(s); \quad \text{if } f(S') < f(S) \text{ then } S \gets S', \text{ else terminate}
+\end{equation}
+
+\subsection{Simulated Annealing}
+
+Simulated Annealing (SA) extends Hill Climbing by accepting uphill moves to escape local optima. The acceptance probability is controlled by temperature:
+\begin{equation}
+P(\text{accept}) =
+\begin{cases}
+1 & \text{if } \Delta E < 0 \\
+\exp\left( -\Delta E / T \right) & \text{otherwise}
+\end{cases}
+\end{equation}
+
+The temperature follows geometric cooling:
+\begin{equation}
+T_{k+1} = \alpha \cdot T_k, \quad \alpha \in [0.9, 0.99]
+\end{equation}
+
+This allows exploration at high temperatures and exploitation at low temperatures, enabling escape from local minima that trap Hill Climbing.
+
+\subsection{Ant Colony Optimization}
+
+ACO is inspired by ant foraging behavior, using pheromone trails to guide search. The transition probability from node $i$ to $j$ is:
+\begin{equation}
+p_{ij}^a = \frac{[\tau_{ij}]^\alpha [\eta_{ij}]^\beta}{\sum_{l \in \mathcal{N}_i} [\tau_{il}]^\alpha [\eta_{il}]^\beta}
+\end{equation}
+where $\tau_{ij}$ is the pheromone level and $\eta_{ij} = 1/c_{ij}$ is the heuristic information (inverse of cost).
+
+Pheromones evaporate over time and are deposited proportionally to solution quality, creating positive feedback for good routes.
+
+%-----------------------------------------------------------------------------
+\section{Deep Reinforcement Learning Approach}
+%-----------------------------------------------------------------------------
+
+\subsection{MDP Formulation}
+
+We formulate routing as a Markov Decision Process (MDP) with the components shown in Table~\ref{tab:mdp}.
+
+\begin{table}[H]
+\centering
+\caption{MDP components for EVRP}
+\label{tab:mdp}
+\begin{tabular}{@{}lp{10cm}@{}}
+\toprule
+\textbf{Component} & \textbf{Description} \\
+\midrule
+State $s_t$ & Partial solution, current vehicle position, remaining capacity, and SOC \\
+Action $a_t$ & Next node to visit (customer, charging station, or depot) \\
+Reward $r_t$ & Negative energy consumption for the traversed arc \\
+Policy $\pi_\theta$ & Neural network parameterized by weights $\theta$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Architecture}
+
+\textbf{Encoder:} Multi-head self-attention processes the input graph:
+\begin{equation}
+h_i^{(l)} = \text{BN}\left( h_i^{(l-1)} + \text{MHA}\left( h_i^{(l-1)}, H^{(l-1)} \right) \right)
+\end{equation}
+
+This produces node embeddings $H = \{h_1, \ldots, h_n\}$ and graph embedding:
+\begin{equation}
+\bar{h} = \frac{1}{n} \sum_{i=1}^{n} h_i
+\end{equation}
+
+\textbf{Decoder:} Generates routes autoregressively with context:
+\begin{equation}
+c_t = W_c \left[ \bar{h}; h_{\pi_{t-1}}; \text{cap}_t; \text{SOC}_t \right]
+\end{equation}
+
+\textbf{Selection:} Uses attention mechanism:
+\begin{equation}
+u_{tj} = C \cdot \tanh\left( \frac{q_t \cdot k_j}{\sqrt{d_k}} \right), \quad j \in \mathcal{A}_t \text{ (feasible actions)}
+\end{equation}
+\begin{equation}
+p_\theta(a_t = j | s_t) = \text{softmax}(u_t)_j
+\end{equation}
+
+\subsection{Training Algorithm}
+
+We use REINFORCE with rollout baseline for variance reduction. The objective is:
+\begin{equation}
+J(\theta) = \mathbb{E}_{\pi_\theta}\left[ L(\pi) \right]
+\end{equation}
+where $L(\pi)$ is the route cost.
+
+The gradient is estimated as:
+\begin{equation}
+\nabla_\theta J = \mathbb{E}\left[ \left( L(\pi) - b(s) \right) \nabla_\theta \log p_\theta(\pi | s) \right]
+\end{equation}
+where $b(s)$ is the baseline from a periodically updated policy copy. The baseline is updated when the current policy shows significant improvement on validation instances.
+
+\subsection{EV-Specific Features}
+
+\textbf{SOC Tracking:}
+\begin{equation}
+\text{SOC}_{t+1} = \text{SOC}_t - \frac{E_{ij}}{E_{\text{battery}}}
+\end{equation}
+
+Charging stations are included as optional nodes; the model learns when to visit them.
+
+\textbf{Action Masking:} Ensures feasibility by restricting available actions:
+\begin{equation}
+\mathcal{A}_t = \left\{ j : d_j \leq \text{cap}_t \land E_{ij} \leq \text{SOC}_t \cdot E_{\text{battery}} \right\}
+\end{equation}
+
+%-----------------------------------------------------------------------------
+\section{Results and Discussion}
+%-----------------------------------------------------------------------------
+
+\subsection{Experimental Setup}
+
+Training data was generated synthetically based on CVRPLIB benchmarks including P-n19-k2, P-n21-k2, P-n40-k5, and P-n51-k10. The configuration parameters are shown in Table~\ref{tab:config}.
+
+\begin{table}[H]
+\centering
+\caption{Training configuration}
+\label{tab:config}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Number of customers & 10 \\
+Number of charging stations & 4 \\
+Embedding dimension & 128 \\
+Encoder layers & 3 \\
+Attention heads & 8 \\
+Batch size & 1024 \\
+Learning rate & $10^{-4}$ \\
+Baseline type & Rollout \\
+Initial SOC & 80\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Training Results}
+
+Figure~\ref{fig:train} shows training and validation rewards over 100 epochs. The model demonstrates consistent improvement with the validation curve closely following training, indicating good generalization to unseen instances.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/training_reward.png}
+\caption{Training and validation rewards over 100 epochs (10 nodes, rollout baseline)}
+\label{fig:train}
+\end{figure}
+
+\subsection{Comparison with Baselines}
+
+Table~\ref{tab:comp} compares methods on 10-customer instances. Our DRL approach achieves competitive energy consumption (12.18 kWh) with significantly faster inference time (0.5s), making it suitable for real-time applications.
+
+\begin{table}[H]
+\centering
+\caption{Performance comparison on 10-customer instances}
+\label{tab:comp}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Method} & \textbf{Energy (kWh)} & \textbf{Inference Time} \\
+\midrule
+OR-Tools & 12.45 & 2.1s \\
+Hill Climbing & 13.21 & 0.8s \\
+Simulated Annealing & 12.89 & 1.5s \\
+Ant Colony Optimization & 12.67 & 3.2s \\
+\textbf{DRL (Ours)} & \textbf{12.18} & \textbf{0.5s} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Dashboard Integration}
+
+We developed an interactive Streamlit dashboard with OpenStreetMap integration providing:
+\begin{itemize}
+    \item Interactive map with customer locations and charging stations
+    \item Real-time route optimization using the trained DRL model
+    \item Energy consumption breakdown per route segment
+    \item SOC tracking throughout the journey
+    \item OSRM integration for realistic street-level routing
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figures/main_page.PNG}
+    \caption{Main interface}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figures/inference.PNG}
+    \caption{Inference view}
+\end{subfigure}
+
+\vspace{0.5cm}
+
+\begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figures/result.PNG}
+    \caption{Optimized routes}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figures/analytics.PNG}
+    \caption{Analytics dashboard}
+\end{subfigure}
+\caption{Dashboard interfaces for EV route optimization}
+\label{fig:dash}
+\end{figure}
+
+%-----------------------------------------------------------------------------
+\section{Conclusion}
+%-----------------------------------------------------------------------------
+
+\subsection{Summary}
+
+This project addressed the Energy-Minimizing Electric Vehicle Routing Problem using Deep Reinforcement Learning. Our contributions include:
+\begin{enumerate}
+    \item Comprehensive MILP formulation incorporating multi-trip capability, time windows, and physics-based energy consumption
+    \item Implementation of classical baselines (OR-Tools, Hill Climbing, SA, ACO) for benchmarking
+    \item Attention-based DRL model achieving competitive performance with fast inference
+    \item Interactive dashboard with real-world map integration for practical deployment
+\end{enumerate}
+
+\subsection{Key Findings}
+
+\begin{itemize}
+    \item The DRL approach generalizes well to unseen instances after training on synthetic data
+    \item Inference time is significantly lower than iterative optimization methods
+    \item The attention mechanism effectively captures customer-to-customer relationships
+    \item Physics-based energy modeling provides realistic consumption estimates considering aerodynamics, rolling resistance, and regenerative braking
+\end{itemize}
+
+\subsection{Future Work}
+
+Several directions could extend this work:
+\begin{itemize}
+    \item Scaling to larger instances (50+ customers)
+    \item Incorporating dynamic scenarios with real-time traffic and demand updates
+    \item Extending to multi-depot problems
+    \item Supporting heterogeneous fleets with different EV types
+    \item Joint optimization of routing and charging schedules
+\end{itemize}
+
+%-----------------------------------------------------------------------------
+% REFERENCES
+%-----------------------------------------------------------------------------
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{9}
+\bibitem{kool} W. Kool, H. van Hoof, M. Welling, ``Attention, Learn to Solve Routing Problems!'' \emph{ICLR}, 2019.
+\bibitem{osrm} Project OSRM -- Open Source Routing Machine. \url{http://project-osrm.org/}
+\bibitem{ortools} Google OR-Tools. \url{https://developers.google.com/optimization}
+\bibitem{cvrplib} CVRPLIB: Capacitated Vehicle Routing Problem Library. \url{http://vrp.atd-lab.inf.puc-rio.br/}
+\end{thebibliography}
+
+\end{document}

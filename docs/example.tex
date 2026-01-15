@@ -1,0 +1,607 @@
+\documentclass[10pt,a4paper]{article} % Changed from 12pt to 10pt
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{hyperref} % Should generally be loaded last among formatting packages
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{enumitem} % Added from the literature review file
+\usepackage{xcolor}   % Added as a common package
+\usepackage{bm}       % Added for \bm command
+
+% Custom command definitions
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\herm}{^H} % Hermitian transpose
+\newcommand{\conj}{^*} % Element-wise conjugate (as per user's conj(h))
+\newcommand{\E}{\mathbb{E}} % Expectation
+\newcommand{\CN}{\mathcal{CN}} % Complex Normal distribution
+\newcommand{\titlerule}{\noindent\makebox[\linewidth]{\rule{0.7\textwidth}{0.4pt}}} % Moved here for global definition if needed, or keep in titlepage
+
+% Main document page setup
+\geometry{margin=0.75in} % Default margins for the main document
+\pagestyle{fancy} % This will be the default pagestyle
+
+% List setup for compactness
+\setlist{nosep} % Reduces vertical spacing in lists
+
+% No \title, \author, \date here as we use a custom titlepage
+
+\begin{document}
+
+% --- Title Page ---
+\begin{titlepage}
+    \newgeometry{margin=1in} % Set specific margins for the title page
+    \pagestyle{empty} % No headers or footers on the title page
+
+    % Top logos
+    \begin{minipage}[t]{0.48\textwidth}
+        \flushleft
+        \includegraphics[width=3.5cm]{logo_carthage.png} % USER: Ensure this image file exists
+    \end{minipage}
+    \hfill % Pushes the minipages apart
+    \begin{minipage}[t]{0.48\textwidth}
+        \flushright
+        \includegraphics[width=4.5cm]{logo_supcom.png} % USER: Ensure this image file exists
+    \end{minipage}
+
+    \vspace{0.75cm} % Space after logos
+
+    \centering % Center the University and School names
+    {\Large\bfseries Carthage University} \\
+    \vspace{0.15cm} % Small space between university and school name
+    {\large Higher School of Communication of Tunis}
+
+    \vfill % Pushes subsequent content down, distributing space
+
+    {\Huge\bfseries P2M Report}
+
+    \vspace{1.5cm} % Space before the main project title
+
+    \titlerule \\ % Horizontal line above title
+    \vspace{0.3cm} % Space between line and title
+    {\Large\bfseries Physical Layer Security in MISO Systems} \\ % As per your provided code
+    % If you had a second line for the title, it would go here, e.g.:
+    % {\Large\bfseries and Artificial Noise} \\ 
+    \vspace{0.3cm} % Space between title and line
+    \titlerule % Horizontal line below title
+
+    \vfill % Pushes subsequent content further down
+
+    % Authors and Supervisor block
+    \begin{center}
+        \begin{minipage}{0.6\textwidth} 
+            \raggedright % Text within this block is left-aligned
+            
+            {\large\bfseries Authors:} \\
+            \vspace{0.1cm}
+            {\large Salem Aziz Fradi} \\ % As per your provided code
+            {\large Oussema Jebali} % As per your provided code
+            
+            \vspace{1.2cm} % Space between authors and supervisor sections
+            
+            {\large\bfseries Supervisors:} \\ % As per your provided code (plural)
+            \vspace{0.1cm}
+            {\large Pr. Mohamed Siala} \\ % As per your provided code
+            {\large Pr. Noura Sellami} % As per your provided code
+        \end{minipage}
+    \end{center}
+
+    \vfill % Pushes the academic year to the bottom
+
+    \centering
+    {\large Academic Year: 2024-2025}
+    
+    \restoregeometry % Restore the original page margins
+\end{titlepage}
+% --- End of Title Page ---
+
+\cleardoublepage % Ensures ToC starts on a new right-hand page, resets page style to default (fancy)
+
+
+% --- Remerciements (Acknowledgements) Page ---
+\newgeometry{margin=1in} % Optional: you can set specific margins for this page too
+\pagestyle{empty} % No headers or footers on this page
+
+\vspace*{2cm} % Add some vertical space at the top
+
+\begin{center}
+    \section*{Acknowledgments} % Or \section*{Acknowledgements}
+    \addcontentsline{toc}{section}{Acknowledgments} % Add it to the ToC
+\end{center}
+
+\vspace{1cm} % Space after the title
+
+\begin{Large} % Change to \Large, \LARGE, or \huge as needed
+\begin{doublespacing} % Or \singlespacing or \onehalfspacing as you prefer
+We would like to express our deepest gratitude to our supervisors, Professor Mohamed Siala and Professor Noura Sellami, whose generous guidance, thoughtful remarks, and constant encouragement steered every stage of this project. Their expertise and insights not only resolved countless challenges but also transformed the entire journey into a truly rewarding and pleasant experience.
+
+
+\end{doublespacing}
+\end{Large}
+
+\vfill % Pushes content towards the top, or use \vspace{\fill} to push to bottom if preferred
+
+\restoregeometry % Restore the main document page margins
+\cleardoublepage % Ensures ToC starts on a new right-hand page, resets page style to default (fancy)
+% --- End of Remerciements Page ---
+% --- Table of Contents ---
+\pagenumbering{roman} % Use roman numerals for front matter like ToC
+\fancyhf{} % Clear header/footer fields for ToC
+\lhead{Contents} % Set "Contents" in the left header for ToC pages
+\rhead{\thepage} % Page number in the right header for ToC pages
+\tableofcontents
+% --- End of Table of Contents ---
+
+\cleardoublepage % Ensures Introduction starts on a new right-hand page
+
+% --- Main Document Content Starts Here ---
+\pagenumbering{arabic} % Switch to arabic page numbering for the main content
+\setcounter{page}{1} % Start main content page numbering from 1
+\fancyhf{} % Clear header/footer fields again before setting for main content
+\lhead{Physical Layer Security in MISO Systems} % Main document left header
+\rhead{\thepage} % Main document right header (page number)
+
+\singlespacing 
+
+% The Introduction section will start on this new page
+\section{Introduction} % Removed trailing space from "Introduction "
+
+\subsection{Problematic}
+Wireless communication is essential for providing seamless, high-speed data connectivity between various digital devices. Unlike wired communications, where signals propagate through secure, controlled media, wireless transmission inherently exposes information due to its broadcasting nature, making data vulnerable to interception by unauthorized parties. While traditional cryptographic methods secure data by encryption at higher network layers, they do not prevent interception itself. Physical Layer Security (PLS) complements these methods by implementing strategies at the transmission stage, providing an additional protective layer that reduces the risk of information being intercepted in the first place.
+\subsection{System Model and Scenario (Alice--Bob--Eve Setting)}
+To rigorously investigate the interception vulnerability, we adopt the classical Wyner wiretap channel model from information theory. In this canonical setup, a transmitter (Alice) attempts to securely convey confidential information exclusively to a legitimate receiver (Bob), while preventing an unauthorized receiver (Eve) from decoding the transmitted message.
+
+Specifically, we consider a Multiple-Input Single-Output (MISO) wiretap scenario, where:
+\begin{itemize}
+    \item Alice is equipped with $N_t$ transmit antennas.
+    \item Both Bob and Eve have a single receiving antenna.
+\end{itemize}
+
+The received signals at Bob and Eve, respectively, are expressed as:
+\[
+y_B = \mathbf{h}^{H} \mathbf{x} + n_B, \quad y_E = \mathbf{g}^{H} \mathbf{x} + n_E
+\]
+where:
+\begin{itemize}
+    \item $\mathbf{x} \in \mathbb{C}^{N_t \times 1}$ denotes Alice’s transmitted signal vector, subject to an average power constraint $E\{\|\mathbf{x}\|^2\} = P$.
+    \item $\mathbf{h} \sim \mathcal{CN}(0, \sigma_h^2 \mathbf{I}_{N_t})$ and $\mathbf{g} \sim \mathcal{CN}(0, \sigma_g^2 \mathbf{I}_{N_t})$ are the complex channel vectors from Alice to Bob and from Alice to Eve, respectively, modeled as independent Rayleigh fading channels with variances $\sigma_h^2$ and $\sigma_g^2$.
+    \item $n_B \sim \mathcal{CN}(0, \sigma_B^2)$ and $n_E \sim \mathcal{CN}(0, \sigma_E^2)$  represent additive white Gaussian noise (AWGN) at Bob and Eve, typically assumed with equal variance.
+\end{itemize}
+
+Regarding Channel State Information (CSI):
+\begin{itemize}
+    \item We assume Time-Division Duplex (TDD) operation. Under TDD, Alice can acquire full and instantaneous CSI of the legitimate channel $\mathbf{h}$ through uplink pilot signals, leveraging channel reciprocity.
+    \item In contrast, Alice only has statistical knowledge about Eve’s channel vector $\mathbf{g}$, since Eve is a passive eavesdropper and does not reveal its instantaneous channel characteristics.
+\end{itemize}
+
+This classical MISO wiretap channel provides a rigorous theoretical framework to quantify and analyze secrecy from an information-theoretic standpoint.
+
+\subsection{Metrics for Evaluating Security Performance}
+To quantitatively assess the secrecy provided by the MISO wiretap channel, we rely on metrics derived from information theory, originally proposed by Wyner [1] :
+
+\subsubsection{Instantaneous Secrecy Rate ($R_s$)}
+Initially defined by Wyner as the difference between mutual information terms, the secrecy rate quantifies the maximum reliable confidential information rate achievable at Bob that remains undecodable by Eve:
+\[
+R_s = \max_{p(\mathbf{x})} \left[ I(\mathbf{x}; y) - I(\mathbf{x}; z) \right]^+
+\]
+For the Gaussian MISO [2] wiretap channel scenario described above, assuming Gaussian inputs, this mutual-information-based definition conveniently simplifies to a difference of logarithmic signal-to-noise-ratio (SNR) terms at Bob and Eve:
+\[
+R_s = \left[ \log_2(1 + \gamma_B) - \log_2(1 + \gamma_E) \right]^+
+\]
+where $\gamma_B$ and $\gamma_E$ denote the instantaneous SNRs at Bob and Eve, respectively.
+
+\subsubsection{Ergodic Secrecy Rate ($\bar{R}_s$)}
+Due to the randomness introduced by fading channels, the instantaneous secrecy rate fluctuates significantly over time. Thus, an average secrecy performance metric, the ergodic secrecy rate, is introduced by averaging the instantaneous secrecy rate over all possible channel realizations of $\mathbf{h}$ and $\mathbf{g}$:
+\[
+\bar{R}_s = \mathbb{E}_{\mathbf{h}, \mathbf{g}}\{R_s\}
+\]
+This metric accurately characterizes the long-term secrecy performance achievable under scenarios with relaxed latency constraints.
+
+\subsubsection{Secrecy-Outage Probability ($P_{\text{out}}$)}
+To accommodate stringent Quality-of-Service (QoS) or latency-sensitive applications, the secrecy-outage probability is defined as the probability that the instantaneous secrecy rate falls below a predefined target secrecy rate $R_0$:
+\[
+P_{\text{out}}(R_0) = \text{Pr}\{R_s < R_0\}
+\]
+The secrecy-outage metric thus directly measures reliability, capturing the practical robustness of secrecy guarantees against channel fluctuations and unpredictable fading.
+
+\section{Literature Review}
+
+Physical layer security (PLS) enhancement techniques aim to improve the legitimate user's (Bob) signal quality while degrading it for potential eavesdroppers (Eve). This review examines precoding, antenna selection, and artificial noise methods, drawing insights from works including "Antenna Subset Activation for Location-Based Secure MISO Wireless Communications in Fading Channels" by Morteza Soltani.
+
+\subsection{Channel Inversion (CI) Precoding}
+
+CI precoding creates a perfectly equalized channel to Bob using the precoder matrix:
+\begin{equation}
+    \mathbf{P}_{\text{CI}} = \text{diag}\left(\frac{1}{h_1}, \dots, \frac{1}{h_N}\right)
+\end{equation}
+where $p_{\text{CI},i} = 1/h_i$ is the precoding element for the $i$-th transmit antenna.
+
+\textbf{Limitation:} During deep fades ($|h_i| \to 0$), the required transmit power $1/|h_i|^2$ becomes impractically large. For Rayleigh fading channels, the average transmit power per antenna is theoretically infinite.
+
+\subsection{Eigenbeamformer (EBF) Precoding}
+
+EBF (also known as phase conjugation) aligns signal phases from active antennas at Bob:
+\begin{equation}
+    \mathbf{P}_{\text{EBF}} = \text{diag}\left(\frac{h_1^*}{|h_1|}, \dots, \frac{h_N^*}{|h_N|}\right)
+\end{equation}
+where $h_i^*$ is the complex conjugate of $h_i$. This maintains constant transmit power per antenna, unlike CI.
+
+\subsection{Antenna Subset Activation (ASA)}\label{subsec:ASA}
+
+A random subset $\mathcal{A}\subset\{1,\dots,N\}$ of $M$ antennas is activated at every symbol time.  
+Let $\mathbf{B}\!=\!\operatorname{diag}(b_1,\dots,b_N)$ with $b_i\!=\!1$ if $i\!\in\!\mathcal{A}$ and $0$ otherwise.  
+The transmitted vector is  
+\[
+\mathbf{x}= \frac{1}{M}\,\mathbf{P}_A\,\mathbf{B}\,s ,
+\qquad\text{with } \mathbf{P}_A\!=
+\begin{cases}
+\operatorname{diag}\!\bigl(\tfrac{1}{h_1^*},\dots,\tfrac{1}{h_N^*}\bigr) & \text{(CI)}\\[4pt]
+\operatorname{diag}\!\bigl(\tfrac{h_1}{|h_1|},\dots,\tfrac{h_N}{|h_N|}\bigr) & \text{(EBF)}
+\end{cases}
+\]
+where $s$ is the unit‐power information symbol.
+
+\paragraph{Received signals:}  
+With $n_B,n_E\sim\mathcal{CN}(0,\sigma_n^2)$ denoting AWGN at Bob and Eve, and
+$h_i,g_i$ the $i$-th channel coefficient to Bob and Eve:
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Channel-Inversion (CI) precoding}
+  \begin{align}
+    y_B &= \frac{1}{M}\!\sum_{i\in\mathcal{A}}\!h_i^*\!\left(\frac{1}{h_i^*}\right)s + n_B 
+         = s + n_B, \\[2pt]
+    z_E &= \frac{1}{M}\!\sum_{i\in\mathcal{A}}\!\frac{g_i^*}{h_i^*}\,s + n_E .
+  \end{align}
+
+\item \textbf{Eigenbeamformer (EBF) precoding}
+  \begin{align}
+    y_B &= \frac{1}{M}\!\sum_{i\in\mathcal{A}}\!h_i^*\!\left(\frac{h_i}{|h_i|}\right)s + n_B 
+         = \frac{1}{M}\!\sum_{i\in\mathcal{A}}\!|h_i|\,s + n_B, \\[2pt]
+    z_E &= \frac{1}{M}\!\sum_{i\in\mathcal{A}}\!g_i^*\!\left(\frac{h_i}{|h_i|}\right)s + n_E
+         = \frac{1}{M}\!\sum_{i\in\mathcal{A}}\!\frac{g_i^* h_i}{|h_i|}\,s + n_E .
+  \end{align}
+\end{itemize}
+
+\textit{Notation:} $\mathcal{A}$ — active antenna set ($|\mathcal{A}|=M$);  
+$h_i$, $g_i$ — instantaneous channels to Bob and Eve;  
+$n_B$, $n_E$ — circular AWGN; $s$ — data symbol.  
+CI equalizes amplitude and phase, yielding unit gain for Bob.  
+EBF aligns phase only, giving Bob gain $\tfrac{1}{M}\sum_{i\in\mathcal{A}}|h_i|$ and exposing Eve to composite fading.
+
+
+\begin{itemize}[leftmargin=1.5em] % Retained specific leftmargin for this list
+    \item When using CI precoding, ASA inherits severe power allocation problems during deep fades
+    \item Some evaluations define Eve's SINR using the mean of her effective channel, treating variance from random antenna selection as interference
+\end{itemize}
+
+
+
+
+
+\subsection{Artificial Fast Fading (AFF)}\label{subsec:AFF}
+
+The AFF scheme randomizes the beam every symbol so that Bob still sees a constant channel while Eve faces an unknown, rapidly–varying gain. [4]
+
+\paragraph{Random beamformer construction}
+Let $\boldsymbol{\omega}(k)=[\omega_1(k),\dots,\omega_{N_t}(k)]^{\!T}$ be the weighting vector at symbol time~$k$.
+Draw $\omega_n(k)\sim\mathcal{CN}(0,\sigma_\omega^{2})$ independently for $n=1,\dots,N_t\!-\!1$.
+Impose the linear constraint
+\begin{equation}
+\mathbf{h}^{H}\boldsymbol{\omega}(k)=1,
+\end{equation}
+which yields the last coefficient
+\begin{equation}
+\omega_{N_t}^{*}(k)=\frac{1-\sum_{n=1}^{N_t-1}h_n\,\omega_n^{*}(k)}{h_{N_t}} \label{eq:AFF_last_coef} % Retained label, you can remove if not needed
+\end{equation}
+
+
+
+\paragraph{Received signals}
+Bob's received signal is
+\begin{equation}
+y_{B}(k)=s(k)+n_{B}(k),\qquad n_{B}(k)\sim\mathcal{CN}(0,\sigma_n^{2})
+\end{equation}
+so Bob decodes coherently without CSI.
+Eve, with channel vector $\mathbf{g}$ (where $g_n$ is the $n$-th component of $\mathbf{g}$), observes
+\begin{equation}
+y_{E}(k)=\mathbf{g}^{H}\boldsymbol{\omega}^{H}(k)s(k)+n_{E}(k)=h_{E}(k)s(k)+n_{E}(k)
+\end{equation},
+where $n_E(k) \sim \mathcal{CN}(0, \sigma_n^2)$ is additive white Gaussian noise. The effective scalar fast-fading channel $h_E(k)$ is given by
+\begin{equation}
+h_{E}(k)=\sum_{n=1}^{N_t-1}\!\Bigl(g_{n}-\tfrac{g_{N_t}}{h_{N_t}}h_n\Bigr)\omega_n^{*}(k)+\tfrac{g_{N_t}}{h_{N_t}} \label{eq:AFF_Eve_channel} % Added a label for clarity, remove if not needed
+\end{equation}.
+Consequently, $h_{E}(k)\sim\mathcal{CN}\!\bigl(\mu_{E},\sigma_{E}^{2}\bigr)$ and its envelope is Ricean.
+
+\paragraph{Average transmit power}
+For a given channel realization $\mathbf{h}$, the average transmit power is
+\begin{equation}
+P_{\text{AFF}}=\sum_{n=1}^{N_t-1}\Bigl(1+\frac{|h_{n}|^{2}}{|h_{N_t}|^{2}}\Bigr)\sigma_\omega^{2}\sigma_s^{2}+\frac{\sigma_s^{2}}{|h_{N_t}|^{2}}
+\end{equation}.
+Since $h_{N_t}\!\sim\!\mathcal{CN}(0,1)$, $\mathbb{E}\!\bigl[1/|h_{N_t}|^{2}\bigr]=\infty$, so $P_{\text{AFF}}$ is unbounded in deep fade.
+\medskip
+The AFF precoder thus guarantees unit-gain for Bob, forces Eve onto a fast Ricean fading channel, but requires careful power control to avoid occasional power spikes.
+
+\subsection{Generalized Selection Transmission (GST)}
+
+GST addresses power issues by selecting the $Q$ antennas with strongest channel gains (largest $|h_i|^2$), keeping $1/|h_{\text{sel}, k}|^2$ terms manageable [3]. This resolves the problem of power explosion, potentially introduced in schemes like Artificial Fast Fading (AFF), by selecting the largest $Q$ antennas depending on the channels (i.e., those with the largest $|h_i|^2$). The expected value of the power (or a component related to it, such as the expected inverse squared channel gain) becomes:
+\begin{equation}
+E \left( \frac{1}{|h_{N_Q}|^2} \right) = N_Q \int_0^\infty \frac{1}{\gamma} (1 - e^{-\gamma})^{N_Q-1} e^{-\gamma} d\gamma
+= (-1)^{N_Q} N_Q \sum_{\nu=0}^{N_Q-1} (-1)^\nu \binom{N_Q-1}{\nu} \ln(N_Q - \nu),
+\end{equation}
+
+\textbf{Limitation:} The deterministic selection criterion makes GST vulnerable to sophisticated eavesdroppers who can predict active antennas, potentially undermining security benefits.
+\subsection{Artificial Noise (AN) Aided Beamforming}
+
+AN beamforming transmits both desired signal $s$ and artificial interference $\mathbf{z}$ [5]:
+\begin{equation}
+    \mathbf{x} = \mathbf{w}s + \mathbf{z}
+\end{equation}
+where $\mathbf{z}$ is designed such that $\mathbf{h}_B \mathbf{z} = 0$ (lies in Bob's channel null space). This degrades Eve's reception without affecting Bob.
+
+\subsection{Generalized Artificial Noise (GAN)}
+To improve upon traditional AN approaches, Generalized Artificial Noise (GAN)  relaxes the strict null-space constraint on the artificial noise vector [6]. Formally, the GAN strategy solves the optimization problem:
+\begin{equation}
+\max_{\mathbf{Q} \succeq 0,\ \mathrm{tr}(\mathbf{Q}) \le P_z} \quad R_s(\mathbf{Q}),
+\end{equation}
+where $\mathbf{Q}$ is the covariance matrix of the artificial noise, $R_s(\mathbf{Q})$ denotes the achievable secrecy rate derived from Wyner's formulation, and $P_z$ is the power allocated to the artificial noise. Although GAN typically provides enhanced secrecy performance compared to classical AN, its computational complexity limits real-time applicability.
+
+\subsection{Deep Artificial Noise (Deep AN)}
+Deep Artificial Noise (Deep AN)  addresses the computational complexity associated with GAN by leveraging deep learning methods [7]. Specifically, a neural network $\mathcal{F}_\theta$ is trained offline using optimal covariance matrices obtained from GAN optimization. During real-time operation, Deep AN rapidly infers near-optimal AN covariance matrices via a single forward pass of the trained network:
+\[
+\mathbf{Q}_\text{deep} = \mathcal{F}_\theta(\mathbf{h}),
+\]
+significantly reducing inference latency while maintaining GAN-level secrecy rate performance.
+
+\section{Our Proposed Strategies}
+
+We consider a physical layer security scenario where Alice (A) transmits a confidential signal $s$ to Bob (B) in the presence of an eavesdropper Eve (E). Alice employs a beamforming vector $\mathbf{w}$ for the signal $s$ and simultaneously transmits artificial noise (AN) $\mathbf{z}$ to degrade Eve's channel. The composite signal transmitted by Alice is $\mathbf{x} = \mathbf{w}s + \mathbf{z}$.
+Alice is equipped with $N_T$ transmit antennas.
+The average total emitting power from Alice is maintained constant at $P_{\text{total}}$:
+\begin{equation}
+    \E_{\mathbf{h}}[\norm{\mathbf{w}}^2] + \E_{\mathbf{h}}[\norm{\mathbf{z}}^2] = P_{\text{total}}
+\end{equation}
+where $\E_{\mathbf{h}}[\cdot]$ denotes the expectation over the channel realization $\mathbf{h}$ (over the active antennas for a given transmission).
+For power allocation between the signal and AN, we define a factor $\alpha \in [0,1]$ such that:
+\begin{align}
+    \E_{\mathbf{h}}[\norm{\mathbf{w}}^2] &= \alpha P_{\text{total}} \label{eq:avg_power_w} \\
+    \E_{\mathbf{h}}[\norm{\mathbf{z}}^2] &= (1-\alpha) P_{\text{total}} \label{eq:avg_power_z}
+\end{align}
+Finding the optimal $\alpha$ to maximize the secrecy rate is a complex non-convex optimization problem, so we treat $\alpha$ as a variable parameter in our analysis. We assume the information symbol $s$ is normalized, i.e., $\E[|s|^2]=1$, or its power $|s|^2$ is a constant absorbed into $P_{\text{total}}$ or $\alpha P_{\text{total}}$. For clarity, we will retain $|s|^2$ in the rate expressions.
+
+The achievable secrecy rate $R_s$ (in bits/s/Hz) for a given channel realization is given by:
+\begin{equation} \label{eq:secrecy_rate}
+R_s = \max\left(0, \log_2\left(1 + \frac{|s|^2 \abs{\mathbf{h}\herm \mathbf{w}}^2}{\sigma_B^2}\right) - \log_2\left(1 + \frac{|s|^2 \abs{\mathbf{g}\herm \mathbf{w}}^2}{\E_{\mathbf{v}}\left[\abs{\mathbf{g}\herm \mathbf{z}}^2\right] + \sigma_E^2}\right)\right)
+\end{equation}
+where $\mathbb{E}_{\mathbf{v}}[\cdot]$ denotes the expectation over the random vector $\mathbf{v}$, which is used to construct the artificial noise (AN) vector $\mathbf{z}$, defined as $\mathbf{z} \propto \boldsymbol{\Gamma} \mathbf{v}$, with $\boldsymbol{\Gamma}$ being the orthogonal matrix corresponding to the channel $\mathbf{h}$. The instantaneous powers $\norm{\mathbf{w}}^2$ and $\norm{\mathbf{z}}^2$ are defined for each strategy, and any associated coefficients are set to satisfy the average power constraints in Eq. \eqref{eq:avg_power_w} and \eqref{eq:avg_power_z}. The parameter $M$ used in the following strategies relates to the fixed number of active transmit antennas for the transmitter.
+
+\subsection{Strategy 1: Beamforming for Constant Received Power at Bob}
+This strategy utilizes a beamforming vector $\mathbf{w}$ based on the structure $\mathbf{h}/\norm{\mathbf{h}}^2$. When appropriately scaled according to the average power constraint, this ensures constant received signal power at Bob. For a transmission using $M$ active antennas, we assume $\E_{\mathbf{h}_M}[1/\norm{\mathbf{h}_M}^2] = 1/(M-1)$, where $\mathbf{h}_M$ is the $M$-dimensional channel vector and $M>1$.
+
+\subsubsection{Sub-strategy 1.1: Constant Instantaneous Artificial Noise Power}
+For a transmission using $M$ active antennas:
+\begin{itemize}
+    \item Instantaneous power of the beamforming component: $\norm{\mathbf{w}}^2 = \lambda / \norm{\mathbf{h}_M}^2$.
+    \item Instantaneous power of the artificial noise: $\norm{\mathbf{z}}^2 = \mu$, where $\mu$ is a constant.
+\end{itemize}
+To satisfy the average power constraints:
+$\mu = \E_{\mathbf{h}_M}[\norm{\mathbf{z}}^2] = (1-\alpha)P_{\text{total}}$.
+$\E_{\mathbf{h}_M}[\lambda / \norm{\mathbf{h}_M}^2] = \lambda \E_{\mathbf{h}_M}[1/\norm{\mathbf{h}_M}^2] = \alpha P_{\text{total}}$. With $\E_{\mathbf{h}_M}[1/\norm{\mathbf{h}_M}^2] = 1/(M-1)$, this gives $\lambda \frac{1}{M-1} = \alpha P_{\text{total}}$, so $\lambda = (M-1)\alpha P_{\text{total}}$.
+Thus:
+\begin{itemize}
+    \item $\norm{\mathbf{w}}^2 = (M-1)\alpha P_{\text{total}} \frac{1}{\norm{\mathbf{h}_M}^2}$.
+    \item $\norm{\mathbf{z}}^2 = (1-\alpha)P_{\text{total}}$.
+    \item The beamforming vector is $\mathbf{w} = \sqrt{(M-1)\alpha P_{\text{total}}} \frac{\mathbf{h}_M}{\norm{\mathbf{h}_M}^2}$.
+    \item The AN vector is $\mathbf{z} = \sqrt{(1-\alpha)P_{\text{total}}} \cdot \mathbf{\Gamma} \mathbf{v} / \norm{\mathbf{\Gamma} \mathbf{v}}$, where $\mathbf{\Gamma}$ is a projection matrix onto the null space of $\mathbf{h}_M$ (i.e., $\mathbf{\Gamma}\mathbf{h}_M = \mathbf{0}$), and $\mathbf{v} \sim \CN(\mathbf{0}, \mathbf{I}_{M \times M})$.
+\end{itemize}
+The received signal power at Bob is $|s|^2|\mathbf{h}_M\herm \mathbf{w}|^2 = |s|^2 (M-1)\alpha P_{\text{total}}$.
+
+\subsubsection{Sub-strategy 1.2: Variable Instantaneous Artificial Noise Power}
+For a transmission using $M$ active antennas:
+\begin{itemize}
+    \item Instantaneous power of the beamforming component: $\norm{\mathbf{w}}^2 = \lambda / \norm{\mathbf{h}_M}^2$.
+    \item Instantaneous power of the artificial noise: $\norm{\mathbf{z}}^2 = \mu / \norm{\mathbf{h}_M}^2$.
+\end{itemize}
+To satisfy the average power constraints:
+$\E_{\mathbf{h}_M}[\lambda / \norm{\mathbf{h}_M}^2] = \lambda \E_{\mathbf{h}_M}[1/\norm{\mathbf{h}_M}^2] = \alpha P_{\text{total}}$ and $\E_{\mathbf{h}_M}[\mu / \norm{\mathbf{h}_M}^2] = \mu \E_{\mathbf{h}_M}[1/\norm{\mathbf{h}_M}^2] = (1-\alpha) P_{\text{total}}$.
+With $\E_{\mathbf{h}_M}[1/\norm{\mathbf{h}_M}^2] = 1/(M-1)$, these imply:
+$\lambda = (M-1)\alpha P_{\text{total}}$ and $\mu = (M-1)(1-\alpha)P_{\text{total}}$.
+Thus:
+\begin{itemize}
+    \item $\norm{\mathbf{w}}^2 = (M-1)\alpha P_{\text{total}} \frac{1}{\norm{\mathbf{h}_M}^2}$.
+    \item $\norm{\mathbf{z}}^2 = (M-1)(1-\alpha)P_{\text{total}} \frac{1}{\norm{\mathbf{h}_M}^2}$.
+    \item The beamforming vector is $\mathbf{w} = \sqrt{(M-1)\alpha P_{\text{total}}} \frac{\mathbf{h}_M}{\norm{\mathbf{h}_M}^2}$.
+    \item The AN vector $\mathbf{z}$ is constructed to have the specified instantaneous power.
+\end{itemize}
+The received signal power at Bob is $|s|^2|\mathbf{h}_M\herm \mathbf{w}|^2 = |s|^2 (M-1)\alpha P_{\text{total}}$.
+
+For the subsequent strategies (Strategy 2 and 3), where the expectation $\E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2]$ is utilized, we will assume $\E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2] = M$, where $M$ is the number of active transmit antennas for that transmission.
+
+\subsection{Strategy 2: Maximum Ratio Transmission (MRT)}
+This strategy employs MRT beamforming, where $\mathbf{w}$ is aligned with $\mathbf{h}_M$. This was the strategy proposed by Goel and Negi and will serve as a benchmark. For a transmission using $M$ active antennas:
+\begin{itemize}
+    \item Instantaneous power of the beamforming component: $\norm{\mathbf{w}}^2 = \lambda$ (constant).
+    \item Instantaneous power of the artificial noise: $\norm{\mathbf{z}}^2 = \mu$ (constant).
+\end{itemize}
+To satisfy the average power constraints:
+$\lambda = \alpha P_{\text{total}}$ and $\mu = (1-\alpha)P_{\text{total}}$.
+Thus:
+\begin{itemize}
+    \item $\norm{\mathbf{w}}^2 = \alpha P_{\text{total}}$.
+    \item $\norm{\mathbf{z}}^2 = (1-\alpha)P_{\text{total}}$.
+    \item The beamforming vector is $\mathbf{w} = \sqrt{\alpha P_{\text{total}}} \frac{\mathbf{h}_M}{\norm{\mathbf{h}_M}}$.
+\end{itemize}
+The received signal power at Bob is $|s|^2|\mathbf{h}_M\herm \mathbf{w}|^2 = |s|^2 \alpha P_{\text{total}} \norm{\mathbf{h}_M}^2$.
+
+\subsection{Strategy 3: Channel Proportional Beamforming}
+This strategy uses a beamforming vector $\mathbf{w}$ proportional to $\mathbf{h}_M$. For a transmission using $M$ active antennas:
+
+\subsubsection{Sub-strategy 3.1: Constant Instantaneous AN Power}
+\begin{itemize}
+    \item Instantaneous power of the beamforming component: $\norm{\mathbf{w}}^2 = \lambda \norm{\mathbf{h}_M}^2$.
+    \item Instantaneous power of the artificial noise: $\norm{\mathbf{z}}^2 = \mu$ (constant).
+\end{itemize}
+To satisfy the average power constraints:
+$\mu = (1-\alpha)P_{\text{total}}$.
+$\E_{\mathbf{h}_M}[\lambda \norm{\mathbf{h}_M}^2] = \lambda \E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2] = \alpha P_{\text{total}}$. With $\E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2] = M$, this implies $\lambda M = \alpha P_{\text{total}}$, so $\lambda = \frac{\alpha P_{\text{total}}}{M}$.
+Thus:
+\begin{itemize}
+    \item $\norm{\mathbf{w}}^2 = \frac{\alpha P_{\text{total}}}{M} \norm{\mathbf{h}_M}^2$.
+    \item $\norm{\mathbf{z}}^2 = (1-\alpha)P_{\text{total}}$.
+    \item The beamforming vector is $\mathbf{w} = \sqrt{\frac{\alpha P_{\text{total}}}{M}} \mathbf{h}_M$.
+\end{itemize}
+The received signal power at Bob is given by: $|s|^2 \left| \mathbf{h}_M^{\herm} \mathbf{w} \right|^2 = |s|^2 \cdot \frac{\alpha P_{\text{total}}}{M} \cdot \left| \mathbf{h}_M^{\herm} \mathbf{h}_M \right|^2 = |s|^2 \cdot \frac{\alpha P_{\text{total}}}{M} \cdot \| \mathbf{h}_M \|^4$
+
+
+
+
+\subsubsection{Sub-strategy 3.2: Channel-Dependent AN Power Proportional to $\norm{\mathbf{h}_M}^2$}
+\begin{itemize}
+    \item Instantaneous power of the beamforming component: $\norm{\mathbf{w}}^2 = \lambda \norm{\mathbf{h}_M}^2$.
+    \item Instantaneous power of the artificial noise: $\norm{\mathbf{z}}^2 = \mu \norm{\mathbf{h}_M}^2$.
+\end{itemize}
+To satisfy the average power constraints:
+$\E_{\mathbf{h}_M}[\lambda \norm{\mathbf{h}_M}^2] = \lambda \E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2] = \alpha P_{\text{total}}$ and $\E_{\mathbf{h}_M}[\mu \norm{\mathbf{h}_M}^2] = \mu \E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2] = (1-\alpha)P_{\text{total}}$.
+With $\E_{\mathbf{h}_M}[\norm{\mathbf{h}_M}^2] = M$, these imply:
+$\lambda = \frac{\alpha P_{\text{total}}}{M}$ and $\mu = \frac{(1-\alpha)P_{\text{total}}}{M}$.
+Thus:
+\begin{itemize}
+    \item $\norm{\mathbf{w}}^2 = \frac{\alpha P_{\text{total}}}{M} \norm{\mathbf{h}_M}^2$.
+    \item $\norm{\mathbf{z}}^2 = \frac{(1-\alpha)P_{\text{total}}}{M} \norm{\mathbf{h}_M}^2$.
+    \item The beamforming vector is $\mathbf{w} = \sqrt{\frac{\alpha P_{\text{total}}}{M}} \mathbf{h}_M$.
+\end{itemize}
+The received signal power at Bob is given by: $|s|^2 \left| \mathbf{h}_M^{\herm} \mathbf{w} \right|^2 = |s|^2 \cdot \frac{\alpha P_{\text{total}}}{M} \cdot \left| \mathbf{h}_M^{\herm} \mathbf{h}_M \right|^2 = |s|^2 \cdot \frac{\alpha P_{\text{total}}}{M} \cdot \| \mathbf{h}_M \|^4$
+
+
+\subsection{Enhancement via Temporal Diversity with Antenna Subset Selection}
+
+To further improve the reliability of secure communication, particularly in terms of outage probability, we can introduce temporal diversity by dividing a transmission time slot into $K$ sub-slots. In each sub-slot $k \in \{1, \dots, K\}$, Alice utilizes a specific subset of her $N_T$ total transmit antennas, denoted $\mathcal{A}_k \subseteq \{1, \dots, N_T\}$. Let $M_k = |\mathcal{A}_k|$ be the number of active antennas in sub-slot $k$. The selection of $\mathcal{A}_k$ can be fixed, cyclic, random, or adaptive.
+
+For each sub-slot $k$:
+\begin{enumerate}
+    \item Alice uses the $M_k$ active antennas. The relevant channel vectors to Bob and Eve are $\mathbf{h}_k$ (an $M_k$-dimensional vector for Bob) and $\mathbf{g}_k$ (an $M_k$-dimensional vector for Eve).
+    \item One of the Strategies 1, 2, or 3 (with its sub-variants) is applied using the $M_k$ active antennas, the channel $\mathbf{h}_k$, and the corresponding power allocation parameters $\lambda_k, \mu_k$. The parameter $M$ in the strategy descriptions above is replaced by $M_k$ for this sub-slot. For example, if Strategy 1.1 is used, $\lambda_k = (M_k-1)\alpha P_{\text{total}}$ (assuming $M_k>1$).
+    \item The instantaneous secrecy rate for sub-slot $k$, denoted $R_s^{(k)}$, is calculated using Eq. \eqref{eq:secrecy_rate} with $\mathbf{h}_k, \mathbf{g}_k, \mathbf{w}_k, \mathbf{z}_k$.
+\end{enumerate}
+
+The overall secrecy rate for the entire time slot can be considered as the average of the sub-slot rates:
+\begin{equation}
+    R_s^{\text{avg}} = \frac{1}{K} \sum_{k=1}^K R_s^{(k)}
+\end{equation}
+By transmitting over $K$ sub-slots, potentially experiencing different channel realizations (especially if antenna subsets $\mathcal{A}_k$ vary and/or the channel is time-varying), the distribution of $R_s^{\text{avg}}$ is expected to have a smaller variance compared to the secrecy rate achieved over a single, longer slot using a fixed set of antennas. This is due to the averaging effect, akin to the law of large numbers.
+
+This reduction in variance can lead to a significant improvement in the secrecy outage probability, $P_{\text{outage}} = \text{Pr}(R_s^{\text{avg}} < R_{\text{th}})$, where $R_{\text{th}}$ is a target secrecy rate threshold. A distribution more concentrated around its mean (assuming the mean is sufficiently above $R_{\text{th}}$) will have a smaller tail probability below $R_{\text{th}}$.
+
+The total average power constraint $P_{\text{total}}$ is maintained by ensuring that the power allocation rules (Eqs. \eqref{eq:avg_power_w} and \eqref{eq:avg_power_z}) are satisfied based on the expectation over $\mathbf{h}_k$ within each sub-slot $k$.
+
+This antenna hopping/subset selection approach introduces an additional layer of design flexibility and can be particularly beneficial in fading environments by exploiting multi-user diversity if antenna subsets create sufficiently different effective channels.
+
+\section{Results and Analysis}
+
+The simulation results provide insights into the performance of various physical layer security strategies under different conditions. We used Monte Carlo simulations to approximate the ergodic secrecy rate by averaging over many random realizations of the channel vectors $\mathbf{h}$ and $\mathbf{g}$. This approximation is then used to plot both the secrecy rate and the outage probability.
+
+
+Figure~\ref{fig:secrecy_rate_vs_snr} presents the secrecy rate for five developed strategies as a function of Signal-to-Noise Ratio (SNR). While these plots do not reveal significant performance disparities among the strategies, they serve as a crucial validation of our simulation setup. The consistent trends and proximate secrecy rate values across all methods confirm the reliability of our simulation framework.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{images/image1.png}
+    \caption{Secrecy rate of five distinct strategies versus SNR.}
+    \label{fig:secrecy_rate_vs_snr}
+\end{figure}
+
+In contrast, the outage probability, depicted in Figure~\ref{fig:outage_prob_vs_snr}, exhibits significant differences between the strategies when plotted against SNR. This variance can be attributed to the distinct construction of the beamforming and AN vectors, which directly influences the emitted power and the power received at the legitimate user and eavesdropper. For instance, opportunistic strategies (e.g., those analogous to sections 3.3.1 and 3.3. 2 in section 3) incorporate a substantial channel gain factor in their beamforming design. This characteristic allows them to effectively compensate for low SNR conditions. However, at higher SNR levels, strategies employing constant power beamforming tend to yield better outage probabilities. These latter methods offer greater stability as they are less dependent on channel randomness, thereby mitigating performance degradation in adverse conditions such as deep fading. Figure~\ref{fig:outage_prob_validation} provides further corroboration for these outage probability simulation results.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\linewidth]{images/image2.png}
+    \caption{Outage probability with varying SNR}
+    \label{fig:outage_prob_vs_snr}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/image3.png}
+    \caption{Outage probability with fixed SNR}
+    \label{fig:outage_prob_validation}
+\end{figure}
+
+Finally, the simulation results shown in Figure~\ref{fig:random_antenna_impact} demonstrate the importance of randomized antenna selection. By employing randomization, the system can leverage the law of large numbers. This causes the secrecy rate to converge towards its mean value, effectively reducing its variance. Such stabilization is critical for achieving a consistently lower and more predictable outage probability compared to deterministic antenna selection schemes, especially in dynamic channel environments.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{imageez.png}
+    \caption{Impact of randomized antenna selection on secrecy rate convergence and variance reduction.}
+    \label{fig:random_antenna_impact}
+\end{figure}
+
+\section{Conclusion and Perspectives}
+\label{sec:conclusion}
+
+This project undertook a comprehensive review and simulation of various physical layer security (PLS) techniques for MISO systems, drawing inspiration from existing research to identify avenues for enhancement. Our simulations highlighted that while different strategies exhibit varying performance across diverse scenarios, our focused approach successfully mitigated power explosion issues while concurrently ensuring high secrecy rates and low outage probabilities.
+
+In addition to the strategies explored, we introduced a power partitioning scheme using a variable parameter $\alpha$ to divide the total transmission power dictated by the system's SNR—between beamforming and artificial noise generation. While this heuristic approach provided flexibility and allowed us to analyze performance trade-offs, it did not yield the optimal power allocation that maximizes the secrecy rate under power constraints. Determining such optimal coefficients remains an open challenge due to the inherently non-convex nature of the optimization problem.
+
+Furthermore, we have laid the theoretical groundwork for extending the framework to MIMO systems. This proposed advancement aims to exploit the properties of high-dimensional probability, where the likelihood of vector orthogonality is substantial. Such a property can be leveraged to direct signals colinearly towards legitimate users while simultaneously ensuring orthogonality and thus minimal interference or information leakage—towards unintended receivers. This theoretical direction holds significant promise for further bolstering PLS in multi-antenna communication systems.
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{99}
+
+\bibitem{Wyner1975}
+A.~D.~Wyner, ``The wire-tap channel,'' \emph{Bell Syst. Tech. J.}, vol.~54, no.~8, pp.~1355–1387, Oct.~1975.
+
+\bibitem{LeungYanCheong1978}
+S.~K.~Leung-Yan-Cheong and M.~E.~Hellman, ``The Gaussian wire-tap channel,'' \emph{IEEE Trans. Inf. Theory}, vol.~24, no.~4, pp.~451–456, Jul.~1978.
+
+\bibitem{Soltani2018Access}
+M.~Soltani and H.~Arslan, ``Randomized beamforming with generalized selection transmission for security enhancement in MISO wiretap channels,'' \emph{IEEE Access}, vol.~6, pp.~27\,891–27\,902, 2018.
+
+
+\bibitem{Wang2015TWC}
+
+H.-M.~Wang, T.~Zheng, and X.-G.~Xia, ``Secure MISO wiretap channels with multi-antenna passive eavesdropper: Artificial noise vs. artificial fast fading,'' \emph{IEEE Trans. Wireless Commun.}, vol.~14, no.~1, pp.~94–106, Jan.~2015.
+
+\bibitem{GoelNegi2005}
+S.~Goel and R.~Negi, ``Secret communication using artificial noise,'' in \emph{Proc. IEEE Veh. Technol. Conf. (VTC-Fall)}, Dallas, TX, USA, Sep.~2005, pp.~1906–1910.
+
+\bibitem{Lin2013JSAC}
+P.-H.~Lin, S.-H.~Lai, S.-C.~Lin, and H.-J.~Su, ``On secrecy rate of the generalized artificial-noise assisted secure beamforming for wiretap channels,'' \emph{IEEE J. Sel. Areas Commun.}, vol.~31, no.~9, pp.~1728–1740, Sep.~2013.
+\bibitem{Yun2020TVT}
+S.~Yun, J.-M.~Kang, I.-M.~Kim, and J.~Ha, ``Deep artificial noise: Deep learning-based precoding optimization for artificial noise scheme,'' \emph{IEEE Trans. Veh. Technol.}, vol.~69, no.~3, pp.~3465–3478, Mar.~2020.
+
+\end{thebibliography}
+\addcontentsline{toc}{section}{Mathematical Notations}
+\section*{Mathematical Notations}
+\singlespacing
+
+The following table lists the mathematical notations used throughout this document.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Notation} & \textbf{Description} \\
+\midrule
+$(\cdot)^H$ & Hermitian transpose (conjugate transpose) \\
+$(\cdot)^T$ & Matrix or vector transpose \\
+$(\cdot)^*$ & Complex conjugate (element-wise for scalars or vectors) \\
+$\norm{\cdot}$ & Euclidean norm (e.g., $\norm{\mathbf{x}}$ denotes the norm of vector $\mathbf{x}$) \\
+$\abs{\cdot}$ & Absolute value or magnitude (e.g., $\abs{z}$ for a scalar $z$) \\
+$\E\{\cdot\}$ & Expectation operator \\
+$\CN(\mu, \sigma^2)$ & Complex normal distribution with mean $\mu$ and variance $\sigma^2$ \\
+$\mathbf{I}_n$ & Identity matrix of size $n \times n$ \\
+\midrule
+\end{tabular}
+\label{tab:notations}
+\end{table}
+\end{document}
