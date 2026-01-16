@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.5.11)  15 JAN 2026 21:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.5.11)  16 JAN 2026 08:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -531,22 +531,22 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo_carthage.png, id=118, 852.18375pt x 1027.84pt>
+<logo_carthage.png, id=130, 852.18375pt x 1027.84pt>
 File: logo_carthage.png Graphic file (type png)
 <use logo_carthage.png>
 Package pdftex.def Info: logo_carthage.png  used on input line 58.
 (pdftex.def)             Requested size: 113.81102pt x 137.26247pt.
-<logo_supcom.png, id=120, 1871.99374pt x 805.0075pt>
+<logo_supcom.png, id=132, 1871.99374pt x 805.0075pt>
 File: logo_supcom.png Graphic file (type png)
 <use logo_supcom.png>
 Package pdftex.def Info: logo_supcom.png  used on input line 63.
 (pdftex.def)             Requested size: 142.26378pt x 61.17137pt.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 95.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 94.
 
  (C:\Program Files\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 95.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 94.
 
 
 (C:\Program Files\MiKTeX\tex/latex/amsfonts\umsb.fd
@@ -593,7 +593,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.127 \restoregeometry
+l.126 \restoregeometry
                        [1
 
 
@@ -605,74 +605,66 @@ l.127 \restoregeometry
  [1
 
 
-]
-
-LaTeX Warning: Reference `tab:sets' on page 1 undefined on input line 187.
-
-
+] [2]
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.205 
+l.204 
        [1
 
-]
+] [2] [3] [4] [5] [6]
 
-LaTeX Warning: Reference `tab:network_params' on page 2 undefined on input line
- 208.
-
-
-LaTeX Warning: Reference `tab:energy_params' on page 2 undefined on input line 
-231.
-
-[2]
-
-LaTeX Warning: Reference `tab:variables' on page 3 undefined on input line 259.
+LaTeX Warning: Reference `fig:synthetic' on page 7 undefined on input line 493.
 
 
-[3] [4]
-
-LaTeX Warning: Reference `tab:mdp' on page 5 undefined on input line 392.
-
-[5] [6]
-
-LaTeX Warning: Reference `tab:config' on page 7 undefined on input line 469.
-
-<figures/training_reward.png, id=241, 578.16pt x 325.215pt>
+[7]
+<figures/synthetic_training_data.png, id=270, 714.0276pt x 714.0276pt>
+File: figures/synthetic_training_data.png Graphic file (type png)
+<use figures/synthetic_training_data.png>
+Package pdftex.def Info: figures/synthetic_training_data.png  used on input lin
+e 497.
+(pdftex.def)             Requested size: 294.42636pt x 294.43106pt.
+<figures/training_reward.png, id=272, 578.16pt x 325.215pt>
 File: figures/training_reward.png Graphic file (type png)
 <use figures/training_reward.png>
-Package pdftex.def Info: figures/training_reward.png  used on input line 498.
+Package pdftex.def Info: figures/training_reward.png  used on input line 508.
 (pdftex.def)             Requested size: 271.7835pt x 152.87587pt.
-[7]
-<figures/main_page.PNG, id=253, 1445.4pt x 721.19438pt>
+ [8 <./figures/synthetic_training_data.png> <./figures/training_reward.png>]
+<figures/main_page.PNG, id=282, 1445.4pt x 721.19438pt>
 File: figures/main_page.PNG Graphic file (type png)
 <use figures/main_page.PNG>
-Package pdftex.def Info: figures/main_page.PNG  used on input line 538.
+Package pdftex.def Info: figures/main_page.PNG  used on input line 550.
 (pdftex.def)             Requested size: 217.42265pt x 108.4826pt.
-<figures/inference.PNG, id=254, 1445.4pt x 696.35156pt>
+<figures/inference.PNG, id=283, 1445.4pt x 696.35156pt>
 File: figures/inference.PNG Graphic file (type png)
 <use figures/inference.PNG>
-Package pdftex.def Info: figures/inference.PNG  used on input line 543.
+Package pdftex.def Info: figures/inference.PNG  used on input line 555.
 (pdftex.def)             Requested size: 217.42265pt x 104.74573pt.
-<figures/result.PNG, id=255, 1445.4pt x 724.20563pt>
+<figures/result.PNG, id=284, 1445.4pt x 724.20563pt>
 File: figures/result.PNG Graphic file (type png)
 <use figures/result.PNG>
-Package pdftex.def Info: figures/result.PNG  used on input line 550.
+Package pdftex.def Info: figures/result.PNG  used on input line 562.
 (pdftex.def)             Requested size: 217.42265pt x 108.93556pt.
-<figures/analytics.PNG, id=256, 1445.4pt x 719.68875pt>
+<figures/analytics.PNG, id=285, 1445.4pt x 719.68875pt>
 File: figures/analytics.PNG Graphic file (type png)
 <use figures/analytics.PNG>
-Package pdftex.def Info: figures/analytics.PNG  used on input line 555.
+Package pdftex.def Info: figures/analytics.PNG  used on input line 567.
 (pdftex.def)             Requested size: 217.42265pt x 108.25613pt.
- [8 <./figures/training_reward.png>] [9 <./figures/main_page.PNG> <./figures/in
-ference.PNG> <./figures/result.PNG> <./figures/analytics.PNG>]
+[9] [10 <./figures/main_page.PNG> <./figures/inference.PNG> <./figures/result.P
+NG> <./figures/analytics.PNG>]
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 6
-02.
+19.
 
 (C:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
-) [10] (report.aux)
+) [11]
+Underfull \hbox (badness 3826) in paragraph at lines 639--640
+[]\T1/cmr/m/n/10.95 Google OR-Tools: Op-er-a-tions Re-search Tools. [][]$\T1/cm
+tt/m/n/10.95 https : / / developers . google . com /
+ []
+
+[12] (report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -684,25 +676,19 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-
-Package rerunfilecheck Warning: File `report.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `report.out':
-(rerunfilecheck)             Before: F2A1725A4EFC1916E64F574CEDC85797;4278
-(rerunfilecheck)             After:  E5822863995ECB0B8FE5055E4755B514;4666.
+Package rerunfilecheck Info: File `report.out' has not changed.
+(rerunfilecheck)             Checksum: E5822863995ECB0B8FE5055E4755B514;4666.
  ) 
 Here is how much of TeX's memory you used:
- 12995 strings out of 474486
- 203975 string characters out of 5753570
- 1936542 words of memory out of 5000000
- 35013 multiletter control sequences out of 15000+600000
- 574856 words of font info for 71 fonts, out of 8000000 for 9000
+ 13024 strings out of 474486
+ 204559 string characters out of 5753570
+ 1937542 words of memory out of 5000000
+ 35031 multiletter control sequences out of 15000+600000
+ 573310 words of font info for 69 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,474b,576s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,562b,576s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-pdfTeX warning (dest): name{figure.caption.3} has been referenced but does not 
+pdfTeX warning (dest): name{table.caption.10} has been referenced but does not 
 exist, replaced by a fixed one
 
  <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt10
@@ -717,22 +703,21 @@ four/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts
 MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Fradi\AppData\
 Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Fradi\Ap
 pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Fr
-adi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk> <C:\Us
-ers\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> 
-<C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx172
-8.pk><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pro
-gram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/t
-ype1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/a
-msfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cm
-r6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Pro
-gram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX/fonts/t
-ype1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/a
-msfonts/symbols/msbm10.pfb>
-Output written on report.pdf (13 pages, 2560123 bytes).
+adi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Us
+ers\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk><
+C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program F
+iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/
+fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
+s/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb
+><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program F
+iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/
+fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
+s/symbols/msbm10.pfb>
+Output written on report.pdf (16 pages, 2809471 bytes).
 PDF statistics:
- 840 PDF objects out of 1000 (max. 8388607)
- 89 named destinations out of 1000 (max. 500000)
- 268 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 908 PDF objects out of 1000 (max. 8388607)
+ 102 named destinations out of 1000 (max. 500000)
+ 297 words of extra memory for PDF output out of 10000 (max. 10000000)
 
