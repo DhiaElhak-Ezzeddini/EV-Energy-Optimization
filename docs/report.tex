@@ -174,6 +174,12 @@ The main objectives are:
     \item Formulate a comprehensive Mixed Integer Linear Programming (MILP) model for EM-EVRP
     \item Implement and evaluate classical optimization baselines including Google OR-Tools, Hill Climbing, Simulated Annealing, and Ant Colony Optimization
     \item Develop a Deep Reinforcement Learning (DRL) solution using attention-based neural networks
+    \item Design a scalable real-world deployment pipeline integrating:
+    \begin{itemize}
+        \item \textbf{K-means clustering} for customer grouping
+        \item \textbf{Dijkstra's algorithm} for shortest path computation on road networks
+        \item \textbf{OSRM} for production-grade street-level routing
+    \end{itemize}
     \item Create an interactive dashboard for visualization and real-world deployment
 \end{enumerate}
 
@@ -460,6 +466,152 @@ Charging stations are included as optional nodes; the model learns when to visit
 \end{equation}
 
 %-----------------------------------------------------------------------------
+\section{Real-World Deployment Pipeline}
+%-----------------------------------------------------------------------------
+
+A critical challenge in deploying DRL-based routing solutions is bridging the gap between models trained on synthetic Euclidean distances and real-world road networks. This section presents our complete pipeline for real-world deployment, integrating K-means clustering, Dijkstra's algorithm, and OSRM (Open Source Routing Machine) to enable practical EV routing on actual street networks.
+
+\subsection{Pipeline Overview}
+
+Our real-world deployment pipeline consists of four main stages:
+\begin{enumerate}
+    \item \textbf{Customer Grouping:} Partition large customer sets into manageable groups of 10 using K-means clustering
+    \item \textbf{Charging Station Assignment:} Assign the 4 nearest charging stations to each customer group
+    \item \textbf{Distance Matrix Construction:} Compute real road network distances between all Points of Interest (POIs) using Dijkstra's algorithm or OSRM Table API
+    \item \textbf{DRL Inference and Route Projection:} Run the trained model and project optimal routes onto real street geometries
+\end{enumerate}
+
+This modular architecture enables scalability: while the DRL model is trained on 10-customer instances, the pipeline can handle arbitrarily large customer sets by intelligent partitioning.
+
+\subsection{K-Means Customer Clustering}
+
+To scale beyond the training configuration of 10 customers, we employ K-means clustering to partition large customer sets into balanced groups.
+
+\textbf{Algorithm:} Given $N$ customer locations $\{c_1, c_2, \ldots, c_N\}$ where $c_i = (\text{lat}_i, \text{lon}_i)$, we compute $k = \lfloor N/10 \rfloor$ clusters:
+\begin{equation}
+\mu_j = \arg\min_{\mu} \sum_{c_i \in C_j} \|c_i - \mu\|^2, \quad j \in \{1, \ldots, k\}
+\end{equation}
+
+\textbf{Balancing:} Standard K-means may produce uneven clusters. We apply a post-processing step to ensure exactly 10 customers per group:
+\begin{enumerate}
+    \item Assign up to 10 customers to each cluster based on initial K-means labels
+    \item Redistribute excess customers to under-filled clusters based on proximity to cluster centroids
+    \item Verify each group contains exactly 10 customers
+\end{enumerate}
+
+\textbf{Station Assignment:} For each customer group with centroid $\mu_j$, we assign the 4 nearest charging stations from the global station pool:
+\begin{equation}
+S_j = \arg\min_{S \subset \mathcal{S}, |S|=4} \sum_{s \in S} \|\mu_j - s\|
+\end{equation}
+where $\mathcal{S}$ is the set of all available charging stations.
+
+\subsection{Road Network Graph Construction}
+
+We construct the underlying road network using OpenStreetMap (OSM) data, processed via OSMnx. The network is represented as a directed multigraph $G = (V, E)$ where:
+\begin{itemize}
+    \item $V$ is the set of road intersections and endpoints (nodes)
+    \item $E$ is the set of road segments (edges) with attributes: length (m), speed limit (km/h), travel time (s), and slope (degrees)
+\end{itemize}
+
+\textbf{Edge Attributes:} For each edge $(u, v) \in E$, we store:
+\begin{equation}
+e_{uv} = \left( L_{uv}, \; v_{uv}, \; T_{uv} = \frac{L_{uv}}{v_{uv}}, \; \theta_{uv} \right)
+\end{equation}
+where $L_{uv}$ is the length in meters, $v_{uv}$ is the speed in m/s, $T_{uv}$ is the travel time, and $\theta_{uv}$ is the slope angle.
+
+\textbf{Spatial Indexing:} To efficiently locate the nearest graph node for any coordinate, we construct a KD-tree over all node positions:
+\begin{equation}
+n^* = \arg\min_{n \in V} \left\| (\text{lat}_n, \text{lon}_n) - (\text{lat}_q, \text{lon}_q) \right\|
+\end{equation}
+This reduces node lookup complexity from $O(|V|)$ to $O(\log |V|)$.
+
+\subsection{Dijkstra's Algorithm for Shortest Paths}
+
+Given the road network graph $G$ and a set of POIs (depot, depot charging, 4 stations, 10 customers = 16 nodes), we construct the complete pairwise distance matrix using Dijkstra's shortest path algorithm.
+
+\textbf{Single-Source Shortest Path:} For source node $s$, Dijkstra's algorithm computes:
+\begin{equation}
+d(s, v) = \min_{\text{path } P: s \rightsquigarrow v} \sum_{(u,w) \in P} L_{uw}, \quad \forall v \in V
+\end{equation}
+
+\textbf{Path Metrics:} For each POI pair $(i, j)$, we compute three metrics along the shortest path:
+\begin{align}
+D_{ij} &= \sum_{(u,v) \in P_{ij}} L_{uv} \quad \text{(total distance in meters)} \\
+T_{ij} &= \sum_{(u,v) \in P_{ij}} T_{uv} \quad \text{(total travel time in seconds)} \\
+S_{ij} &= \frac{\sum_{(u,v) \in P_{ij}} \tan(\theta_{uv}) \cdot L_{uv}}{D_{ij}} \quad \text{(length-weighted average slope)}
+\end{align}
+
+\textbf{Matrix Construction:} The complete distance matrix $\mathbf{D} \in \mathbb{R}^{16 \times 16}$ requires 240 Dijkstra computations (excluding diagonal). We store the actual paths for later visualization:
+\begin{equation}
+\text{Paths}_{ij} = [n_1, n_2, \ldots, n_k] \text{ where } n_1 = \text{POI}_i, \; n_k = \text{POI}_j
+\end{equation}
+
+\textbf{Implementation:} We use NetworkX's optimized Dijkstra implementation with edge weight set to road segment length:
+\begin{verbatim}
+    path = nx.shortest_path(G, poi[i], poi[j], weight='length')
+\end{verbatim}
+
+\subsection{OSRM Integration for Production Routing}
+
+For production deployment, we integrate the Open Source Routing Machine (OSRM) to obtain real-world routing with consideration for turn restrictions, one-way streets, and traffic patterns.
+
+\textbf{Table API:} Instead of $N^2$ individual routing requests, OSRM's Table API computes the full distance matrix in a single HTTP request:
+\begin{verbatim}
+    GET /table/v1/driving/{coords}?annotations=distance
+\end{verbatim}
+where \texttt{coords} is a semicolon-separated list of \texttt{lon,lat} pairs.
+
+\textbf{Route API:} For visualization, we fetch actual street geometries using the Route API:
+\begin{verbatim}
+    GET /route/v1/driving/{origin};{destination}?geometries=polyline
+\end{verbatim}
+The response includes an encoded polyline representing the exact street-level path.
+
+\subsection{Coordinate Normalization and Model Input}
+
+The DRL model expects inputs normalized to a $[0, 100]$ coordinate space. We apply affine transformation to POI coordinates:
+\begin{align}
+x_i &= \frac{\text{lon}_i - \text{lon}_{\min}}{\text{lon}_{\max} - \text{lon}_{\min}} \times 100 \\
+y_i &= \frac{\text{lat}_i - \text{lat}_{\min}}{\text{lat}_{\max} - \text{lat}_{\min}} \times 100
+\end{align}
+
+Similarly, distances are scaled to match the training distribution:
+\begin{equation}
+D'_{ij} = \frac{D_{ij}}{D_{\max}} \times 141
+\end{equation}
+where 141 approximates the maximum Euclidean distance in a $[0,100]^2$ space ($\sqrt{2} \times 100$).
+
+\subsection{Complete Pipeline Workflow}
+
+Algorithm~\ref{alg:pipeline} summarizes the complete real-world routing pipeline.
+
+\begin{table}[H]
+\centering
+\caption{Real-World EV Routing Pipeline}
+\label{alg:pipeline}
+\begin{tabular}{@{}p{0.70\textwidth}@{}}
+\toprule
+\textbf{Algorithm: Real Streets EV Routing Pipeline} \\
+\midrule
+\textbf{Input:} Customer coordinates $\mathcal{C}$, Station pool $\mathcal{S}$, Depot location $d$, Trained model $\pi_\theta$ \\
+\textbf{Output:} Optimized routes with real street geometries \\
+\midrule
+1. \textbf{Group customers:} $\mathcal{G} \gets \text{KMeans}(\mathcal{C}, k=|\mathcal{C}|/10)$ \\
+2. \textbf{Balance groups:} Ensure $|G_i| = 10$ for all $G_i \in \mathcal{G}$ \\
+3. \textbf{For each} group $G_i \in \mathcal{G}$: \\
+\quad 3.1. Compute centroid $\mu_i = \text{mean}(G_i)$ \\
+\quad 3.2. Assign stations $S_i \gets \text{nearest}_4(\mu_i, \mathcal{S})$ \\
+\quad 3.3. Build POI list: $P_i = [d, d_{\text{chg}}, S_i, G_i]$ \\
+\quad 3.4. Compute distance matrix $\mathbf{D}_i$ via OSRM or Dijkstra \\
+\quad 3.5. Normalize coordinates and distances \\
+\quad 3.6. Run DRL inference: $\pi_i \gets \pi_\theta(P_i, \mathbf{D}_i)$ \\
+\quad 3.7. Fetch street geometries for route segments \\
+4. \textbf{Return} all group routes with visualization data \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%-----------------------------------------------------------------------------
 \section{Results and Discussion}
 %-----------------------------------------------------------------------------
 
@@ -494,7 +646,7 @@ Figure~\ref{fig:synthetic} illustrates a sample synthetic training instance. The
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.65\textwidth]{figures/synthetic_training_data.png}
+\includegraphics[width=0.40\textwidth]{figures/synthetic_training_data.png}
 \caption{Sample synthetic training data instance showing depot, charging stations distributed across quadrants, and customer locations with varying demands}
 \label{fig:synthetic}
 \end{figure}
@@ -533,16 +685,27 @@ Hill Climbing & 13.21 & 0.8s \\
 
 \subsection{Dashboard Integration}
 
-We developed an interactive Streamlit dashboard with OpenStreetMap integration providing:
+We developed an interactive Streamlit dashboard with OpenStreetMap integration that implements the complete real-world deployment pipeline described in Section~5. The dashboard provides:
+
 \begin{itemize}
-    \item Interactive map with customer locations and charging stations
-    \item Real-time route optimization using the trained DRL model
-    \item Energy consumption breakdown per route segment
-    \item SOC tracking throughout the journey
-    \item OSRM integration for realistic street-level routing
+    \item \textbf{Customer Upload:} CSV file input for customer locations with automatic K-means grouping
+    \item \textbf{Interactive Map:} Leaflet-based map showing customers, stations, and depot with clustering visualization
+    \item \textbf{Real-Time Optimization:} One-click route optimization using the trained DRL model with real road distances
+    \item \textbf{Street-Level Routes:} OSRM-powered route rendering showing actual street paths, not straight lines
+    \item \textbf{Energy Analytics:} Per-segment energy consumption breakdown considering distance, elevation, and vehicle load
+    \item \textbf{SOC Monitoring:} Real-time battery State of Charge tracking with charging station visit recommendations
 \end{itemize}
 
-\textbf{Real-World Integration:} To deploy the DRL model on real road networks, we compute the shortest path distances between each pair of nodes (customers, depot, charging stations) using \textbf{Dijkstra's algorithm} implemented in NetworkX. The road network graph is extracted from OpenStreetMap data, and the pairwise distance matrix is then fed to the DRL model for route optimization. This approach bridges the gap between the model trained on Euclidean distances and real-world street-level routing constraints.
+\textbf{Pipeline Integration:} The dashboard seamlessly integrates all pipeline components:
+\begin{enumerate}
+    \item Customers are automatically clustered into groups of 10 using K-means
+    \item Each group is assigned its 4 nearest charging stations
+    \item Distance matrices are computed via OSRM Table API (with Dijkstra fallback)
+    \item The DRL model performs inference on normalized inputs
+    \item Routes are visualized on OpenStreetMap with actual street geometries
+\end{enumerate}
+
+\textbf{Scalability:} By leveraging the K-means grouping strategy, the dashboard can handle hundreds of customers while maintaining the computational efficiency of the 10-customer DRL model. Each group is processed independently, enabling parallel optimization for large-scale deployments.
 
 \begin{figure}[H]
 \centering
@@ -577,37 +740,43 @@ We developed an interactive Streamlit dashboard with OpenStreetMap integration p
 
 \subsection{Summary}
 
-This project addressed the Energy-Minimizing Electric Vehicle Routing Problem using Deep Reinforcement Learning. Our contributions include:
+This project addressed the Energy-Minimizing Electric Vehicle Routing Problem using Deep Reinforcement Learning, with a complete pipeline for real-world deployment. Our contributions include:
 \begin{enumerate}
-    \item Comprehensive MILP formulation incorporating multi-trip capability, time windows, and physics-based energy consumption
-    \item Implementation of classical baselines (OR-Tools, Hill Climbing, SA, ACO) for benchmarking
-    \item Attention-based DRL model achieving competitive performance with fast inference
-    \item Interactive dashboard with real-world map integration for practical deployment
+    \item \textbf{Mathematical Formulation:} Comprehensive MILP formulation incorporating multi-trip capability, time windows, and physics-based energy consumption
+    \item \textbf{Baseline Implementations:} Classical optimization methods (OR-Tools, Hill Climbing, Simulated Annealing, ACO) for rigorous benchmarking
+    \item \textbf{DRL Model:} Attention-based neural network achieving near-optimal solutions with fast inference
+    \item \textbf{Real-World Pipeline:} Novel integration of K-means clustering, Dijkstra's algorithm, and OSRM for scalable deployment on real road networks
+    \item \textbf{Interactive Dashboard:} Production-ready visualization tool with street-level routing and energy analytics
 \end{enumerate}
 
 \subsection{Key Findings}
 
 \begin{itemize}
     \item The DRL approach generalizes well to unseen instances after training on synthetic data
-    \item Inference time is significantly lower than iterative optimization methods
+    \item \textbf{K-means clustering} enables scalability beyond the training configuration by partitioning large customer sets into balanced groups
+    \item \textbf{Dijkstra's algorithm} on OSM road networks provides accurate real-world distances while preserving path information for visualization
+    \item \textbf{OSRM integration} offers production-grade routing with sub-second response times for complete distance matrices
     \item The attention mechanism effectively captures customer-to-customer relationships
     \item Physics-based energy modeling provides realistic consumption estimates considering aerodynamics, rolling resistance, and regenerative braking
+    \item Inference time is significantly lower than iterative optimization methods, making real-time routing feasible
 \end{itemize}
 
 \subsection{Future Work}
 
 Several directions could extend this work:
 \begin{itemize}
-    \item Scaling to larger instances (50+ customers)
-    \item Incorporating dynamic scenarios with real-time traffic and demand updates
-    \item Extending to multi-depot problems
-    \item Supporting heterogeneous fleets with different EV types
-    \item Joint optimization of routing and charging schedules
+    \item \textbf{Larger Instances:} Training on 50+ customer instances to reduce reliance on clustering
+    \item \textbf{Dynamic Scenarios:} Real-time traffic integration and demand updates using live OSRM profiles
+    \item \textbf{Multi-Depot Optimization:} Extending the pipeline to support multiple depot locations
+    \item \textbf{Heterogeneous Fleets:} Supporting mixed EV types with different battery capacities and consumption profiles
+    \item \textbf{Charging Schedule Optimization:} Joint optimization of routing and charging timing based on electricity prices
+    \item \textbf{Elevation-Aware Routing:} Integrating digital elevation models (DEM) for more accurate energy predictions on hilly terrain
 \end{itemize}
 
 %-----------------------------------------------------------------------------
 % REFERENCES
 %-----------------------------------------------------------------------------
+\newpage
 \addcontentsline{toc}{section}{References}
 \begin{thebibliography}{99}
 
@@ -641,6 +810,17 @@ Several directions could extend this work:
 \bibitem{osrm} Project OSRM -- Open Source Routing Machine. \url{http://project-osrm.org/}
 
 \bibitem{cvrplib} CVRPLIB: Capacitated Vehicle Routing Problem Library. \url{http://vrp.atd-lab.inf.puc-rio.br/}
+
+% Clustering and Graph Algorithms
+\bibitem{macqueen1967} J. MacQueen, ``Some methods for classification and analysis of multivariate observations,'' in \emph{Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability}, vol. 1, pp. 281--297, 1967.
+
+\bibitem{dijkstra1959} E. W. Dijkstra, ``A note on two problems in connexion with graphs,'' \emph{Numerische Mathematik}, vol. 1, no. 1, pp. 269--271, 1959. \url{https://doi.org/10.1007/BF01386390}
+
+\bibitem{boeing2017} G. Boeing, ``OSMnx: New Methods for Acquiring, Constructing, Analyzing, and Visualizing Complex Street Networks,'' \emph{Computers, Environment and Urban Systems}, vol. 65, pp. 126--139, 2017. \url{https://doi.org/10.1016/j.compenvurbsys.2017.05.004}
+
+\bibitem{luxen2011} D. Luxen and C. Vetter, ``Real-time routing with OpenStreetMap data,'' in \emph{Proceedings of the 19th ACM SIGSPATIAL International Conference on Advances in Geographic Information Systems}, pp. 513--516, 2011. \url{https://doi.org/10.1145/2093973.2094062}
+
+\bibitem{networkx} A. A. Hagberg, D. A. Schult, and P. J. Swart, ``Exploring network structure, dynamics, and function using NetworkX,'' in \emph{Proceedings of the 7th Python in Science Conference (SciPy)}, pp. 11--15, 2008.
 
 \end{thebibliography}
 

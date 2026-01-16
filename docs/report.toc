@@ -3,8 +3,8 @@
 \contentsline {subsection}{\numberline {1.1}Context and Motivation}{1}{subsection.1.1}%
 \contentsline {subsection}{\numberline {1.2}Problem Statement}{1}{subsection.1.2}%
 \contentsline {subsection}{\numberline {1.3}Objectives}{1}{subsection.1.3}%
-\contentsline {section}{\numberline {2}Mathematical Formulation}{1}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Sets and Indices}{1}{subsection.2.1}%
+\contentsline {section}{\numberline {2}Mathematical Formulation}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Sets and Indices}{2}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Network Parameters}{2}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}EV Energy Parameters}{2}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Decision Variables}{3}{subsection.2.4}%
@@ -20,13 +20,21 @@
 \contentsline {subsection}{\numberline {4.2}Architecture}{6}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Training Algorithm}{6}{subsection.4.3}%
 \contentsline {subsection}{\numberline {4.4}EV-Specific Features}{7}{subsection.4.4}%
-\contentsline {section}{\numberline {5}Results and Discussion}{7}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Experimental Setup}{7}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Training Results}{8}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Comparison with Baselines}{9}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Dashboard Integration}{9}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Conclusion}{10}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Summary}{10}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Key Findings}{10}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Future Work}{11}{subsection.6.3}%
-\contentsline {section}{References}{11}{subsection.6.3}%
+\contentsline {section}{\numberline {5}Real-World Deployment Pipeline}{7}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Pipeline Overview}{7}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}K-Means Customer Clustering}{8}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Road Network Graph Construction}{8}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Dijkstra's Algorithm for Shortest Paths}{9}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}OSRM Integration for Production Routing}{9}{subsection.5.5}%
+\contentsline {subsection}{\numberline {5.6}Coordinate Normalization and Model Input}{10}{subsection.5.6}%
+\contentsline {subsection}{\numberline {5.7}Complete Pipeline Workflow}{10}{subsection.5.7}%
+\contentsline {section}{\numberline {6}Results and Discussion}{11}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Experimental Setup}{11}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Training Results}{12}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Comparison with Baselines}{12}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Dashboard Integration}{12}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Conclusion}{14}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Summary}{14}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Key Findings}{14}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Future Work}{14}{subsection.7.3}%
+\contentsline {section}{References}{16}{subsection.7.3}%

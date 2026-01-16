@@ -1,105 +1,105 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.5.11)  16 JAN 2026 08:43
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.1.16)  16 JAN 2026 18:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **./report.tex
 (report.tex
-LaTeX2e <2023-11-01> patch level 1
-L3 programming layer <2024-01-04>
-(C:\Program Files\MiKTeX\tex/latex/base\article.cls
-Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
-(C:\Program Files\MiKTeX\tex/latex/base\size11.clo
-File: size11.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2025/01/22 v1.4n Standard LaTeX document class
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/base\size11.clo
+File: size11.clo 2025/01/22 v1.4n Standard LaTeX file (size option)
 )
-\c@part=\count187
-\c@section=\count188
-\c@subsection=\count189
-\c@subsubsection=\count190
-\c@paragraph=\count191
-\c@subparagraph=\count192
-\c@figure=\count193
-\c@table=\count194
-\abovecaptionskip=\skip48
-\belowcaptionskip=\skip49
-\bibindent=\dimen140
+\c@part=\count275
+\c@section=\count276
+\c@subsection=\count277
+\c@subsubsection=\count278
+\c@paragraph=\count279
+\c@subparagraph=\count280
+\c@figure=\count281
+\c@table=\count282
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen148
 )
-(C:\Program Files\MiKTeX\tex/latex/base\inputenc.sty
-Package: inputenc 2021/02/14 v1.3d Input encoding file
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty
+Package: inputenc 2024/02/08 v1.3d Input encoding file
 \inpenc@prehook=\toks17
 \inpenc@posthook=\toks18
 )
-(C:\Program Files\MiKTeX\tex/latex/base\fontenc.sty
-Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty
+Package: fontenc 2025/07/18 v2.1d Standard LaTeX package
 )
-(C:\Program Files\MiKTeX\tex/latex/amsmath\amsmath.sty
-Package: amsmath 2023/05/13 v2.17o AMS math features
-\@mathmargin=\skip50
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsmath.sty
+Package: amsmath 2025/07/09 v2.17z AMS math features
+\@mathmargin=\skip51
 
 For additional information on amsmath, use the `?' option.
-(C:\Program Files\MiKTeX\tex/latex/amsmath\amstext.sty
-Package: amstext 2021/08/26 v2.01 AMS text
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amstext.sty
+Package: amstext 2024/11/17 v2.01 AMS text
 
-(C:\Program Files\MiKTeX\tex/latex/amsmath\amsgen.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks19
-\ex@=\dimen141
+\ex@=\dimen149
 ))
-(C:\Program Files\MiKTeX\tex/latex/amsmath\amsbsy.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen142
+\pmbraise@=\dimen150
 )
-(C:\Program Files\MiKTeX\tex/latex/amsmath\amsopn.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsmath\amsopn.sty
 Package: amsopn 2022/04/08 v2.04 operator names
 )
-\inf@bad=\count195
-LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count196
-\leftroot@=\count197
-LaTeX Info: Redefining \overline on input line 399.
-LaTeX Info: Redefining \colon on input line 410.
-\classnum@=\count198
-\DOTSCASE@=\count199
-LaTeX Info: Redefining \ldots on input line 496.
-LaTeX Info: Redefining \dots on input line 499.
-LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box51
-\strutbox@=\box52
-LaTeX Info: Redefining \big on input line 722.
-LaTeX Info: Redefining \Big on input line 723.
-LaTeX Info: Redefining \bigg on input line 724.
-LaTeX Info: Redefining \Bigg on input line 725.
-\big@size=\dimen143
-LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
-LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count266
-LaTeX Info: Redefining \bmod on input line 905.
-LaTeX Info: Redefining \pmod on input line 910.
-LaTeX Info: Redefining \smash on input line 940.
-LaTeX Info: Redefining \relbar on input line 970.
-LaTeX Info: Redefining \Relbar on input line 971.
-\c@MaxMatrixCols=\count267
-\dotsspace@=\muskip16
-\c@parentequation=\count268
-\dspbrk@lvl=\count269
+\inf@bad=\count283
+LaTeX Info: Redefining \frac on input line 233.
+\uproot@=\count284
+\leftroot@=\count285
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count286
+\DOTSCASE@=\count287
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box53
+\strutbox@=\box54
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen151
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count288
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count289
+\dotsspace@=\muskip17
+\c@parentequation=\count290
+\dspbrk@lvl=\count291
 \tag@help=\toks20
-\row@=\count270
-\column@=\count271
-\maxfields@=\count272
+\row@=\count292
+\column@=\count293
+\maxfields@=\count294
 \andhelp@=\toks21
-\eqnshift@=\dimen144
-\alignsep@=\dimen145
-\tagshift@=\dimen146
-\tagwidth@=\dimen147
-\totwidth@=\dimen148
-\lineht@=\dimen149
+\eqnshift@=\dimen152
+\alignsep@=\dimen153
+\tagshift@=\dimen154
+\tagwidth@=\dimen155
+\totwidth@=\dimen156
+\lineht@=\dimen157
 \@envbody=\toks22
-\multlinegap=\skip51
-\multlinetaggap=\skip52
+\multlinegap=\skip52
+\multlinetaggap=\skip53
 \mathdisplay@stack=\toks23
-LaTeX Info: Redefining \[ on input line 2953.
-LaTeX Info: Redefining \] on input line 2954.
+LaTeX Info: Redefining \[ on input line 2950.
+LaTeX Info: Redefining \] on input line 2951.
 )
-(C:\Program Files\MiKTeX\tex/latex/amsfonts\amsfonts.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
@@ -107,305 +107,296 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )
-(C:\Program Files\MiKTeX\tex/latex/amsfonts\amssymb.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics\graphicx.sty
-Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+Package: graphicx 2024/12/31 v1.2e Enhanced LaTeX Graphics (DPC,SPQR)
 
-(C:\Program Files\MiKTeX\tex/latex/graphics\keyval.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
 \KV@toks@=\toks24
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics\graphics.sty
-Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
 
-(C:\Program Files\MiKTeX\tex/latex/graphics\trig.sty
-Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
 )
-(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\graphics.cfg
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cf
+g
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
-Package graphics Info: Driver file: pdftex.def on input line 107.
+Package graphics Info: Driver file: pdftex.def on input line 106.
 
-(C:\Program Files\MiKTeX\tex/latex/graphics-def\pdftex.def
-File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
+File: pdftex.def 2025/09/29 v1.2d Graphics/color driver for pdftex
 ))
-\Gin@req@height=\dimen150
-\Gin@req@width=\dimen151
-)
-(C:\Program Files\MiKTeX\tex/latex/geometry\geometry.sty
+\Gin@req@height=\dimen158
+\Gin@req@width=\dimen159
+) (C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
-
-(C:\Program Files\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
 Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 
-(C:\Program Files\MiKTeX\tex/generic/iftex\iftex.sty
-Package: iftex 2022/02/03 v1.0f TeX engine tests
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
 ))
-\Gm@cnth=\count273
-\Gm@cntv=\count274
-\c@Gm@tempcnt=\count275
-\Gm@bindingoffset=\dimen152
-\Gm@wd@mp=\dimen153
-\Gm@odd@mp=\dimen154
-\Gm@even@mp=\dimen155
-\Gm@layoutwidth=\dimen156
-\Gm@layoutheight=\dimen157
-\Gm@layouthoffset=\dimen158
-\Gm@layoutvoffset=\dimen159
+\Gm@cnth=\count295
+\Gm@cntv=\count296
+\c@Gm@tempcnt=\count297
+\Gm@bindingoffset=\dimen160
+\Gm@wd@mp=\dimen161
+\Gm@odd@mp=\dimen162
+\Gm@even@mp=\dimen163
+\Gm@layoutwidth=\dimen164
+\Gm@layoutheight=\dimen165
+\Gm@layouthoffset=\dimen166
+\Gm@layoutvoffset=\dimen167
 \Gm@dimlist=\toks25
 
-(C:\Program Files\MiKTeX\tex/latex/geometry\geometry.cfg))
-(C:\Program Files\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg))
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/fancyhdr\fancyhdr.sty
 Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
 
-\f@nch@headwidth=\skip53
-\f@nch@offset@elh=\skip54
-\f@nch@offset@erh=\skip55
-\f@nch@offset@olh=\skip56
-\f@nch@offset@orh=\skip57
-\f@nch@offset@elf=\skip58
-\f@nch@offset@erf=\skip59
-\f@nch@offset@olf=\skip60
-\f@nch@offset@orf=\skip61
-\f@nch@height=\skip62
-\f@nch@footalignment=\skip63
-\f@nch@widthL=\skip64
-\f@nch@widthC=\skip65
-\f@nch@widthR=\skip66
+\f@nch@headwidth=\skip54
+\f@nch@offset@elh=\skip55
+\f@nch@offset@erh=\skip56
+\f@nch@offset@olh=\skip57
+\f@nch@offset@orh=\skip58
+\f@nch@offset@elf=\skip59
+\f@nch@offset@erf=\skip60
+\f@nch@offset@olf=\skip61
+\f@nch@offset@orf=\skip62
+\f@nch@height=\skip63
+\f@nch@footalignment=\skip64
+\f@nch@widthL=\skip65
+\f@nch@widthC=\skip66
+\f@nch@widthR=\skip67
 \@temptokenb=\toks26
 )
-(C:\Program Files\MiKTeX\tex/latex/setspace\setspace.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/setspace\setspace.sty
 Package: setspace 2022/12/04 v6.7b set line spacing
 )
-(C:\Program Files\MiKTeX\tex/latex/booktabs\booktabs.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/booktabs\booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen160
-\lightrulewidth=\dimen161
-\cmidrulewidth=\dimen162
-\belowrulesep=\dimen163
-\belowbottomsep=\dimen164
-\aboverulesep=\dimen165
-\abovetopsep=\dimen166
-\cmidrulesep=\dimen167
-\cmidrulekern=\dimen168
-\defaultaddspace=\dimen169
-\@cmidla=\count276
-\@cmidlb=\count277
-\@aboverulesep=\dimen170
-\@belowrulesep=\dimen171
-\@thisruleclass=\count278
-\@lastruleclass=\count279
-\@thisrulewidth=\dimen172
+\heavyrulewidth=\dimen168
+\lightrulewidth=\dimen169
+\cmidrulewidth=\dimen170
+\belowrulesep=\dimen171
+\belowbottomsep=\dimen172
+\aboverulesep=\dimen173
+\abovetopsep=\dimen174
+\cmidrulesep=\dimen175
+\cmidrulekern=\dimen176
+\defaultaddspace=\dimen177
+\@cmidla=\count298
+\@cmidlb=\count299
+\@aboverulesep=\dimen178
+\@belowrulesep=\dimen179
+\@thisruleclass=\count300
+\@lastruleclass=\count301
+\@thisrulewidth=\dimen180
 )
-(C:\Program Files\MiKTeX\tex/latex/hyperref\hyperref.sty
-Package: hyperref 2023-11-26 v7.01g Hypertext links for LaTeX
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+Package: hyperref 2025-07-12 v7.01o Hypertext links for LaTeX
 
-(C:\Program Files\MiKTeX\tex/generic/infwarerr\infwarerr.sty
-Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
-)
-(C:\Program Files\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.sty
 Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
 )
-(C:\Program Files\MiKTeX\tex/generic/kvdefinekeys\kvdefinekeys.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefinek
+eys.sty
 Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
 )
-(C:\Program Files\MiKTeX\tex/generic/pdfescape\pdfescape.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.st
+y
 Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
-
-(C:\Program Files\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
+ (C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty
 Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
 )
-(C:\Program Files\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmds.
+sty
 Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.st
+y
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
 )
 Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
-))
-(C:\Program Files\MiKTeX\tex/latex/hycolor\hycolor.sty
+)) (C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty
 Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
-)
-(C:\Program Files\MiKTeX\tex/latex/letltxmacro\letltxmacro.sty
-Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
-)
-(C:\Program Files\MiKTeX\tex/latex/auxhook\auxhook.sty
-Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
-)
-(C:\Program Files\MiKTeX\tex/latex/hyperref\nameref.sty
-Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
+) (C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+Package: nameref 2025-06-21 v2.57 Cross-referencing by name of section
 
-(C:\Program Files\MiKTeX\tex/latex/refcount\refcount.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty
 Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 )
-(C:\Program Files\MiKTeX\tex/generic/gettitlestring\gettitlestring.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\gettitl
+estring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 
-(C:\Program Files\MiKTeX\tex/latex/kvoptions\kvoptions.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.sty
 Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
 ))
-\c@section@level=\count280
+\c@section@level=\count302
+) (C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty
+Package: etoolbox 2025/10/02 v2.5m e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count303
 )
-(C:\Program Files\MiKTeX\tex/latex/etoolbox\etoolbox.sty
-Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
-\etb@tempcnta=\count281
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.st
+y
+Package: stringenc 2019/11/29 v1.12 Convert strings between diff. encodings (HO
 )
-\@linkdim=\dimen173
-\Hy@linkcounter=\count282
-\Hy@pagecounter=\count283
-
-(C:\Program Files\MiKTeX\tex/latex/hyperref\pd1enc.def
-File: pd1enc.def 2023-11-26 v7.01g Hyperref: PDFDocEncoding definition (HO)
+)
+\@linkdim=\dimen181
+\Hy@linkcounter=\count304
+\Hy@pagecounter=\count305
+ (C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def
+File: pd1enc.def 2025-07-12 v7.01o Hyperref: PDFDocEncoding definition (HO)
 Now handling font encoding PD1 ...
 ... no UTF-8 mapping file for font encoding PD1
 )
-(C:\Program Files\MiKTeX\tex/generic/intcalc\intcalc.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty
 Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 )
-\Hy@SavedSpaceFactor=\count284
+\Hy@SavedSpaceFactor=\count306
 
-(C:\Program Files\MiKTeX\tex/latex/hyperref\puenc.def
-File: puenc.def 2023-11-26 v7.01g Hyperref: PDF Unicode definition (HO)
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def
+File: puenc.def 2025-07-12 v7.01o Hyperref: PDF Unicode definition (HO)
 Now handling font encoding PU ...
 ... no UTF-8 mapping file for font encoding PU
 )
-Package hyperref Info: Hyper figures OFF on input line 4181.
-Package hyperref Info: Link nesting OFF on input line 4186.
-Package hyperref Info: Hyper index ON on input line 4189.
-Package hyperref Info: Plain pages OFF on input line 4196.
-Package hyperref Info: Backreferencing OFF on input line 4201.
+Package hyperref Info: Hyper figures OFF on input line 4195.
+Package hyperref Info: Link nesting OFF on input line 4200.
+Package hyperref Info: Hyper index ON on input line 4203.
+Package hyperref Info: Plain pages OFF on input line 4210.
+Package hyperref Info: Backreferencing OFF on input line 4215.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
-Package hyperref Info: Bookmarks ON on input line 4448.
-\c@Hy@tempcnt=\count285
+Package hyperref Info: Bookmarks ON on input line 4462.
+\c@Hy@tempcnt=\count307
 
-(C:\Program Files\MiKTeX\tex/latex/url\url.sty
-\Urlmuskip=\muskip17
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip18
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
-LaTeX Info: Redefining \url on input line 4786.
-\XeTeXLinkMargin=\dimen174
+LaTeX Info: Redefining \url on input line 4801.
+\XeTeXLinkMargin=\dimen182
 
-(C:\Program Files\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 
-(C:\Program Files\MiKTeX\tex/generic/bigintcalc\bigintcalc.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcalc.
+sty
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count286
-\Field@Width=\dimen175
-\Fld@charsize=\dimen176
-Package hyperref Info: Hyper figures OFF on input line 6065.
-Package hyperref Info: Link nesting OFF on input line 6070.
-Package hyperref Info: Hyper index ON on input line 6073.
-Package hyperref Info: backreferencing OFF on input line 6080.
-Package hyperref Info: Link coloring OFF on input line 6085.
-Package hyperref Info: Link coloring with OCG OFF on input line 6090.
-Package hyperref Info: PDF/A mode OFF on input line 6095.
-
-(C:\Program Files\MiKTeX\tex/latex/base\atbegshi-ltx.sty
-Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
-package with kernel methods
-)
-\Hy@abspage=\count287
-\c@Item=\count288
-\c@Hfootnote=\count289
+\Fld@menulength=\count308
+\Field@Width=\dimen183
+\Fld@charsize=\dimen184
+Package hyperref Info: Hyper figures OFF on input line 6078.
+Package hyperref Info: Link nesting OFF on input line 6083.
+Package hyperref Info: Hyper index ON on input line 6086.
+Package hyperref Info: backreferencing OFF on input line 6093.
+Package hyperref Info: Link coloring OFF on input line 6098.
+Package hyperref Info: Link coloring with OCG OFF on input line 6103.
+Package hyperref Info: PDF/A mode OFF on input line 6108.
+\Hy@abspage=\count309
+\c@Item=\count310
+\c@Hfootnote=\count311
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 
-(C:\Program Files\MiKTeX\tex/latex/hyperref\hpdftex.def
-File: hpdftex.def 2023-11-26 v7.01g Hyperref driver for pdfTeX
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+File: hpdftex.def 2025-07-12 v7.01o Hyperref driver for pdfTeX
+\Fld@listcount=\count312
+\c@bookmark@seq@number=\count313
 
-(C:\Program Files\MiKTeX\tex/latex/base\atveryend-ltx.sty
-Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
-kage
-with kernel methods
-)
-\Fld@listcount=\count290
-\c@bookmark@seq@number=\count291
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfile
+check.sty
+Package: rerunfilecheck 2025-06-21 v1.11 Rerun checks for auxiliary files (HO)
 
-(C:\Program Files\MiKTeX\tex/latex/rerunfilecheck\rerunfilecheck.sty
-Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
-
-(C:\Program Files\MiKTeX\tex/generic/uniquecounter\uniquecounter.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\uniqueco
+unter.sty
 Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 )
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
-85.
+84.
 )
-\Hy@SectionHShift=\skip67
+\Hy@SectionHShift=\skip68
 )
-(C:\Program Files\MiKTeX\tex/latex/enumitem\enumitem.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
 Package: enumitem 2025/02/06 v3.11 Customized lists
-\labelindent=\skip68
-\enit@outerparindent=\dimen177
+\labelindent=\skip69
+\enit@outerparindent=\dimen185
 \enit@toks=\toks27
-\enit@inbox=\box53
-\enit@count@id=\count292
-\enitdp@description=\count293
+\enit@inbox=\box55
+\enit@count@id=\count314
+\enitdp@description=\count315
 )
-(C:\Program Files\MiKTeX\tex/latex/float\float.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count294
+\c@float@type=\count316
 \float@exts=\toks28
-\float@box=\box54
+\float@box=\box56
 \@float@everytoks=\toks29
-\@floatcapt=\box55
+\@floatcapt=\box57
 )
-(C:\Program Files\MiKTeX\tex/latex/caption\caption.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption.sty
 Package: caption 2023/08/05 v3.6o Customizing captions (AR)
 
-(C:\Program Files\MiKTeX\tex/latex/caption\caption3.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/caption\caption3.sty
 Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
-\caption@tempdima=\dimen178
-\captionmargin=\dimen179
-\caption@leftmargin=\dimen180
-\caption@rightmargin=\dimen181
-\caption@width=\dimen182
-\caption@indent=\dimen183
-\caption@parindent=\dimen184
-\caption@hangindent=\dimen185
+\caption@tempdima=\dimen186
+\captionmargin=\dimen187
+\caption@leftmargin=\dimen188
+\caption@rightmargin=\dimen189
+\caption@width=\dimen190
+\caption@indent=\dimen191
+\caption@parindent=\dimen192
+\caption@hangindent=\dimen193
 Package caption Info: Standard document class detected.
 )
-\c@caption@flags=\count295
-\c@continuedfloat=\count296
+\c@caption@flags=\count317
+\c@continuedfloat=\count318
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 )
-(C:\Program Files\MiKTeX\tex/latex/caption\subcaption.sty
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/caption\subcaption.sty
 Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
 Package caption Info: New subtype `subfigure' on input line 238.
-\c@subfigure=\count297
+\c@subfigure=\count319
 Package caption Info: New subtype `subtable' on input line 238.
-\c@subtable=\count298
+\c@subtable=\count320
 )
-(C:\Program Files\MiKTeX\tex/latex/tools\array.sty
-Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
-\col@sep=\dimen186
-\ar@mcellbox=\box56
-\extrarowheight=\dimen187
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/tools\array.sty
+Package: array 2025/09/25 v2.6n Tabular extension package (FMi)
+\col@sep=\dimen194
+\ar@mcellbox=\box58
+\extrarowheight=\dimen195
 \NC@list=\toks30
-\extratabsurround=\skip69
-\backup@length=\skip70
-\ar@cellbox=\box57
+\extratabsurround=\skip70
+\backup@length=\skip71
+\ar@cellbox=\box59
 )
-(C:\Program Files\MiKTeX\tex/latex/tools\tabularx.sty
-Package: tabularx 2023/07/08 v2.11c `tabularx' package (DPC)
-\TX@col@width=\dimen188
-\TX@old@table=\dimen189
-\TX@old@col=\dimen190
-\TX@target=\dimen191
-\TX@delta=\dimen192
-\TX@cols=\count299
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/tools\tabularx.sty
+Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
+\TX@col@width=\dimen196
+\TX@old@table=\dimen197
+\TX@old@col=\dimen198
+\TX@target=\dimen199
+\TX@delta=\dimen256
+\TX@cols=\count321
 \TX@ftn=\toks31
 )
 Package hyperref Info: Option `colorlinks' set `true' on input line 35.
 
-(C:\Program Files\MiKTeX\tex/latex/l3backend\l3backend-pdftex.def
-File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count300
-\l__pdf_internal_box=\box58
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdft
+ex.def
+File: l3backend-pdftex.def 2025-10-09 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count322
 ) (report.aux)
 \openout1 = `report.aux'.
 
@@ -427,25 +418,30 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 46.
 LaTeX Font Info:    ... okay on input line 46.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 46.
 LaTeX Font Info:    ... okay on input line 46.
-(C:\Program Files\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
+
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mki
+i
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count301
-\scratchdimen=\dimen193
-\scratchbox=\box59
-\nofMPsegments=\count302
-\nofMParguments=\count303
+\scratchcounter=\count323
+\scratchdimen=\dimen257
+\scratchbox=\box60
+\nofMPsegments=\count324
+\nofMParguments=\count325
 \everyMPshowfont=\toks32
-\MPscratchCnt=\count304
-\MPscratchDim=\dimen194
-\MPnumerator=\count305
-\makeMPintoPDFobject=\count306
+\MPscratchCnt=\count326
+\MPscratchDim=\dimen258
+\MPnumerator=\count327
+\makeMPintoPDFobject=\count328
 \everyMPtoPDFconversion=\toks33
-) (C:\Program Files\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
+)
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-ba
+se.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
 
-(C:\Program Files\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/00miktex\epstopdf-sys.cf
+g
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
 *geometry* driver: auto-detecting
@@ -482,18 +478,17 @@ File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-(C:\Program Files\MiKTeX\tex/latex/graphics\color.sty
-Package: color 2022/01/06 v1.3d Standard LaTeX Color (DPC)
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\color.sty
+Package: color 2025/01/14 v1.3e Standard LaTeX Color (DPC)
 
-(C:\Program Files\MiKTeX\tex/latex/graphics-cfg\color.cfg
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
 File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
 Package color Info: Driver file: pdftex.def on input line 149.
 
-(C:\Program Files\MiKTeX\tex/latex/graphics\mathcolor.ltx))
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx))
 Package hyperref Info: Link coloring ON on input line 46.
- (report.out)
-(report.out)
+(report.out) (report.out)
 \@outlinefile=\write3
 \openout3 = `report.out'.
 
@@ -531,31 +526,33 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo_carthage.png, id=130, 852.18375pt x 1027.84pt>
+<logo_carthage.png, id=162, 852.18375pt x 1027.84pt>
 File: logo_carthage.png Graphic file (type png)
 <use logo_carthage.png>
 Package pdftex.def Info: logo_carthage.png  used on input line 58.
 (pdftex.def)             Requested size: 113.81102pt x 137.26247pt.
-<logo_supcom.png, id=132, 1871.99374pt x 805.0075pt>
+<logo_supcom.png, id=164, 1871.99374pt x 805.0075pt>
 File: logo_supcom.png Graphic file (type png)
 <use logo_supcom.png>
 Package pdftex.def Info: logo_supcom.png  used on input line 63.
 (pdftex.def)             Requested size: 142.26378pt x 61.17137pt.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 94.
 
- (C:\Program Files\MiKTeX\tex/latex/amsfonts\umsa.fd
+
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 94.
 
 
-(C:\Program Files\MiKTeX\tex/latex/amsfonts\umsb.fd
+(C:\Users\YODA\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
+)
+[1
 
 
-{C:/Users/Fradi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./logo_carth
-age.png> <./logo_supcom.png>]
+{C:/Users/YODA/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map} <./logo_cartha
+ge.png> <./logo_supcom.png>]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: a4paper
@@ -598,126 +595,114 @@ l.126 \restoregeometry
 
 
 
-] (report.toc)
+] (report.toc [1
+
+
+])
 \tf@toc=\write4
 \openout4 = `report.toc'.
 
- [1
-
-
-] [2]
+ [2]
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.204 
-       [1
+l.209 \end{table}
+                  [1
 
-] [2] [3] [4] [5] [6]
-
-LaTeX Warning: Reference `fig:synthetic' on page 7 undefined on input line 493.
-
-
-[7]
-<figures/synthetic_training_data.png, id=270, 714.0276pt x 714.0276pt>
+] [2] [3] [4] [5] [6] [7] [8] [9] [10]
+<figures/synthetic_training_data.png, id=348, 714.0276pt x 714.0276pt>
 File: figures/synthetic_training_data.png Graphic file (type png)
 <use figures/synthetic_training_data.png>
 Package pdftex.def Info: figures/synthetic_training_data.png  used on input lin
-e 497.
-(pdftex.def)             Requested size: 294.42636pt x 294.43106pt.
-<figures/training_reward.png, id=272, 578.16pt x 325.215pt>
+e 649.
+(pdftex.def)             Requested size: 181.18439pt x 181.18668pt.
+ [11 <./figures/synthetic_training_data.png>]
+<figures/training_reward.png, id=357, 578.16pt x 325.215pt>
 File: figures/training_reward.png Graphic file (type png)
 <use figures/training_reward.png>
-Package pdftex.def Info: figures/training_reward.png  used on input line 508.
+Package pdftex.def Info: figures/training_reward.png  used on input line 660.
 (pdftex.def)             Requested size: 271.7835pt x 152.87587pt.
- [8 <./figures/synthetic_training_data.png> <./figures/training_reward.png>]
-<figures/main_page.PNG, id=282, 1445.4pt x 721.19438pt>
+ [12 <./figures/training_reward.png>]
+<figures/main_page.PNG, id=366, 1445.4pt x 721.19438pt>
 File: figures/main_page.PNG Graphic file (type png)
 <use figures/main_page.PNG>
-Package pdftex.def Info: figures/main_page.PNG  used on input line 550.
+Package pdftex.def Info: figures/main_page.PNG  used on input line 713.
 (pdftex.def)             Requested size: 217.42265pt x 108.4826pt.
-<figures/inference.PNG, id=283, 1445.4pt x 696.35156pt>
+<figures/inference.PNG, id=367, 1445.4pt x 696.35156pt>
 File: figures/inference.PNG Graphic file (type png)
 <use figures/inference.PNG>
-Package pdftex.def Info: figures/inference.PNG  used on input line 555.
+Package pdftex.def Info: figures/inference.PNG  used on input line 718.
 (pdftex.def)             Requested size: 217.42265pt x 104.74573pt.
-<figures/result.PNG, id=284, 1445.4pt x 724.20563pt>
+<figures/result.PNG, id=368, 1445.4pt x 724.20563pt>
 File: figures/result.PNG Graphic file (type png)
 <use figures/result.PNG>
-Package pdftex.def Info: figures/result.PNG  used on input line 562.
+Package pdftex.def Info: figures/result.PNG  used on input line 725.
 (pdftex.def)             Requested size: 217.42265pt x 108.93556pt.
-<figures/analytics.PNG, id=285, 1445.4pt x 719.68875pt>
+<figures/analytics.PNG, id=369, 1445.4pt x 719.68875pt>
 File: figures/analytics.PNG Graphic file (type png)
 <use figures/analytics.PNG>
-Package pdftex.def Info: figures/analytics.PNG  used on input line 567.
+Package pdftex.def Info: figures/analytics.PNG  used on input line 730.
 (pdftex.def)             Requested size: 217.42265pt x 108.25613pt.
-[9] [10 <./figures/main_page.PNG> <./figures/inference.PNG> <./figures/result.P
-NG> <./figures/analytics.PNG>]
-LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 6
-19.
-
-(C:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
-File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
-) [11]
-Underfull \hbox (badness 3826) in paragraph at lines 639--640
+ [13 <./figures/main_page.PNG> <./figures/inference.PNG> <./figures/result.PNG>
+ <./figures/analytics.PNG>] [14] [15]
+Underfull \hbox (badness 3826) in paragraph at lines 808--809
 []\T1/cmr/m/n/10.95 Google OR-Tools: Op-er-a-tions Re-search Tools. [][]$\T1/cm
 tt/m/n/10.95 https : / / developers . google . com /
  []
 
-[12] (report.aux)
+[16] [17] (report.aux)
  ***********
-LaTeX2e <2023-11-01> patch level 1
-L3 programming layer <2024-01-04>
+LaTeX2e <2025-11-01>
+L3 programming layer <2025-12-24>
  ***********
-
-
-LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: E5822863995ECB0B8FE5055E4755B514;4666.
+(rerunfilecheck)             Checksum: EB42EC9DD3258F8DC38D87C9900F71BF;6427.
  ) 
 Here is how much of TeX's memory you used:
- 13024 strings out of 474486
- 204559 string characters out of 5753570
- 1937542 words of memory out of 5000000
- 35031 multiletter control sequences out of 15000+600000
- 573310 words of font info for 69 fonts, out of 8000000 for 9000
+ 13129 strings out of 467870
+ 207989 string characters out of 5418839
+ 623855 words of memory out of 5000000
+ 41695 multiletter control sequences out of 15000+600000
+ 643891 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,562b,576s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{table.caption.10} has been referenced but does not 
-exist, replaced by a fixed one
-
- <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt10
-95.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
-ecrm1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
-pi600\ecbx1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappe
-n/ec/dpi600\ecrm0800.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/j
-knappen/ec/dpi600\ecti1095.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/lj
-four/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts
-/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\Fradi\AppData\Local\MiKTeX
-\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\Fradi\AppData\Local\
-MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\Fradi\AppData\
-Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\Fradi\Ap
-pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\Fr
-adi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Us
-ers\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk><
-C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program F
-iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/
-fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
-s/cm/cmr10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb
-><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program F
-iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/
-fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX/fonts/type1/p
-ublic/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
-s/symbols/msbm10.pfb>
-Output written on report.pdf (16 pages, 2809471 bytes).
+ 75i,15n,79p,517b,641s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1
+000.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
+ecbx1000.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dp
+i600\ectt1095.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/
+ec/dpi600\ecrm0800.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/ljfour/jkna
+ppen/ec/dpi600\ecti1095.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/ljfour
+/jknappen/ec/dpi600\tcrm1095.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts/pk/l
+jfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\YODA\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\Users\YODA\AppData\Local\MiKTeX\
+fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\YODA\AppData\Local\Mi
+KTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Users\YODA\AppData\Loc
+al\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\YODA\AppDat
+a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\YODA\A
+ppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1728.pk><C:/Users/YO
+DA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/
+Users/YODA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.
+pfb><C:/Users/YODA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmmi10.pfb><C:/Users/YODA/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmmi6.pfb><C:/Users/YODA/AppData/Local/Programs/MiKTeX/fonts/type1/pub
+lic/amsfonts/cm/cmmi8.pfb><C:/Users/YODA/AppData/Local/Programs/MiKTeX/fonts/ty
+pe1/public/amsfonts/cm/cmr10.pfb><C:/Users/YODA/AppData/Local/Programs/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/YODA/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/YODA/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/YODA/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/YODA/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/YO
+DA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb
+><C:/Users/YODA/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbo
+ls/msbm10.pfb>
+Output written on report.pdf (21 pages, 2872747 bytes).
 PDF statistics:
- 908 PDF objects out of 1000 (max. 8388607)
- 102 named destinations out of 1000 (max. 500000)
- 297 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1069 PDF objects out of 1200 (max. 8388607)
+ 146 named destinations out of 1000 (max. 500000)
+ 361 words of extra memory for PDF output out of 10000 (max. 10000000)
 

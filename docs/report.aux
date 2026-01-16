@@ -7,8 +7,8 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Context and Motivation}{1}{subsection.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Problem Statement}{1}{subsection.1.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Objectives}{1}{subsection.1.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Mathematical Formulation}{1}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Sets and Indices}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Mathematical Formulation}{2}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Sets and Indices}{2}{subsection.2.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Sets and indices notation}}{2}{table.caption.3}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{tab:sets}{{1}{2}{Sets and indices notation}{table.caption.3}{}}
@@ -35,24 +35,35 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Architecture}{6}{subsection.4.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Training Algorithm}{6}{subsection.4.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}EV-Specific Features}{7}{subsection.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Results and Discussion}{7}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Experimental Setup}{7}{subsection.5.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Training configuration}}{7}{table.caption.8}\protected@file@percent }
-\newlabel{tab:config}{{6}{7}{Training configuration}{table.caption.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Sample synthetic training data instance showing depot, charging stations distributed across quadrants, and customer locations with varying demands}}{8}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:synthetic}{{1}{8}{Sample synthetic training data instance showing depot, charging stations distributed across quadrants, and customer locations with varying demands}{figure.caption.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Training Results}{8}{subsection.5.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Training and validation rewards over 100 epochs (10 nodes, rollout baseline)}}{8}{figure.caption.10}\protected@file@percent }
-\newlabel{fig:train}{{2}{8}{Training and validation rewards over 100 epochs (10 nodes, rollout baseline)}{figure.caption.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Comparison with Baselines}{9}{subsection.5.3}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Performance comparison on 10-customer instances}}{9}{table.caption.11}\protected@file@percent }
-\newlabel{tab:comp}{{7}{9}{Performance comparison on 10-customer instances}{table.caption.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Dashboard Integration}{9}{subsection.5.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Dashboard interfaces for EV route optimization}}{10}{figure.caption.12}\protected@file@percent }
-\newlabel{fig:dash}{{3}{10}{Dashboard interfaces for EV route optimization}{figure.caption.12}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{10}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Summary}{10}{subsection.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Key Findings}{10}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Real-World Deployment Pipeline}{7}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Pipeline Overview}{7}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}K-Means Customer Clustering}{8}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Road Network Graph Construction}{8}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Dijkstra's Algorithm for Shortest Paths}{9}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}OSRM Integration for Production Routing}{9}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Coordinate Normalization and Model Input}{10}{subsection.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Complete Pipeline Workflow}{10}{subsection.5.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Real-World EV Routing Pipeline}}{10}{table.caption.8}\protected@file@percent }
+\newlabel{alg:pipeline}{{6}{10}{Real-World EV Routing Pipeline}{table.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Results and Discussion}{11}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Experimental Setup}{11}{subsection.6.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Training configuration}}{11}{table.caption.9}\protected@file@percent }
+\newlabel{tab:config}{{7}{11}{Training configuration}{table.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Sample synthetic training data instance showing depot, charging stations distributed across quadrants, and customer locations with varying demands}}{11}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:synthetic}{{1}{11}{Sample synthetic training data instance showing depot, charging stations distributed across quadrants, and customer locations with varying demands}{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Training Results}{12}{subsection.6.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Training and validation rewards over 100 epochs (10 nodes, rollout baseline)}}{12}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:train}{{2}{12}{Training and validation rewards over 100 epochs (10 nodes, rollout baseline)}{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Comparison with Baselines}{12}{subsection.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Performance comparison on 10-customer instances}}{12}{table.caption.12}\protected@file@percent }
+\newlabel{tab:comp}{{8}{12}{Performance comparison on 10-customer instances}{table.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Dashboard Integration}{12}{subsection.6.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Dashboard interfaces for EV route optimization}}{13}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:dash}{{3}{13}{Dashboard interfaces for EV route optimization}{figure.caption.13}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Conclusion}{14}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Summary}{14}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Key Findings}{14}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Future Work}{14}{subsection.7.3}\protected@file@percent }
 \bibcite{kool}{1}
 \bibcite{camp}{2}
 \bibcite{tang2023}{3}
@@ -63,9 +74,13 @@
 \bibcite{dantzig1959}{8}
 \bibcite{erdelic2019}{9}
 \bibcite{kucukoglu2021}{10}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Future Work}{11}{subsection.6.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{11}{subsection.6.3}\protected@file@percent }
 \bibcite{ortools}{11}
 \bibcite{osrm}{12}
 \bibcite{cvrplib}{13}
-\gdef \@abspage@last{16}
+\bibcite{macqueen1967}{14}
+\@writefile{toc}{\contentsline {section}{References}{16}{subsection.7.3}\protected@file@percent }
+\bibcite{dijkstra1959}{15}
+\bibcite{boeing2017}{16}
+\bibcite{luxen2011}{17}
+\bibcite{networkx}{18}
+\gdef \@abspage@last{21}
