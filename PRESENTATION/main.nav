@@ -92,20 +92,10 @@
 \headcommand {\beamer@framepages {34}{34}}
 \headcommand {\slideentry {8}{0}{4}{35/35}{}{0}}
 \headcommand {\beamer@framepages {35}{35}}
-\headcommand {\gdef \insertmainframenumber {35}}
-\headcommand {\partentry {\translate {Appendix}}{1}}
-\headcommand {\beamer@partpages {1}{35}}
-\headcommand {\beamer@sectionpages {32}{35}}
-\headcommand {\beamer@subsectionpages {32}{35}}
-\headcommand {\beamer@appendixpages {36}}
-\headcommand {\slideentry {8}{0}{5}{36/36}{}{1}}
+\headcommand {\slideentry {8}{0}{5}{36/36}{}{0}}
 \headcommand {\beamer@framepages {36}{36}}
-\headcommand {\slideentry {8}{0}{6}{37/37}{}{1}}
-\headcommand {\beamer@framepages {37}{37}}
-\headcommand {\slideentry {8}{0}{7}{38/38}{}{1}}
-\headcommand {\beamer@framepages {38}{38}}
-\headcommand {\beamer@partpages {36}{38}}
-\headcommand {\beamer@subsectionpages {36}{38}}
-\headcommand {\beamer@sectionpages {36}{38}}
-\headcommand {\beamer@documentpages {38}}
-\headcommand {\gdef \inserttotalframenumber {38}}
+\headcommand {\beamer@partpages {1}{36}}
+\headcommand {\beamer@subsectionpages {32}{36}}
+\headcommand {\beamer@sectionpages {32}{36}}
+\headcommand {\beamer@documentpages {36}}
+\headcommand {\gdef \inserttotalframenumber {36}}

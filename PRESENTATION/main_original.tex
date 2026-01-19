@@ -117,7 +117,6 @@
 % OUTLINE
 %-------------------------------------------------------------------------
 \begin{frame}{Outline}
-    \small
     \tableofcontents[hideallsubsections]
 \end{frame}
 
@@ -166,23 +165,23 @@
 %-------------------------------------------------------------------------
 \begin{frame}{Challenges in EV Logistics}
     \begin{center}
-        \begin{tikzpicture}[scale=0.85, every node/.style={scale=0.85},
-            challenge/.style={rectangle, rounded corners, draw=primaryblue, fill=lightgray,
-                             text width=3cm, minimum height=1.2cm, align=center, font=\small},
+        \begin{tikzpicture}[
+            challenge/.style={rectangle, rounded corners, draw=primaryblue, fill=lightgray, 
+                             text width=3.5cm, minimum height=1.5cm, align=center, font=\small},
             arrow/.style={->, thick, primaryblue}
         ]
             % Central node
-            \node[ellipse, draw=primaryblue, fill=primaryblue!20, text width=2.2cm,
-                  align=center, font=\bfseries\small] (center) {EV Logistics\\Challenges};
-
+            \node[ellipse, draw=primaryblue, fill=primaryblue!20, text width=2.5cm, 
+                  align=center, font=\bfseries] (center) {EV Logistics\\Challenges};
+            
             % Challenge nodes
-            \node[challenge] (range) at (-4.5,1.8) {\faIcon{battery-half}\\Limited Range};
-            \node[challenge] (charge) at (-4.5,-1.8) {\faIcon{charging-station}\\Sparse Charging};
-            \node[challenge] (time) at (0,2.6) {\faIcon{clock}\\Long Charging};
-            \node[challenge] (energy) at (4.5,1.8) {\faIcon{bolt}\\Variable Energy};
-            \node[challenge] (plan) at (4.5,-1.8) {\faIcon{route}\\Complex Routing};
-            \node[challenge] (cost) at (0,-2.6) {\faIcon{dollar-sign}\\Cost Optimization};
-
+            \node[challenge] (range) at (-5,2) {\faIcon{battery-half}\\Limited\\Driving Range};
+            \node[challenge] (charge) at (-5,-2) {\faIcon{charging-station}\\Sparse Charging\\Infrastructure};
+            \node[challenge] (time) at (0,3) {\faIcon{clock}\\Long Charging\\Duration};
+            \node[challenge] (energy) at (5,2) {\faIcon{bolt}\\Variable Energy\\Consumption};
+            \node[challenge] (plan) at (5,-2) {\faIcon{route}\\Complex Route\\Planning};
+            \node[challenge] (cost) at (0,-3) {\faIcon{dollar-sign}\\Operational\\Cost Optimization};
+            
             % Arrows
             \draw[arrow] (center) -- (range);
             \draw[arrow] (center) -- (charge);
@@ -352,31 +351,34 @@
             \begin{alertblock}{Distance $\neq$ Energy}
                 Shortest path may not be most energy-efficient!
             \end{alertblock}
-
+            
+            \vspace{0.3cm}
             \textbf{Energy depends on:}
             \begin{itemize}
                 \item \highlight{Vehicle load} (heavier = more energy)
-                \item \highlight{Road gradient} (uphill vs downhill)
-                \item \highlight{Speed profile} and aerodynamic drag
-                \item \highlight{Regenerative braking}
+                \item \highlight{Road gradient} (uphill = more energy)
+                \item \highlight{Speed profile} (higher speed = more drag)
+                \item \highlight{Regenerative braking} (downhill = energy recovery)
             \end{itemize}
         \end{column}
         \begin{column}{0.48\textwidth}
-            \begin{exampleblock}{Benefits}
+            \begin{exampleblock}{Energy Optimization Benefits}
                 \begin{itemize}
-                    \item Extended range per charge
-                    \item Fewer charging stops
-                    \item Lower operational costs
-                    \item Reduced battery degradation
+                    \item \textbf{Extended range} per charge
+                    \item \textbf{Fewer charging} stops needed
+                    \item \textbf{Lower operational} costs
+                    \item \textbf{Reduced battery} degradation
+                    \item More \textbf{sustainable} operations
                 \end{itemize}
             \end{exampleblock}
         \end{column}
     \end{columns}
-
-    \vspace{0.3cm}
+    
+    \vspace{0.5cm}
     \begin{center}
-        \fbox{\parbox{0.75\textwidth}{\centering
-            \textbf{Key Insight:} A longer downhill route may use less energy than a shorter uphill one!
+        \fbox{\parbox{0.8\textwidth}{\centering
+            \textbf{Key Insight:} A longer route going downhill may consume\\
+            less energy than a shorter uphill route!
         }}
     \end{center}
 \end{frame}
@@ -455,32 +457,42 @@
 
 %-------------------------------------------------------------------------
 \begin{frame}{MILP Formulation: Objective and Constraints}
-    \begin{block}{Objective: Minimize Total Energy}
-        \vspace{-0.2cm}
+    \begin{block}{Objective Function}
         \[
         \min \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} E_{ij} \cdot x_{ijk}^r
         \]
-        \vspace{-0.4cm}
+        Minimize total energy consumption across all routes
     \end{block}
-
+    
+    \vspace{0.3cm}
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
-            \small
-            \textbf{Customer Service:} $\sum_{k,r} y_{ik}^r = 1$
-
-            \textbf{Capacity:} $\sum_{i} d_i y_{ik}^r \leq Q_k$
+            \textbf{Customer Service:}
+            \[
+            \sum_{k \in K} \sum_{r \in R} y_{ik}^r = 1, \quad \forall i \in C
+            \]
+            
+            \textbf{Capacity:}
+            \[
+            \sum_{i \in C} d_i \cdot y_{ik}^r \leq Q_k, \quad \forall k, r
+            \]
         \end{column}
         \begin{column}{0.48\textwidth}
-            \small
-            \textbf{Flow:} $\sum_j x_{ijk}^r = y_{ik}^r$
-
-            \textbf{MTZ:} $w_{ik}^r - w_{jk}^r + |C| x_{ijk}^r \leq |C| - 1$
+            \textbf{Flow Conservation:}
+            \[
+            \sum_j x_{ijk}^r = y_{ik}^r = \sum_j x_{jik}^r
+            \]
+            
+            \textbf{Subtour Elimination (MTZ):}
+            \[
+            w_{ik}^r - w_{jk}^r + |C| x_{ijk}^r \leq |C| - 1
+            \]
         \end{column}
     \end{columns}
-
-    \vspace{0.2cm}
+    
+    \vspace{0.3cm}
     \begin{center}
-        \textcolor{red}{\textbf{NP-Hard}} $\Rightarrow$ Exact methods don't scale
+        \textcolor{red}{\textbf{NP-Hard Problem}} $\Rightarrow$ Exact methods don't scale to large instances
     \end{center}
 \end{frame}
 
@@ -700,17 +712,27 @@
 %-------------------------------------------------------------------------
 \begin{frame}{Attention-Based Architecture: Overview}
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{drl_model_architecture.png}
+        \includegraphics[width=0.70\textwidth]{drl_model_architecture.png}
     \end{center}
+    
+    \vspace{0.3cm}
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{block}{Encoder}
-                Multi-head self-attention captures node relationships
+                \begin{itemize}
+                    \item Multi-head self-attention
+                    \item Captures node relationships
+                    \item Produces node embeddings
+                \end{itemize}
             \end{block}
         \end{column}
         \begin{column}{0.48\textwidth}
             \begin{block}{Decoder}
-                Autoregressive generation with masked attention
+                \begin{itemize}
+                    \item Autoregressive generation
+                    \item Context-aware selection
+                    \item Masked attention for feasibility
+                \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
@@ -783,24 +805,26 @@
 %-------------------------------------------------------------------------
 \begin{frame}{REINFORCE Training Algorithm}
     \begin{block}{Policy Gradient Objective}
-        \vspace{-0.2cm}
         \[
-        J(\theta) = \mathbb{E}_{\pi_\theta}\left[L(\pi)\right] \quad \text{where } L(\pi) \text{ is route energy}
+        J(\theta) = \mathbb{E}_{\pi_\theta}\left[L(\pi)\right]
         \]
-        \vspace{-0.3cm}
+        where $L(\pi)$ is the total route energy consumption
     \end{block}
-
-    \begin{block}{Gradient with Rollout Baseline}
-        \vspace{-0.2cm}
+    
+    \begin{block}{Gradient Estimation with Baseline}
         \[
         \nabla_\theta J \approx \frac{1}{B}\sum_{i=1}^{B} \left(L(\pi_i) - b(s_i)\right) \nabla_\theta \log p_\theta(\pi_i | s_i)
         \]
-        \vspace{-0.3cm}
-        \small $b(s)$ = baseline from greedy policy copy (reduces variance)
+        
+        \begin{itemize}
+            \item $b(s)$ = baseline value (reduces variance)
+            \item We use \textbf{rollout baseline}: greedy policy copy
+        \end{itemize}
     \end{block}
-
-    \begin{exampleblock}{Baseline Update}
-        Update when policy shows significant improvement (paired t-test, $p < 0.05$)
+    
+    \begin{exampleblock}{Baseline Update Rule}
+        Update baseline when current policy shows statistically significant improvement\\
+        (paired t-test with $p < 0.05$ on validation instances)
     \end{exampleblock}
 \end{frame}
 
@@ -853,7 +877,7 @@
 %-------------------------------------------------------------------------
 \begin{frame}{End-to-End System Pipeline}
     \begin{center}
-        \includegraphics[width=0.68\textwidth]{system_architecture.png}
+        \includegraphics[width=0.75\textwidth]{system_architecture.png}
     \end{center}
 \end{frame}
 
@@ -861,28 +885,34 @@
 \begin{frame}{Data Generation Pipeline}
     \begin{columns}[T]
         \begin{column}{0.55\textwidth}
-            \textbf{Training Data:}
-            \begin{itemize}
-                \item Random node coordinates on $100 \times 100$ grid
-                \item Random elevations for slope calculation
-                \item Random customer demands
-                \item Pairwise distances and slopes computed
-            \end{itemize}
-
-            \vspace{0.2cm}
+            \textbf{Training Data Generation:}
+            \begin{enumerate}
+                \item \textbf{Random coordinates} for nodes
+                    \begin{itemize}
+                        \item Depot: [25,75] $\times$ [25,75]
+                        \item Customers: [0,101] $\times$ [0,101]
+                        \item Stations: quadrant-based placement
+                    \end{itemize}
+                \item \textbf{Random elevations} [0,101]
+                    \begin{itemize}
+                        \item Normalized for slope calculation
+                    \end{itemize}
+                \item \textbf{Random demands} [1, max\_demand]
+                \item \textbf{Pairwise distances} and slopes
+            \end{enumerate}
+        \end{column}
+        \begin{column}{0.42\textwidth}
+            \begin{center}
+                \includegraphics[width=\textwidth]{synthetic_training_data.png}
+            \end{center}
+            
             \begin{block}{Dataset Size}
-                \small
                 \begin{tabular}{ll}
                     Training & 1,280,000 \\
                     Validation & 10,000 \\
                     Batch size & 1,024
                 \end{tabular}
             \end{block}
-        \end{column}
-        \begin{column}{0.42\textwidth}
-            \begin{center}
-                \includegraphics[width=0.9\textwidth]{synthetic_training_data.png}
-            \end{center}
         \end{column}
     \end{columns}
 \end{frame}
@@ -930,10 +960,12 @@
 %-------------------------------------------------------------------------
 \begin{frame}{Interactive Dashboard: Main Interface}
     \begin{center}
-        \includegraphics[width=0.75\textwidth]{main_page.PNG}
+        \includegraphics[width=0.85\textwidth]{main_page.PNG}
     \end{center}
-
-    \small Upload customers $\bullet$ Configure EV $\bullet$ Select stations $\bullet$ Real-time optimization
+    
+    \begin{block}{Features}
+        Upload customers $\bullet$ Configure EV parameters $\bullet$ Select charging stations $\bullet$ Real-time optimization
+    \end{block}
 \end{frame}
 
 %-------------------------------------------------------------------------
@@ -1044,17 +1076,26 @@
 %-------------------------------------------------------------------------
 \begin{frame}{Training Results}
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{training_reward.png}
+        \includegraphics[width=0.7\textwidth]{training_reward.png}
     \end{center}
+    
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
-            \begin{block}{Observations}
-                Consistent improvement, convergence at epoch 80
+            \begin{block}{Training Observations}
+                \begin{itemize}
+                    \item Consistent improvement
+                    \item Convergence around epoch 80
+                    \item Low variance after convergence
+                \end{itemize}
             \end{block}
         \end{column}
         \begin{column}{0.48\textwidth}
             \begin{block}{Generalization}
-                Validation follows training, no overfitting
+                \begin{itemize}
+                    \item Validation follows training
+                    \item No overfitting observed
+                    \item Good transfer to test instances
+                \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
@@ -1067,11 +1108,12 @@
             \toprule
             \textbf{Method} & \textbf{Energy (kWh)} & \textbf{Inference Time} \\
             \midrule
-            \textbf{OR-Tools} & \textbf{11.92} & 2.1s \\
-            DRL (Ours) & 12.18 & \textbf{0.5s} \\
-            Ant Colony Optimization & 12.67 & 3.2s \\
-            Simulated Annealing & 12.89 & 1.5s \\
+            Google OR-Tools & 12.45 & 2.1s \\
             Hill Climbing & 13.21 & 0.8s \\
+            Simulated Annealing & 12.89 & 1.5s \\
+            Ant Colony Optimization & 12.67 & 3.2s \\
+            \midrule
+            \textbf{DRL (Ours)} & \textbf{12.18} & \textbf{0.5s} \\
             \bottomrule
         \end{tabular}
     \end{center}
@@ -1079,16 +1121,16 @@
     \vspace{0.5cm}
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
-            \begin{exampleblock}{DRL Performance}
+            \begin{exampleblock}{Energy Reduction}
                 \begin{itemize}
-                    \item Only \textbf{2.2\%} gap vs OR-Tools
+                    \item \textbf{2.2\%} better than OR-Tools
                     \item \textbf{7.8\%} better than Hill Climbing
-                    \item Near-optimal solution quality
+                    \item Best overall energy efficiency
                 \end{itemize}
             \end{exampleblock}
         \end{column}
         \begin{column}{0.48\textwidth}
-            \begin{exampleblock}{Speed Advantage}
+            \begin{exampleblock}{Speed Improvement}
                 \begin{itemize}
                     \item \textbf{4x} faster than OR-Tools
                     \item \textbf{6x} faster than ACO
@@ -1218,72 +1260,145 @@
     \end{block}
 \end{frame}
 
+%-------------------------------------------------------------------------
+\begin{frame}{Conclusion}
+    \begin{center}
+        \begin{tikzpicture}
+            \node[rectangle, rounded corners, draw=primaryblue, fill=primaryblue!10, 
+                  text width=12cm, align=center, inner sep=15pt] {
+                \Large\textbf{Deep Reinforcement Learning effectively addresses the\\
+                Energy-Minimizing Electric Vehicle Routing Problem}\\[0.5cm]
+                \normalsize
+                Achieving \textbf{competitive solution quality} with\\
+                \textbf{significantly faster inference} for real-world deployment
+            };
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.5cm}
+    \begin{columns}[T]
+        \begin{column}{0.32\textwidth}
+            \centering
+            \faIcon{brain}\\
+            \textbf{Learning-Based}\\
+            Generalizes to new instances
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \centering
+            \faIcon{bolt}\\
+            \textbf{Energy-Efficient}\\
+            Physics-aware optimization
+        \end{column}
+        \begin{column}{0.32\textwidth}
+            \centering
+            \faIcon{rocket}\\
+            \textbf{Production-Ready}\\
+            Interactive dashboard
+        \end{column}
+    \end{columns}
+\end{frame}
 
 %-------------------------------------------------------------------------
 \begin{frame}[plain]
     \begin{center}
-        \vspace{1cm}
+        \vspace{2cm}
         {\Huge\textbf{Thank You!}}
+        
+        \vspace{1cm}
+        {\Large Questions \& Discussion}
+        
+        \vspace{1.5cm}
+        \begin{tikzpicture}
+            \node[rectangle, rounded corners, draw=primaryblue, fill=lightgray, 
+                  text width=8cm, align=center, inner sep=10pt] {
+                \textbf{Authors:} Salem Fradi \& Dhia Elhak Ezzeddini\\[0.3cm]
+                \textbf{Supervisor:} Dr. Ferdaoues Chaabane\\[0.3cm]
+                \textbf{Institution:} Sup'Com, Carthage University\\[0.3cm]
+                \textbf{Company:} Sagemcom
+            };
+        \end{tikzpicture}
+        
+        \vspace{1cm}
+        {\large Academic Year 2025--2026}
     \end{center}
 \end{frame}
 
 %-------------------------------------------------------------------------
-\begin{frame}{Backup: References (1/2)}
-    \small
-    \begin{thebibliography}{99}
-        \bibitem{kool}
-        W. Kool, H. van Hoof, M. Welling,
-        \textit{``Attention, Learn to Solve Routing Problems!''}, ICLR, 2019.
-
-        \bibitem{tang2023}
-        M. Tang et al.,
-        \textit{``Energy-optimal routing for EVs using DRL with transformer,''} Applied Energy, 2023.
-
-        \bibitem{erdelic2019}
-        T. Erdeli\'{c}, T. Cari\'{c},
-        \textit{``A Survey on the EVRP: Variants and Solution Approaches,''} J. Adv. Transportation, 2019.
-
-        \bibitem{kirkpatrick1983}
-        S. Kirkpatrick et al.,
-        \textit{``Optimization by Simulated Annealing,''} Science, 1983.
-
-        \bibitem{dorigo1996}
-        M. Dorigo et al.,
-        \textit{``The Ant System: Optimization by cooperating agents,''} IEEE Trans. SMC, 1996.
-
-        \bibitem{dantzig1959}
-        G. B. Dantzig, J. H. Ramser,
-        \textit{``The Truck Dispatching Problem,''} Management Science, 1959.
-    \end{thebibliography}
+% BACKUP SLIDES
+%-------------------------------------------------------------------------
+\appendix
+\begin{frame}{Backup: Node Indexing Convention}
+    \begin{block}{Sequence Layout (10 customers, 4 stations)}
+        \begin{tabular}{cl}
+            \toprule
+            \textbf{Index} & \textbf{Node Type} \\
+            \midrule
+            0 & Depot \\
+            1 & Depot charging (near depot) \\
+            2--5 & Charging stations (4 stations) \\
+            6--15 & Customers (10 customers) \\
+            \bottomrule
+        \end{tabular}
+    \end{block}
+    
+    \vspace{0.5cm}
+    \textbf{Total sequence length:} $2 + 4 + 10 = 16$ nodes
+    
+    \vspace{0.3cm}
+    \textbf{Dynamic state tensor:} 4 channels
+    \begin{itemize}
+        \item Load: remaining capacity
+        \item Demand: per-node remaining demand
+        \item SOC: battery state of charge
+        \item Time: remaining route time budget
+    \end{itemize}
 \end{frame}
 
 %-------------------------------------------------------------------------
-\begin{frame}{Backup: References (2/2)}
-    \small
-    \begin{thebibliography}{99}
-        \bibitem{dijkstra1959}
-        E. W. Dijkstra,
-        \textit{``A note on two problems in connexion with graphs,''} Numerische Mathematik, 1959.
+\begin{frame}{Backup: Masking Logic Details}
+    \textbf{Feasibility conditions applied sequentially:}
+    
+    \begin{enumerate}
+        \item Base feasibility: demand $> 0$ AND demand $<$ current load
+        \item Previously selected node is masked
+        \item Charging access restrictions based on current location
+        \item Force depot return if no load OR no remaining demand
+        \item Block nodes unreachable due to SOC or time
+        \item Block if two-leg path to depot infeasible
+        \item Ensure depot always selectable when all customers masked
+    \end{enumerate}
+    
+    \vspace{0.3cm}
+    \begin{exampleblock}{Purpose}
+        Ensures energy, time, load, and demand constraints while\\
+        permitting charging detours and driving termination
+    \end{exampleblock}
+\end{frame}
 
-        \bibitem{macqueen1967}
-        J. MacQueen,
-        \textit{``Some methods for classification and analysis of multivariate observations,''} Berkeley Symp., 1967.
-
+%-------------------------------------------------------------------------
+\begin{frame}{Backup: References}
+    \begin{thebibliography}{9}
+        \bibitem{kool}
+        W. Kool, H. van Hoof, M. Welling,
+        \textit{``Attention, Learn to Solve Routing Problems!''},
+        ICLR, 2019.
+        
+        \bibitem{osrm}
+        Project OSRM - Open Source Routing Machine.
+        \url{http://project-osrm.org/}
+        
+        \bibitem{ortools}
+        Google OR-Tools.
+        \url{https://developers.google.com/optimization}
+        
+        \bibitem{cvrplib}
+        CVRPLIB: Capacitated Vehicle Routing Problem Library.
+        \url{http://vrp.atd-lab.inf.puc-rio.br/}
+        
         \bibitem{vaswani}
         A. Vaswani et al.,
-        \textit{``Attention Is All You Need,''} NeurIPS, 2017.
-
-        \bibitem{ortools}
-        Google OR-Tools. \url{https://developers.google.com/optimization}
-
-        \bibitem{osrm}
-        Project OSRM. \url{http://project-osrm.org/}
-
-        \bibitem{cvrplib}
-        CVRPLIB. \url{http://vrp.atd-lab.inf.puc-rio.br/}
-
-        \bibitem{boeing2017}
-        G. Boeing, \textit{``OSMnx: Street Networks,''} Computers, Environment and Urban Systems, 2017.
+        \textit{``Attention Is All You Need''},
+        NeurIPS, 2017.
     \end{thebibliography}
 \end{frame}
 
