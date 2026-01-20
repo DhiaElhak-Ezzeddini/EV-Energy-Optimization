@@ -125,7 +125,43 @@
 \section{Introduction}
 %=========================================================================
 
-
+%-------------------------------------------------------------------------
+\begin{frame}{Context: The Rise of Electric Vehicles}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Global EV Adoption Trends:}
+            \begin{itemize}
+                \item Global EV sales exceeded \textbf{14 million} in 2023
+                \item Expected to reach \textbf{40+ million} by 2030
+                \item Major push from governments and corporations
+            \end{itemize}
+            
+            \vspace{0.5cm}
+            \textbf{Key Drivers:}
+            \begin{itemize}
+                \item \highlight{Climate change} mitigation goals
+                \item Stricter \highlight{emission regulations}
+                \item Decreasing \highlight{battery costs}
+                \item Government \highlight{incentives} and subsidies
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.42\textwidth}
+            \begin{block}{Why EVs for Logistics?}
+                \begin{itemize}
+                    \item Lower operating costs
+                    \item Zero tailpipe emissions
+                    \item Urban delivery restrictions
+                    \item Corporate sustainability
+                \end{itemize}
+            \end{block}
+            
+            \vspace{0.3cm}
+            \begin{alertblock}{Challenge}
+                Limited range \& charging infrastructure require \textbf{smart routing}
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 %-------------------------------------------------------------------------
 \begin{frame}{Challenges in EV Logistics}
@@ -158,7 +194,38 @@
     \end{center}
 \end{frame}
 
-
+%-------------------------------------------------------------------------
+\begin{frame}{Motivation: Why This Project?}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Industry Needs}
+                \begin{itemize}
+                    \item Growing demand for \textbf{sustainable logistics}
+                    \item Need for \textbf{real-time} routing decisions
+                    \item Integration with \textbf{smart city} infrastructure
+                    \item \textbf{Cost reduction} through energy optimization
+                \end{itemize}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Technical Gaps}
+                \begin{itemize}
+                    \item Traditional VRP methods \textbf{don't scale}
+                    \item Energy models often \textbf{oversimplified}
+                    \item Limited \textbf{real-world} deployment tools
+                    \item Need for \textbf{learning-based} approaches
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.5cm}
+    \begin{exampleblock}{Our Contribution}
+        \centering
+        An \textbf{end-to-end solution} combining Deep Reinforcement Learning with\\
+        physics-based energy modeling and real-world deployment infrastructure
+    \end{exampleblock}
+\end{frame}
 
 %=========================================================================
 \section{Problem Statement}
@@ -279,6 +346,40 @@
 \end{frame}
 
 %-------------------------------------------------------------------------
+\begin{frame}{Why Minimize Energy Instead of Distance?}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Distance $\neq$ Energy}
+                Shortest path may not be most energy-efficient!
+            \end{alertblock}
+
+            \textbf{Energy depends on:}
+            \begin{itemize}
+                \item \highlight{Vehicle load} (heavier = more energy)
+                \item \highlight{Road gradient} (uphill vs downhill)
+                \item \highlight{Speed profile} and aerodynamic drag
+                \item \highlight{Regenerative braking}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{Benefits}
+                \begin{itemize}
+                    \item Extended range per charge
+                    \item Fewer charging stops
+                    \item Lower operational costs
+                    \item Reduced battery degradation
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3cm}
+    \begin{center}
+        \fbox{\parbox{0.75\textwidth}{\centering
+            \textbf{Key Insight:} A longer downhill route may use less energy than a shorter uphill one!
+        }}
+    \end{center}
+\end{frame}
 
 %=========================================================================
 \section{Mathematical Formulation}
@@ -384,40 +485,6 @@
 \end{frame}
 
 %=========================================================================
-\section{Data Generation}
-%=========================================================================
-
-%-------------------------------------------------------------------------
-\begin{frame}{Data Generation Pipeline}
-    \begin{columns}[T]
-        \begin{column}{0.55\textwidth}
-            \textbf{Training Data:}
-            \begin{itemize}
-                \item Random node coordinates on $100 \times 100$ grid
-                \item Random elevations for slope calculation
-                \item Random customer demands
-                \item Pairwise distances and slopes computed
-            \end{itemize}
-
-            \vspace{0.2cm}
-            \begin{block}{Dataset Size}
-                \small
-                \begin{tabular}{ll}
-                    Training & 1,280,000 \\
-                    Validation & 10,000 \\
-                    Batch size & 1,024
-                \end{tabular}
-            \end{block}
-        \end{column}
-        \begin{column}{0.42\textwidth}
-            \begin{center}
-                \includegraphics[width=0.9\textwidth]{synthetic_training_data.png}
-            \end{center}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%=========================================================================
 \section{Baseline Optimization Methods}
 %=========================================================================
 
@@ -460,6 +527,7 @@
                     \item Nature-inspired
                     \item Pheromone trails
                     \item Collective intelligence
+                    \item Good for combinatorial
                 \end{itemize}
             \end{block}
         \end{column}
@@ -467,156 +535,40 @@
 \end{frame}
 
 %-------------------------------------------------------------------------
-\begin{frame}{Local Search: 2-Opt Operator}
+\begin{frame}{Metaheuristics: Local Search Operators}
     \begin{center}
-        \includegraphics[width=0.75\textwidth]{rev.png}
+        \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+            % 2-opt
+            \node[font=\bfseries] at (-5, 2.5) {2-Opt (Reverse Segment)};
+            \draw[thick] (-7,1.5) -- (-6,2) -- (-5,1.5) -- (-4,2) -- (-3,1.5);
+            \draw[thick, primaryblue] (-7,0.5) -- (-6,0) -- (-5,0.5) -- (-4,0) -- (-3,0.5);
+            \draw[->, thick, red] (-5, 1.2) -- (-5, 0.8);
+            
+            % Or-opt
+            \node[font=\bfseries] at (0, 2.5) {Or-Opt (Relocate)};
+            \draw[thick] (-2,1.5) -- (-1,2) -- (0,1.5) -- (1,2) -- (2,1.5);
+            \draw[thick, primaryblue] (-2,0.5) -- (0,0) -- (1,0.5) -- (-1,0) -- (2,0.5);
+            \draw[->, thick, red] (-0.5, 1.2) -- (-0.5, 0.8);
+            
+            % Exchange
+            \node[font=\bfseries] at (5, 2.5) {Exchange (Swap)};
+            \draw[thick] (3,1.5) -- (4,2) node[above, font=\tiny] {A} -- (5,1.5) -- (6,2) node[above, font=\tiny] {B} -- (7,1.5);
+            \draw[thick, primaryblue] (3,0.5) -- (4,0) node[below, font=\tiny] {B} -- (5,0.5) -- (6,0) node[below, font=\tiny] {A} -- (7,0.5);
+            \draw[->, thick, red] (5, 1.2) -- (5, 0.8);
+        \end{tikzpicture}
     \end{center}
-
-    \begin{block}{2-Opt Improvement}
-        Reverse a segment of the route to eliminate crossing edges and reduce total cost
-    \end{block}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{Simulated Annealing: Acceptance Rule}
-    \begin{block}{Probabilistic Acceptance}
+    
+    \vspace{0.5cm}
+    \begin{block}{Simulated Annealing Acceptance Rule}
         \[
         P(\text{accept worse solution}) = \exp\left(-\frac{\Delta E}{T}\right)
         \]
+        \begin{itemize}
+            \item High temperature $\Rightarrow$ explore (accept worse solutions)
+            \item Low temperature $\Rightarrow$ exploit (only accept improvements)
+            \item Cooling schedule: $T_{k+1} = \alpha \cdot T_k$ where $\alpha \in [0.9, 0.99]$
+        \end{itemize}
     \end{block}
-
-    \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            \textbf{Temperature Behavior:}
-            \begin{itemize}
-                \item High $T$ $\Rightarrow$ explore (accept worse)
-                \item Low $T$ $\Rightarrow$ exploit (only improvements)
-            \end{itemize}
-        \end{column}
-        \begin{column}{0.48\textwidth}
-            \textbf{Key Parameters:}
-            \begin{itemize}
-                \item $T_{\text{start}}$: initial temperature
-                \item $T_{\text{end}}$: final temperature
-                \item Cooling: $T_{k+1} = \alpha \cdot T_k$
-            \end{itemize}
-        \end{column}
-    \end{columns}
-
-    \vspace{0.3cm}
-    \begin{alertblock}{Challenge}
-        How to choose $T_{\text{start}}$ and $T_{\text{end}}$ for optimal performance?
-    \end{alertblock}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{SA Parameter Tuning: Initial Exploration}
-    \begin{columns}[T]
-        \begin{column}{0.55\textwidth}
-            \begin{center}
-                \includegraphics[width=\textwidth]{score_distribution_based_on_tempsstart_tempend.png}
-            \end{center}
-        \end{column}
-        \begin{column}{0.42\textwidth}
-            \textbf{Experiment Setup:}
-            \begin{itemize}
-                \item Monte Carlo sampling
-                \item Vary $T_{\text{start}}$ and $T_{\text{end}}$
-                \item Record score distribution
-            \end{itemize}
-
-            \vspace{0.3cm}
-            \begin{block}{Observation}
-                High variance across parameter space --- need to narrow down!
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{SA Parameter Tuning: Restricting $T_{\text{end}}$}
-    \begin{columns}[T]
-        \begin{column}{0.55\textwidth}
-            \begin{center}
-                \includegraphics[width=\textwidth]{"Screenshot 2026-01-20 104441.png"}
-            \end{center}
-        \end{column}
-        \begin{column}{0.42\textwidth}
-            \textbf{Restriction Applied:}
-            \[
-            T_{\text{end}} < 0.01
-            \]
-
-            \vspace{0.3cm}
-            \begin{exampleblock}{Finding}
-                Lower end temperatures lead to better convergence --- algorithm should cool down sufficiently
-            \end{exampleblock}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{SA Parameter Tuning: Restricting $T_{\text{start}}$}
-    \begin{columns}[T]
-        \begin{column}{0.55\textwidth}
-            \begin{center}
-                \includegraphics[width=\textwidth]{"Screenshot 2026-01-20 121650.png"}
-            \end{center}
-        \end{column}
-        \begin{column}{0.42\textwidth}
-            \textbf{Restrictions Applied:}
-            \[
-            T_{\text{start}} \geq 0.1 \quad \text{and} \quad T_{\text{end}} < 0.01
-            \]
-
-            \vspace{0.3cm}
-            \begin{exampleblock}{Finding}
-                Starting temperature must be high enough for initial exploration
-            \end{exampleblock}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{SA Parameter Tuning: Heatmap Analysis}
-    \begin{columns}[T]
-        \begin{column}{0.55\textwidth}
-            \begin{center}
-                \includegraphics[width=\textwidth]{heatmap.png}
-            \end{center}
-        \end{column}
-        \begin{column}{0.42\textwidth}
-            \textbf{Methodology:}
-            \begin{itemize}
-                \item $10 \times 10$ parameter grid
-                \item 5000 Monte Carlo iterations
-                \item Track best solution frequency
-            \end{itemize}
-
-            \vspace{0.3cm}
-            \begin{block}{Optimal Region}
-                \[
-                T_{\text{start}} \approx 0.2
-                \]
-                \[
-                T_{\text{end}} \approx 5 \times 10^{-3}
-                \]
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{SA Convergence with Optimal Parameters}
-    \begin{center}
-        \includegraphics[width=0.65\textwidth]{line_plot.png}
-    \end{center}
-
-    \begin{block}{Configuration}
-        $T_{\text{start}} = 0.2$, \quad $T_{\text{end}} = 5 \times 10^{-3}$
-    \end{block}
-
-    \small Score converges smoothly over time with tuned parameters
 \end{frame}
 
 %-------------------------------------------------------------------------
@@ -748,8 +700,20 @@
 %-------------------------------------------------------------------------
 \begin{frame}{Attention-Based Architecture: Overview}
     \begin{center}
-        \includegraphics[width=0.55\textwidth]{drl_arch.png}
+        \includegraphics[width=0.55\textwidth]{drl_model_architecture.png}
     \end{center}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Encoder}
+                Multi-head self-attention captures node relationships
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Decoder}
+                Autoregressive generation with masked attention
+            \end{block}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 %-------------------------------------------------------------------------
@@ -831,7 +795,7 @@
         \[
         \nabla_\theta J \approx \frac{1}{B}\sum_{i=1}^{B} \left(L(\pi_i) - b(s_i)\right) \nabla_\theta \log p_\theta(\pi_i | s_i)
         \]
-        \vspace{-0.2cm}
+        \vspace{-0.3cm}
         \small $b(s)$ = baseline from greedy policy copy (reduces variance)
     \end{block}
 
@@ -887,7 +851,41 @@
 %=========================================================================
 
 %-------------------------------------------------------------------------
+\begin{frame}{End-to-End System Pipeline}
+    \begin{center}
+        \includegraphics[width=0.68\textwidth]{system_architecture.png}
+    \end{center}
+\end{frame}
 
+%-------------------------------------------------------------------------
+\begin{frame}{Data Generation Pipeline}
+    \begin{columns}[T]
+        \begin{column}{0.55\textwidth}
+            \textbf{Training Data:}
+            \begin{itemize}
+                \item Random node coordinates on $100 \times 100$ grid
+                \item Random elevations for slope calculation
+                \item Random customer demands
+                \item Pairwise distances and slopes computed
+            \end{itemize}
+
+            \vspace{0.2cm}
+            \begin{block}{Dataset Size}
+                \small
+                \begin{tabular}{ll}
+                    Training & 1,280,000 \\
+                    Validation & 10,000 \\
+                    Batch size & 1,024
+                \end{tabular}
+            \end{block}
+        \end{column}
+        \begin{column}{0.42\textwidth}
+            \begin{center}
+                \includegraphics[width=0.9\textwidth]{synthetic_training_data.png}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
 
 %-------------------------------------------------------------------------
 \begin{frame}{Real-World Deployment: OSRM Integration}
