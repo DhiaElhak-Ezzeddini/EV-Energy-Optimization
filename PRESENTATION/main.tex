@@ -627,50 +627,44 @@
             \[
             p_{ij}^a = \frac{[\tau_{ij}]^\alpha \cdot [\eta_{ij}]^\beta}{\sum_{l \in \mathcal{N}_i} [\tau_{il}]^\alpha \cdot [\eta_{il}]^\beta}
             \]
-            
-            where:
-            \begin{itemize}
-                \item $\tau_{ij}$ = pheromone level on arc $(i,j)$
-                \item $\eta_{ij} = 1/c_{ij}$ = heuristic information
-                \item $\alpha, \beta$ = importance parameters
-            \end{itemize}
-            
-            \vspace{0.3cm}
+
             \textbf{Pheromone Update:}
             \[
             \tau_{ij} \leftarrow (1-\rho)\tau_{ij} + \sum_a \Delta\tau_{ij}^a
             \]
-            
+
             Better solutions deposit more pheromone
         \end{column}
         \begin{column}{0.42\textwidth}
-            \begin{center}
-                \begin{tikzpicture}[scale=0.7]
-                    \node[circle, draw, fill=primaryblue!30] (A) at (0,0) {A};
-                    \node[circle, draw, fill=primaryblue!30] (B) at (2,2) {B};
-                    \node[circle, draw, fill=primaryblue!30] (C) at (4,0) {C};
-                    \node[circle, draw, fill=primaryblue!30] (D) at (2,-2) {D};
-                    
-                    \draw[very thick, primaryblue] (A) -- (B);
-                    \draw[thick] (A) -- (D);
-                    \draw[very thick, primaryblue] (B) -- (C);
-                    \draw[thin] (A) -- (C);
-                    \draw[thin] (B) -- (D);
-                    \draw[thick] (C) -- (D);
-                    
-                    \node[font=\tiny] at (1, -2.8) {Line thickness = pheromone level};
-                \end{tikzpicture}
-            \end{center}
-            
-            \begin{block}{Key Properties}
-                \begin{itemize}
-                    \item Positive feedback
-                    \item Parallel exploration
-                    \item Emergent optimization
-                \end{itemize}
+            \begin{block}{Parameters (Literature-based)}
+                \small
+                \begin{tabular}{lcl}
+                    $\alpha$ & = & 3 (pheromone weight) \\
+                    $\beta$ & = & 1 (heuristic weight) \\
+                    $\rho$ & = & 0.1 (evaporation) \\
+                    $Q$ & = & 5 (deposit constant) \\
+                    Ants & = & 80 \\
+                    Epochs & = & 600
+                \end{tabular}
             \end{block}
+
+            \vspace{0.2cm}
+            \begin{exampleblock}{Parameter Choice}
+                \small $\alpha > \beta$: pheromone dominates heuristic (exploitation over exploration)
+            \end{exampleblock}
         \end{column}
     \end{columns}
+\end{frame}
+
+%-------------------------------------------------------------------------
+\begin{frame}{ACO: Demo Result}
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{aco_demo_results.png}
+    \end{center}
+
+    \begin{block}{Observation}
+        ACO constructs feasible routes visiting all customers with charging station detours when needed
+    \end{block}
 \end{frame}
 
 %=========================================================================
@@ -882,8 +876,112 @@
     \end{columns}
 \end{frame}
 
+%-------------------------------------------------------------------------
+\begin{frame}{Training Configuration}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Problem Configuration}
+                \begin{tabular}{ll}
+                    Customers & 10 \\
+                    Charging stations & 4 \\
+                    Sequence length & 16 \\
+                    Initial SOC & 80\% \\
+                    Max load & 50 units
+                \end{tabular}
+            \end{block}
+
+            \begin{block}{Training Parameters}
+                \begin{tabular}{ll}
+                    Epochs & 20 \\
+                    Batch size & 1,024 \\
+                    Training samples & 1,280,000 \\
+                    Learning rate & $10^{-4}$ \\
+                    Baseline & Rollout
+                \end{tabular}
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Model Architecture}
+                \begin{tabular}{ll}
+                    Embedding dim & 128 \\
+                    Encoder layers & 3 \\
+                    Attention heads & 8 \\
+                    FF hidden & 512 \\
+                    Tanh clipping & 10 \\
+                    Optimizer & Adam
+                \end{tabular}
+            \end{block}
+
+            \begin{block}{Hardware}
+                \begin{tabular}{ll}
+                    GPU & NVIDIA RTX \\
+                    Training time & $\sim$8 hours
+                \end{tabular}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%-------------------------------------------------------------------------
+\begin{frame}{Training Results}
+    \begin{center}
+        \includegraphics[width=0.55\textwidth]{training_reward.png}
+    \end{center}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Observations}
+                Consistent improvement, convergence at epoch 80
+            \end{block}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Generalization}
+                Validation follows training, no overfitting
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+%-------------------------------------------------------------------------
+\begin{frame}{Performance Comparison}
+    \begin{center}
+        \begin{tabular}{lcc}
+            \toprule
+            \textbf{Method} & \textbf{Energy (kWh)} & \textbf{Inference Time} \\
+            \midrule
+            \textbf{OR-Tools} & \textbf{11.92} & 2.1s \\
+            DRL  & 12.18 & \textbf{0.5s} \\
+            Ant Colony Optimization & 12.67 & 3.2s \\
+            Simulated Annealing & 12.89 & 1.5s \\
+            Hill Climbing & 13.21 & 0.8s \\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+
+    \vspace{0.5cm}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{DRL Performance}
+                \begin{itemize}
+                    \item Only \textbf{2.2\%} gap vs OR-Tools
+                    \item \textbf{7.8\%} better than Hill Climbing
+                    \item Near-optimal solution quality
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{Speed Advantage}
+                \begin{itemize}
+                    \item \textbf{4x} faster than OR-Tools
+                    \item \textbf{6x} faster than ACO
+                    \item Real-time capable
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 %=========================================================================
-\section{System Architecture}
+\section{System Architecture \& Dashboard}
 %=========================================================================
 
 %-------------------------------------------------------------------------
@@ -991,156 +1089,6 @@
             \item Export results as JSON for integration
         \end{itemize}
     \end{block}
-\end{frame}
-
-%=========================================================================
-\section{Results and Evaluation}
-%=========================================================================
-
-%-------------------------------------------------------------------------
-\begin{frame}{Training Configuration}
-    \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Problem Configuration}
-                \begin{tabular}{ll}
-                    Customers & 10 \\
-                    Charging stations & 4 \\
-                    Sequence length & 16 \\
-                    Initial SOC & 80\% \\
-                    Max load & 50 units
-                \end{tabular}
-            \end{block}
-            
-            \begin{block}{Training Parameters}
-                \begin{tabular}{ll}
-                    Epochs & 20 \\
-                    Batch size & 1,024 \\
-                    Training samples & 1,280,000 \\
-                    Learning rate & $10^{-4}$ \\
-                    Baseline & Rollout
-                \end{tabular}
-            \end{block}
-        \end{column}
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Model Architecture}
-                \begin{tabular}{ll}
-                    Embedding dim & 128 \\
-                    Encoder layers & 3 \\
-                    Attention heads & 8 \\
-                    FF hidden & 512 \\
-                    Tanh clipping & 10 \\
-                    Optimizer & Adam
-                \end{tabular}
-            \end{block}
-            
-            \begin{block}{Hardware}
-                \begin{tabular}{ll}
-                    GPU & NVIDIA RTX \\
-                    Training time & $\sim$8 hours
-                \end{tabular}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{Training Results}
-    \begin{center}
-        \includegraphics[width=0.55\textwidth]{training_reward.png}
-    \end{center}
-    \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Observations}
-                Consistent improvement, convergence at epoch 80
-            \end{block}
-        \end{column}
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Generalization}
-                Validation follows training, no overfitting
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{Performance Comparison}
-    \begin{center}
-        \begin{tabular}{lcc}
-            \toprule
-            \textbf{Method} & \textbf{Energy (kWh)} & \textbf{Inference Time} \\
-            \midrule
-            \textbf{OR-Tools} & \textbf{11.92} & 2.1s \\
-            DRL (Ours) & 12.18 & \textbf{0.5s} \\
-            Ant Colony Optimization & 12.67 & 3.2s \\
-            Simulated Annealing & 12.89 & 1.5s \\
-            Hill Climbing & 13.21 & 0.8s \\
-            \bottomrule
-        \end{tabular}
-    \end{center}
-    
-    \vspace{0.5cm}
-    \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            \begin{exampleblock}{DRL Performance}
-                \begin{itemize}
-                    \item Only \textbf{2.2\%} gap vs OR-Tools
-                    \item \textbf{7.8\%} better than Hill Climbing
-                    \item Near-optimal solution quality
-                \end{itemize}
-            \end{exampleblock}
-        \end{column}
-        \begin{column}{0.48\textwidth}
-            \begin{exampleblock}{Speed Advantage}
-                \begin{itemize}
-                    \item \textbf{4x} faster than OR-Tools
-                    \item \textbf{6x} faster than ACO
-                    \item Real-time capable
-                \end{itemize}
-            \end{exampleblock}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-%-------------------------------------------------------------------------
-\begin{frame}{Key Findings}
-    \begin{columns}[T]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Model Performance}
-                \begin{itemize}
-                    \item \cmark~Generalizes to unseen instances
-                    \item \cmark~Competitive solution quality
-                    \item \cmark~Significantly faster inference
-                    \item \cmark~Learns charging decisions
-                \end{itemize}
-            \end{block}
-            
-            \begin{block}{Energy Model Insights}
-                \begin{itemize}
-                    \item Load-dependent consumption
-                    \item Regenerative braking benefits
-                    \item Elevation-aware routing
-                \end{itemize}
-            \end{block}
-        \end{column}
-        \begin{column}{0.48\textwidth}
-            \begin{block}{Architecture Effectiveness}
-                \begin{itemize}
-                    \item Attention captures relationships
-                    \item Context embedding is crucial
-                    \item Masking ensures feasibility
-                \end{itemize}
-            \end{block}
-            
-            \begin{block}{Practical Benefits}
-                \begin{itemize}
-                    \item Ready for deployment
-                    \item Interactive visualization
-                    \item Real street routing
-                    \item Scalable to larger problems
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
 \end{frame}
 
 %=========================================================================

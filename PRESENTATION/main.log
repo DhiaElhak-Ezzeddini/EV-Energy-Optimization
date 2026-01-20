@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.5.11)  20 JAN 2026 14:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.5.11)  20 JAN 2026 15:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1295,7 +1295,7 @@ Package pdftex.def Info: synthetic_training_data.png  used on input line 418.
  <./synthetic_training_data.png>] [10
 
 ]
-<rev.png, id=339, 2964.07375pt x 1276.77pt>
+<rev.png, id=338, 2964.07375pt x 1276.77pt>
 File: rev.png Graphic file (type png)
 <use rev.png>
 Package pdftex.def Info: rev.png  used on input line 478.
@@ -1365,27 +1365,29 @@ Overfull \vbox (24.48169pt too high) detected at line 620
 
 [17
 
- <./line_plot.png>]
-Overfull \vbox (7.49638pt too high) detected at line 674
- []
-
-[18
-
-] [19
-
-] [20
+ <./line_plot.png>] [18
 
 ]
-<drl_arch.png, id=584, 1163.547pt x 874.467pt>
+<aco_demo_results.png, id=531, 1004.0712pt x 422.5386pt>
+File: aco_demo_results.png Graphic file (type png)
+<use aco_demo_results.png>
+Package pdftex.def Info: aco_demo_results.png  used on input line 668.
+(pdftex.def)             Requested size: 303.3395pt x 127.6523pt.
+ [19
+
+ <./aco_demo_results.png>] [20
+
+] [21
+
+]
+<drl_arch.png, id=614, 1163.547pt x 874.467pt>
 File: drl_arch.png Graphic file (type png)
 <use drl_arch.png>
-Package pdftex.def Info: drl_arch.png  used on input line 753.
+Package pdftex.def Info: drl_arch.png  used on input line 747.
 (pdftex.def)             Requested size: 238.34053pt x 179.12012pt.
- [21
+ [22
 
- <./drl_arch.png>] [22
-
-] [23
+ <./drl_arch.png>] [23
 
 ] [24
 
@@ -1393,63 +1395,63 @@ Package pdftex.def Info: drl_arch.png  used on input line 753.
 
 ] [26
 
-]
-<main_page.PNG, id=792, 1445.4pt x 721.19438pt>
-File: main_page.PNG Graphic file (type png)
-<use main_page.PNG>
-Package pdftex.def Info: main_page.PNG  used on input line 939.
-(pdftex.def)             Requested size: 325.00801pt x 162.16269pt.
- [27
-
- <./main_page.PNG>]
-<inference.PNG, id=800, 1445.4pt x 696.35156pt>
-File: inference.PNG Graphic file (type png)
-<use inference.PNG>
-Package pdftex.def Info: inference.PNG  used on input line 968.
-(pdftex.def)             Requested size: 208.00327pt x 100.20866pt.
-<result.PNG, id=801, 1445.4pt x 724.20563pt>
-File: result.PNG Graphic file (type png)
-<use result.PNG>
-Package pdftex.def Info: result.PNG  used on input line 968.
-(pdftex.def)             Requested size: 208.00327pt x 104.21701pt.
- [28
-
- <./inference.PNG> <./result.PNG>]
-<analytics.PNG, id=811, 1445.4pt x 719.68875pt>
-File: analytics.PNG Graphic file (type png)
-<use analytics.PNG>
-Package pdftex.def Info: analytics.PNG  used on input line 994.
-(pdftex.def)             Requested size: 208.00327pt x 103.56702pt.
-<detailed.PNG, id=812, 1445.4pt x 719.68875pt>
-File: detailed.PNG Graphic file (type png)
-<use detailed.PNG>
-Package pdftex.def Info: detailed.PNG  used on input line 994.
-(pdftex.def)             Requested size: 208.00327pt x 103.56702pt.
-
-Overfull \vbox (3.44138pt too high) detected at line 994
- []
-
-[29
-
- <./analytics.PNG> <./detailed.PNG>] [30
+] [27
 
 ]
-<training_reward.png, id=889, 578.16pt x 325.215pt>
+<training_reward.png, id=848, 578.16pt x 325.215pt>
 File: training_reward.png Graphic file (type png)
 <use training_reward.png>
-Package pdftex.def Info: training_reward.png  used on input line 1063.
+Package pdftex.def Info: training_reward.png  used on input line 942.
 (pdftex.def)             Requested size: 238.34053pt x 134.0635pt.
- [31
+ [28
 
- <./training_reward.png>]
-[32
+ <./training_reward.png>] [29
 
-] [33
-
-] [34
+] [30
 
 ]
-Overfull \vbox (9.84662pt too high) detected at line 1221
+<main_page.PNG, id=937, 1445.4pt x 721.19438pt>
+File: main_page.PNG Graphic file (type png)
+<use main_page.PNG>
+Package pdftex.def Info: main_page.PNG  used on input line 1037.
+(pdftex.def)             Requested size: 325.00801pt x 162.16269pt.
+
+[31
+
+ <./main_page.PNG>]
+<inference.PNG, id=946, 1445.4pt x 696.35156pt>
+File: inference.PNG Graphic file (type png)
+<use inference.PNG>
+Package pdftex.def Info: inference.PNG  used on input line 1066.
+(pdftex.def)             Requested size: 208.00327pt x 100.20866pt.
+<result.PNG, id=947, 1445.4pt x 724.20563pt>
+File: result.PNG Graphic file (type png)
+<use result.PNG>
+Package pdftex.def Info: result.PNG  used on input line 1066.
+(pdftex.def)             Requested size: 208.00327pt x 104.21701pt.
+ [32
+
+ <./inference.PNG> <./result.PNG>]
+<analytics.PNG, id=957, 1445.4pt x 719.68875pt>
+File: analytics.PNG Graphic file (type png)
+<use analytics.PNG>
+Package pdftex.def Info: analytics.PNG  used on input line 1092.
+(pdftex.def)             Requested size: 208.00327pt x 103.56702pt.
+<detailed.PNG, id=958, 1445.4pt x 719.68875pt>
+File: detailed.PNG Graphic file (type png)
+<use detailed.PNG>
+Package pdftex.def Info: detailed.PNG  used on input line 1092.
+(pdftex.def)             Requested size: 208.00327pt x 103.56702pt.
+
+Overfull \vbox (3.44138pt too high) detected at line 1092
+ []
+
+[33
+
+ <./analytics.PNG> <./detailed.PNG>] [34
+
+]
+Overfull \vbox (9.84662pt too high) detected at line 1169
  []
 
 [35
@@ -1460,7 +1462,7 @@ Overfull \vbox (9.84662pt too high) detected at line 1221
 
  <C:/Program Files/MiKTeX/tex/latex/beamer/beamericonarticle.pdf>]
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
-290.
+238.
 (C:\Program Files\MiKTeX\tex/latex/base\t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 ) [38
@@ -1480,49 +1482,59 @@ File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 6405C944BFA8B235B9C7B7BBC715AAEF;1340.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 6405C944BFA8B235B9C7B7BBC715AAEF;1340
+(rerunfilecheck)             After:  B879847D4DAB75484A47DAA699AD1A85;1250.
  ) 
 Here is how much of TeX's memory you used:
- 43437 strings out of 474486
- 1036392 string characters out of 5753570
- 1951542 words of memory out of 5000000
- 64833 multiletter control sequences out of 15000+600000
+ 43416 strings out of 474486
+ 1036352 string characters out of 5753570
+ 1950542 words of memory out of 5000000
+ 64812 multiletter control sequences out of 15000+600000
  586037 words of font info for 109 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  128i,15n,123p,721b,1056s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt
-1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecsi1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
-/dpi600\ecsx2488.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
-pen/ec/dpi600\ecss1200.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour
-/jknappen/ec/dpi600\ecsx1095.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/
-ljfour/jknappen/ec/dpi600\ecsx1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\ecss0600.pk> <C:\Users\Fradi\AppData\Local\MiKT
-eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1000.pk> <C:\Users\Fradi\AppData\Loca
-l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx0800.pk> <C:\Users\Fradi\AppDat
-a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss0800.pk> <C:\Users\Fradi\
-AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1095.pk> <C:\Users\
-Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1440.pk><C:/P
-rogram Files/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb>
-<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program 
-Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX
-/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX/fonts/type1
-/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmmi7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.
-pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Prog
-ram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmss12.pfb><C:/Program Files/Mi
-KTeX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Program Files/MiKTeX/fonts/ty
-pe1/public/amsfonts/cm/cmssi10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/
-amsfonts/cm/cmssi12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm
-/cmssi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program F
-iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/f
-onts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Program Files/MiKTeX/fonts/ty
-pe1/urw/zapfding/uzdr.pfb>
-Output written on main.pdf (38 pages, 5646509 bytes).
+
+pdfTeX warning (dest): name{Outline0.9} has been referenced but does not exist,
+ replaced by a fixed one
+
+ <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt10
+00.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\
+ecsi1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/d
+pi600\ecsx2488.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappe
+n/ec/dpi600\ecss1200.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/ljfour/j
+knappen/ec/dpi600\ecsx1095.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts/pk/lj
+four/jknappen/ec/dpi600\ecsx1000.pk> <C:\Users\Fradi\AppData\Local\MiKTeX\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecss0600.pk> <C:\Users\Fradi\AppData\Local\MiKTeX
+\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1000.pk> <C:\Users\Fradi\AppData\Local\
+MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx0800.pk> <C:\Users\Fradi\AppData\
+Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss0800.pk> <C:\Users\Fradi\Ap
+pData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1095.pk> <C:\Users\Fr
+adi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecss1440.pk><C:/Pro
+gram Files/MiKTeX/fonts/type1/public/fontawesome5/FontAwesome5Free-Solid.pfb><C
+:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fi
+les/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/f
+onts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfont
+s/cm/cmmi7.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pf
+b><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmss10.pfb><C:/Progra
+m Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmss12.pfb><C:/Program Files/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmss8.pfb><C:/Program Files/MiKTeX/fonts/type
+1/public/amsfonts/cm/cmssi10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmssi12.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/c
+mssi8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C
+:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Fil
+es/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fon
+ts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on main.pdf (38 pages, 5753539 bytes).
 PDF statistics:
- 1773 PDF objects out of 2073 (max. 8388607)
+ 1750 PDF objects out of 2073 (max. 8388607)
  99 named destinations out of 1000 (max. 500000)
- 2243 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2188 words of extra memory for PDF output out of 10000 (max. 10000000)
 
